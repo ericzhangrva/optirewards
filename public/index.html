@@ -357,6 +357,32 @@
     render();
   }
 
+    function isCategoryMatch(cardCategory, queryCategory) {
+    if (cardCategory === queryCategory) return true;
+    if (cardCategory === 'all' || cardCategory === 'general') return true;
+    
+    const equivalents = [
+        ['restaurants', 'dining', 'food_delivery', 'food'],
+        ['groceries', 'supermarket', 'grocery_delivery'],
+        ['gas_stations', 'gas'],
+        ['flights', 'airfare', 'travel'],
+        ['hotels', 'travel'],
+        ['travel_portal', 'travel'],
+        ['rental_cars', 'travel'],
+        ['public_transit', 'transit', 'travel'],
+        ['rideshare', 'transit', 'travel'],
+        ['online_shopping', 'shopping']
+    ];
+    
+    for (let group of equivalents) {
+        if (group.includes(cardCategory) && group.includes(queryCategory)) return true;
+    }
+    
+    if (cardCategory.startsWith(queryCategory) || queryCategory.startsWith(cardCategory)) return true;
+    
+    return false;
+  }
+
   function getLocalRecommendation(query) {
     if (!catalog) return null;
     let categoryKey = 'general';
@@ -394,14 +420,20 @@
           // Check for rotating bonus first
           if (cat.is_rotating || cat.category_key === 'rotating_bonus') {
              const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q3"] : null;
-             if (validQuarters && validQuarters.includes(categoryKey)) {
+             let rotMatch = false;
+             if (validQuarters) {
+                for (let vq of validQuarters) {
+                   if (isCategoryMatch(vq, categoryKey)) rotMatch = true;
+                }
+             }
+             if (rotMatch) {
                 if (cat.multiplier > matchMultiplier) {
                    matchMultiplier = cat.multiplier;
                    ruleDesc = cat.category_name;
                    isRotating = true;
                 }
              }
-          } else if (cat.category_key === categoryKey) {
+          } else if (isCategoryMatch(cat.category_key, categoryKey)) {
              if (cat.multiplier > matchMultiplier) {
                 matchMultiplier = cat.multiplier;
                 ruleDesc = cat.category_name;
