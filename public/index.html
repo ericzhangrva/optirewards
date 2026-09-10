@@ -591,7 +591,7 @@
     return `
       <div class="rec-card-box" id="rec-box-anchor">
         <div class="rec-header" style="justify-content: flex-end; padding: 0 16px 8px 16px;">
-          <span class="rec-yield" style="background: var(--accent); color: white; padding: 4px 10px; border-radius: 12px; font-weight: 800; font-size: 13px;">${best.effective_yield_pct}% Yield</span>
+          <span class="rec-yield" style="background: #22c55e; color: white; padding: 4px 10px; border-radius: 12px; font-weight: 800; font-size: 13px;">${best.effective_yield_pct}% Yield</span>
         </div>
         <div class="rec-card-img">
           <img src="/${best.local_image_path}" alt="${best.card_name}">
@@ -860,7 +860,7 @@
     baseGroups.forEach(bg => {
       const count = issuerCounts[bg.id] || 0;
       if (count === 0) return;
-      if (count >= 10) {
+      if (count >= 10 || ['chase', 'amex', 'citi', 'capital_one', 'bofa', 'wells_fargo'].includes(bg.id)) {
         majorGroups.push({ id: bg.id, title: bg.title, filter: c => c.issuer_id === bg.id });
         filterPillsHtml.push(`<button class="filter-pill ${selectedIssuerFilter === bg.id ? 'active' : ''}" onclick="selectedIssuerFilter = '${bg.id}'; render();">${bg.shortTitle} (${count})</button>`);
       } else {
@@ -887,7 +887,6 @@
       <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
         <span>🔍</span>
         <input type="search" id="walletSearchInput" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search cards (e.g. Sapphire, Gold)..." value="${walletSearchQuery}" oninput="walletSearchQuery = this.value.toLowerCase(); render();">
-        <span style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px;" onclick="walletSearchQuery=''; render();">✖</span>
       </div>
 
 
