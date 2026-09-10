@@ -301,12 +301,12 @@
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         gpsLoaded = true;
-        nearbyStores = [
-          {"name": "Whole Foods Market", "category": "supermarket", "distance": "0.2 mi"},
-          {"name": "Shell", "category": "gas_stations", "distance": "0.5 mi"}
-        ];
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        
+        // Fetch city name via Nominatim
         try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
             const data = await res.json();
             if (data && data.address) {
                 const city = data.address.city || data.address.town || data.address.village || data.address.county || "Your Location";
@@ -317,6 +317,63 @@
         } catch(e) {
             locationName = "Current Location";
         }
+        
+        // Fetch real nearby merchants via Overpass API
+        try {
+            const query = `[out:json];(node["amenity"~"restaurant|fast_food|cafe"](around:2000,${lat},${lng});node["shop"~"supermarket|convenience|wholesale|department_store|clothes"](around:2000,${lat},${lng}););out 20;`;
+            const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+            const overpassRes = await fetch(url);
+            const overpassData = await overpassRes.json();
+            
+            let merchants = [];
+            for (let e of overpassData.elements) {
+                if (e.tags && e.tags.name) {
+                    let catString = 'Shop';
+                    if (e.tags.amenity) {
+                        if (['restaurant', 'fast_food', 'cafe'].includes(e.tags.amenity)) catString = 'Dining';
+                    } else if (e.tags.shop) {
+                        if (['supermarket', 'convenience'].includes(e.tags.shop)) catString = 'Groceries';
+                        else if (e.tags.shop === 'wholesale') catString = 'Wholesale';
+                        else catString = 'Shopping';
+                    }
+                    
+                    const R = 3958.8; // miles
+                    const dLat = (e.lat - lat) * Math.PI / 180;
+                    const dLon = (e.lon - lng) * Math.PI / 180;
+                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat * Math.PI / 180) * Math.cos(e.lat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                    const d = R * c;
+                    
+                    merchants.push({
+                        name: e.tags.name,
+                        category: catString,
+                        distanceNum: d,
+                        distance: d.toFixed(1) + ' mi'
+                    });
+                }
+            }
+            
+            // Deduplicate and get closest 5
+            let unique = [];
+            let seen = new Set();
+            merchants.sort((a,b) => a.distanceNum - b.distanceNum);
+            for (let m of merchants) {
+               if (!seen.has(m.name)) {
+                   seen.add(m.name);
+                   unique.push(m);
+                   if (unique.length >= 5) break;
+               }
+            }
+            
+            if (unique.length > 0) {
+                nearbyStores = unique;
+            } else {
+                nearbyStores = [{"name": "Whole Foods Market", "category": "Supermarket", "distance": "0.2 mi"}, {"name": "Shell", "category": "Gas Station", "distance": "0.5 mi"}];
+            }
+        } catch(e) {
+            console.error("Overpass failed", e);
+        }
+        
         render();
       },
       (err) => {
@@ -654,14 +711,6 @@
         <button class="gps-btn" onclick="requestUserGPS()">Use My GPS</button>
       </div>
 
-      <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
-        <span>🔍</span>
-        <input type="search" id="instore-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search any store..." value="${window.activeSearchQuery === 'instore_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='instore_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); }">
-        <button onclick="window.activeSearchQuery='instore_search'; getRecommendation(document.getElementById('instore-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
-      </div>
-      
-      ${searchRec}
-
       <div class="section-label">
         <span>Nearby Stores Around You (${nearbyStores.length})</span>
         <span style="color: var(--accent); cursor: pointer;" onclick="requestUserGPS()">Update</span>
@@ -670,6 +719,14 @@
       <div class="poi-list">
         ${nearbyStores.map(s => renderPOI(s.name, '🏪', s.name, (s.category.replace('_', ' ')) + ' • ' + s.distance)).join('')}
       </div>
+
+      <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px; margin-top: 20px;">
+        <span>🔍</span>
+        <input type="search" id="instore-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search any store..." value="${window.activeSearchQuery === 'instore_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='instore_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); }">
+        <button onclick="window.activeSearchQuery='instore_search'; getRecommendation(document.getElementById('instore-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
+      </div>
+      
+      ${searchRec}
 
       <div class="section-label">
         <span>Store Not Listed? Choose Category</span>
