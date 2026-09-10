@@ -219,6 +219,7 @@
   let selectedRewardFilter = 'all';
   let selectedTypeFilter = 'all';
 
+
   function updateTime() {
     const d = new Date();
     document.getElementById('current-time').innerText = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -592,11 +593,6 @@
   
   const CATALOG_URL = 'catalog.json';
   let catalog = null;
-  let allCards = [];
-  let userWallet = [];
-  let userValuations = {};
-  let nearbyStores = [];
-  let quarterlyData = {};
 
   async function initApp() {
     try {
