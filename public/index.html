@@ -464,7 +464,7 @@
       let isAccepted = true;
       let appliedRuleFinal = ruleDesc;
       
-      if ((query.toLowerCase().includes('costco') || categoryKey === 'wholesale_clubs') && card.network && card.network.toLowerCase() !== 'visa') {
+      if (query.toLowerCase().includes('costco') && card.network && card.network.toLowerCase() !== 'visa') {
           isAccepted = false;
           yieldPct = 0.0;
           appliedRuleFinal = "Not accepted (Costco only takes Visa)";
@@ -484,7 +484,21 @@
       });
     }
 
-    scored.sort((a, b) => b.effective_yield_pct - a.effective_yield_pct);
+    scored.sort((a, b) => {
+      if (Math.abs(b.effective_yield_pct - a.effective_yield_pct) > 0.001) {
+        return b.effective_yield_pct - a.effective_yield_pct;
+      }
+      const rank = {
+        'wells_fargo_active_cash': 4,
+        'capital_one_venture_x': 3,
+        'citi_costco_business': 2,
+        'citi_costco': 2,
+        'amex_blue_business_cash': 1
+      };
+      const rA = rank[a.card_id] || 0;
+      const rB = rank[b.card_id] || 0;
+      return rB - rA;
+    });
     const best = scored[0];
     return {
       query: query,
