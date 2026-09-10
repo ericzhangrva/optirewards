@@ -391,38 +391,46 @@
 
       if (card.categories) {
         for (let cat of card.categories) {
-          if (cat.category_key === categoryKey) {
-            if (cat.is_rotating) {
-              const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q3"] : null;
-              if (validQuarters && validQuarters.includes(categoryKey)) {
+          // Check for rotating bonus first
+          if (cat.is_rotating || cat.category_key === 'rotating_bonus') {
+             const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q3"] : null;
+             if (validQuarters && validQuarters.includes(categoryKey)) {
+                if (cat.multiplier > matchMultiplier) {
+                   matchMultiplier = cat.multiplier;
+                   ruleDesc = cat.category_name;
+                   isRotating = true;
+                }
+             }
+          } else if (cat.category_key === categoryKey) {
+             if (cat.multiplier > matchMultiplier) {
                 matchMultiplier = cat.multiplier;
                 ruleDesc = cat.category_name;
-                isRotating = true;
-                break;
-              }
-            } else {
-              if (cat.multiplier > matchMultiplier) {
-                matchMultiplier = cat.multiplier;
-                ruleDesc = cat.category_name;
-              }
-            }
+             }
           }
         }
       }
 
       const valCents = userValuations[card.currency_name] || card.point_valuation_cents || 1.0;
-      const yieldPct = matchMultiplier * valCents;
+      let yieldPct = matchMultiplier * valCents;
+      let isAccepted = true;
+      let appliedRuleFinal = ruleDesc;
+      
+      if ((query.toLowerCase().includes('costco') || categoryKey === 'wholesale_clubs') && card.network && card.network.toLowerCase() !== 'visa') {
+          isAccepted = false;
+          yieldPct = 0.0;
+          appliedRuleFinal = "Not accepted (Costco only takes Visa)";
+      }
 
       scored.push({
         card_id: card.id,
         card_name: card.name,
         local_image_path: card.local_image_path,
-        multiplier: matchMultiplier,
+        multiplier: isAccepted ? matchMultiplier : 0,
         currency_name: card.currency_name,
         currency_type: card.currency_type,
         valuation_cents: valCents,
         effective_yield_pct: Math.round(yieldPct * 100) / 100,
-        applied_rule: ruleDesc,
+        applied_rule: appliedRuleFinal,
         is_rotating: isRotating
       });
     }
@@ -654,7 +662,7 @@
   }
   function renderValuationsTab() {
     // 1. Identify which points & miles currencies are used by cards currently active in user's wallet
-    const activePointsCards = userWallet.filter(c => c.currency_type === 'points' || c.currency_type === 'miles');
+    const activePointsCards = userWallet.filter(c => c.currency_type === 'points' || c.currency_type === 'miles' || c.currency_name === 'Ultimate Rewards' || c.currency_name === 'ThankYou Points');
     
     // Group active cards by currency name
     const activeCurrencyMap = {};
