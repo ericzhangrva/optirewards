@@ -551,16 +551,14 @@
 
     return `
       <div class="rec-card-box" id="rec-box-anchor">
-        <div class="rec-header">
-          <span class="rec-tag">${best.is_rotating ? '🌟 5% Rotating Win' : 'Best Card Match'}</span>
-          <span class="rec-yield">${best.effective_yield_pct}% Yield</span>
+        <div class="rec-header" style="justify-content: flex-end; padding: 0 16px 8px 16px;">
+          <span class="rec-yield" style="background: var(--accent); color: white; padding: 4px 10px; border-radius: 12px; font-weight: 800; font-size: 13px;">${best.effective_yield_pct}% Yield</span>
         </div>
         <div class="rec-card-img">
           <img src="/${best.local_image_path}" alt="${best.card_name}">
         </div>
         <div>
           <div class="rec-card-name">${best.card_name}</div>
-          <div class="rec-explain">${rec.explanation}</div>
           <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;">
             Rule: <b>${best.applied_rule}</b> • Currency: ${best.currency_name} (@ ${userValuations[best.currency_name] || 1.0}¢/pt)
           </div>
