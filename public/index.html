@@ -622,24 +622,32 @@
         ${renderPOI('Delta Air Lines', '✈️', 'Airlines (Delta, United, AA)', 'Amex Plat 5x, Sapphire 3x')}
       </div>
 
-      <div class="section-label">Travel & Bookings</div>
+      <div class="section-label">Travel & Transit Apps</div>
       <div class="chip-grid">
         ${renderCategory('flights', '✈️', 'Flights & Airfare')}
         ${renderCategory('hotels', '🏨', 'Hotels & Lodging')}
         ${renderCategory('travel_portal', '🌐', 'Bank Travel Portals')}
         ${renderCategory('rental_cars', '🚘', 'Car Rentals')}
+        ${renderCategory('rideshare', '🚗', 'Rideshare (Uber/Lyft)')}
       </div>
 
       <div class="section-label">Online Shopping & Delivery</div>
       <div class="chip-grid">
+        ${renderCategory('online_shopping', '🛍️', 'Online Retailers')}
         ${renderCategory('amazon', '📦', 'Amazon.com')}
-        ${renderCategory('streaming_video', '🎬', 'Streaming Services')}
         ${renderCategory('restaurants', '🍽️', 'Food Delivery & Dining')}
         ${renderCategory('groceries', '🛒', 'Grocery Delivery')}
-        ${renderCategory('cell_phone', '📱', 'Phone & Internet')}
         ${renderCategory('wholesale_clubs', '📦', 'Wholesale Clubs')}
         ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
         ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
+      </div>
+
+      <div class="section-label">Digital Services & Subscriptions</div>
+      <div class="chip-grid">
+        ${renderCategory('streaming_video', '🎬', 'Streaming Services')}
+        ${renderCategory('cell_phone', '📱', 'Phone & Internet')}
+        ${renderCategory('live_events', '🎟️', 'Live Concerts & Events')}
+        ${renderCategory('digital_wallet', '📲', 'Digital Wallets (Apple Pay)')}
       </div>
     `;
   }
