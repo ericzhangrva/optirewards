@@ -181,6 +181,7 @@
     .app-content { padding-top: 15px !important; }
     .tab-bar { padding-bottom: calc(14px + env(safe-area-inset-bottom)) !important; height: calc(78px + env(safe-area-inset-bottom)) !important; }
   }
+  input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
 </style>
 <meta name="apple-mobile-web-app-title" content="OptiRewards">
 </head>
@@ -740,7 +741,8 @@
 
       <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px; margin-top: 20px;">
         <span>🔍</span>
-        <input type="search" id="instore-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search any store..." value="${window.activeSearchQuery === 'instore_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='instore_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); }">
+        <input type="search" id="instore-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search any store..." value="${window.activeSearchQuery === 'instore_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='instore_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); } else { document.getElementById('instore-clear-btn').style.display='block'; }">
+        <span id="instore-clear-btn" style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px; display: ${(window.activeSearchQuery === 'instore_search' && currentRecommendation && currentRecommendation.query) ? 'block' : 'none'};" onclick="document.getElementById('instore-search-input').value=''; currentRecommendation=null; window.activeSearchQuery=''; render();">✖</span>
         <button onclick="window.activeSearchQuery='instore_search'; getRecommendation(document.getElementById('instore-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
       </div>
       
@@ -770,7 +772,8 @@
     return `
       <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
         <span>🔍</span>
-        <input type="search" id="online-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Type merchant (Amazon, Nike)..." value="${window.activeSearchQuery === 'online_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='online_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); }">
+        <input type="search" id="online-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Type merchant (Amazon, Nike)..." value="${window.activeSearchQuery === 'online_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='online_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); } else { document.getElementById('online-clear-btn').style.display='block'; }">
+        <span id="online-clear-btn" style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px; display: ${(window.activeSearchQuery === 'online_search' && currentRecommendation && currentRecommendation.query) ? 'block' : 'none'};" onclick="document.getElementById('online-search-input').value=''; currentRecommendation=null; window.activeSearchQuery=''; render();">✖</span>
         <button onclick="window.activeSearchQuery='online_search'; getRecommendation(document.getElementById('online-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
       </div>
       
@@ -971,6 +974,7 @@
       <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
         <span>🔍</span>
         <input type="search" id="walletSearchInput" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search cards (e.g. Sapphire, Gold)..." value="${walletSearchQuery}" oninput="walletSearchQuery = this.value.toLowerCase(); render();">
+        <span style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px; display: ${walletSearchQuery ? 'block' : 'none'};" onclick="walletSearchQuery=''; render();">✖</span>
       </div>
 
 
