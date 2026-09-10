@@ -7,14 +7,10 @@
 
 ## 1. System Architecture Overview (Serverless)
 
-OptiRewards operates as a **100% Serverless, Client-Side Application**. It relies purely on static file hosting and a global CDN (Cloudflare Pages/R2) for 0ms latency and full offline capability.
+OptiRewards operates as a **100% Serverless, Client-Side Application**. It relies purely on static file hosting and a global CDN (Cloudflare Pages) for 0ms latency and full offline capability.
 
 ```mermaid
 graph TD
-    subgraph Storage Layer (Cloudflare R2)
-        Catalog[catalog.json: 199 cards, merchant regex, quarterly cals]
-    end
-
     subgraph Client Application (Browser / iOS WebKit)
         App[index.html: Vanilla JS UI & Recommendation Engine]
         LocalStorage[(Browser localStorage: Wallet & Valuations)]
@@ -25,6 +21,7 @@ graph TD
     end
 
     subgraph CDN Layer (Cloudflare Pages)
+        Catalog[catalog.json: 199 cards, merchant regex]
         Assets[assets/cards/*.png, *.svg]
         AppUI[index.html]
     end
