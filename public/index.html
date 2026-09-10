@@ -466,7 +466,7 @@
       let isAccepted = true;
       let appliedRuleFinal = ruleDesc;
       
-      if (query.toLowerCase().includes('costco') && card.network && card.network.toLowerCase() !== 'visa') {
+      if (query.toLowerCase().includes('costco') && card.network && !card.network.toLowerCase().includes('visa')) {
           isAccepted = false;
           yieldPct = 0.0;
           appliedRuleFinal = "Not accepted (Costco only takes Visa)";
@@ -641,6 +641,8 @@
 
   function renderInStoreTab() {
     const q = quarterlyData ? quarterlyData.current_quarter : 'Q3';
+    let searchRec = (window.activeSearchQuery === 'instore_search' && currentRecommendation) ? renderRecommendationBox() : '';
+    
     return `
       <div class="gps-bar">
         <div class="gps-info">
@@ -650,8 +652,13 @@
         <button class="gps-btn" onclick="requestUserGPS()">Use My GPS</button>
       </div>
 
-      
+      <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
+        <span>🔍</span>
+        <input type="search" id="instore-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search any store..." value="${window.activeSearchQuery === 'instore_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='instore_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); }">
+        <button onclick="window.activeSearchQuery='instore_search'; getRecommendation(document.getElementById('instore-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
       </div>
+      
+      ${searchRec}
 
       <div class="section-label">
         <span>Nearby Stores Around You (${nearbyStores.length})</span>
