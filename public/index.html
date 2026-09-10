@@ -327,12 +327,13 @@
             for (let e of overpassData.elements) {
                 if (e.tags && e.tags.name) {
                     let catString = 'Shop';
+                    let catKey = 'general';
                     if (e.tags.amenity) {
-                        if (['restaurant', 'fast_food', 'cafe'].includes(e.tags.amenity)) catString = 'Dining';
+                        if (['restaurant', 'fast_food', 'cafe'].includes(e.tags.amenity)) { catString = 'Dining'; catKey = 'dining'; }
                     } else if (e.tags.shop) {
-                        if (['supermarket', 'convenience'].includes(e.tags.shop)) catString = 'Groceries';
-                        else if (e.tags.shop === 'wholesale') catString = 'Wholesale';
-                        else catString = 'Shopping';
+                        if (['supermarket', 'convenience'].includes(e.tags.shop)) { catString = 'Groceries'; catKey = 'groceries'; }
+                        else if (e.tags.shop === 'wholesale') { catString = 'Wholesale'; catKey = 'wholesale_clubs'; }
+                        else { catString = 'Shopping'; catKey = 'online_shopping'; }
                     }
                     
                     const R = 3958.8; // miles
@@ -347,6 +348,7 @@
                     merchants.push({
                         name: e.tags.name,
                         category: catString,
+                        catKey: catKey,
                         distanceNum: d,
                         distance: d.toFixed(1) + ' mi'
                     });
@@ -461,7 +463,7 @@
     return false;
   }
 
-  function getLocalRecommendation(query) {
+  function getLocalRecommendation(query, forcedCatKey) {
     if (!catalog) return null;
     let categoryKey = 'general';
     let merchantName = null;
@@ -479,6 +481,9 @@
     }
     
     if (categoryKey === 'general') {
+        if (forcedCatKey) {
+            categoryKey = forcedCatKey;
+        } else {
         const qLower = query.toLowerCase();
         if (qLower.includes('grocery') || qLower.includes('supermarket') || qLower.includes('kroger') || qLower.includes('food lion') || qLower.includes('safeway') || qLower.includes('publix') || qLower.includes('wegmans') || qLower.includes('aldi') || qLower.includes('trader joe') || qLower.includes('heb')) {
             categoryKey = 'groceries';
@@ -494,6 +499,7 @@
             categoryKey = 'rideshare';
         } else {
             categoryKey = query;
+        }
         }
     }
 
@@ -707,10 +713,11 @@
      return html;
   }
   
-  function renderPOI(query, emoji, name, sub) {
+  function renderPOI(query, emoji, name, sub, forcedCatKey) {
      let safeQuery = query.replace(/'/g, "\\'");
      let isActive = (currentRecommendation && currentRecommendation.query === query && window.activeSearchQuery !== 'online_search');
-     let html = `<div class="poi-item" onclick="window.activeSearchQuery=''; getRecommendation('${safeQuery}')"><div class="poi-info"><div><div class="poi-name">${name}</div><div class="poi-sub">${sub}</div></div></div><div class="poi-badge">Check</div></div>`;
+     let arg2 = forcedCatKey ? `'${forcedCatKey}'` : 'null';
+     let html = `<div class="poi-item" onclick="window.activeSearchQuery=''; getRecommendation('${safeQuery}', ${arg2})"><div class="poi-info"><div><div class="poi-name">${name}</div><div class="poi-sub">${sub}</div></div></div><div class="poi-badge">Check</div></div>`;
      if (isActive) {
          html += renderRecommendationBox();
      }
@@ -736,7 +743,7 @@
       </div>
 
       <div class="poi-list">
-        ${nearbyStores.map(s => renderPOI(s.name, '🏪', s.name, (s.category.replace('_', ' ')) + ' • ' + s.distance)).join('')}
+        ${nearbyStores.map(s => renderPOI(s.name, '🏪', s.name, (s.category.replace('_', ' ')) + ' • ' + s.distance, s.catKey)).join('')}
       </div>
 
       <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px; margin-top: 20px;">
