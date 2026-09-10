@@ -202,7 +202,7 @@
       <span>In-Store</span>
     </button>
     <button class="tab-item" onclick="switchTab('online')">
-      <span class="tab-icon">🛒</span>
+      <span class="tab-icon">💻</span>
       <span>Online</span>
     </button>
     <button class="tab-item" onclick="switchTab('valuations')">
@@ -210,7 +210,7 @@
       <span>Point Values</span>
     </button>
     <button class="tab-item" onclick="switchTab('wallet')">
-      <span class="tab-icon">💳</span>
+      <span class="tab-icon">👝</span>
       <span>Wallet (<span id="wallet-badge">0</span>)</span>
     </button>
   </div>
@@ -595,7 +595,7 @@
   function renderPOI(query, emoji, name, sub) {
      let safeQuery = query.replace(/'/g, "\\'");
      let isActive = (currentRecommendation && currentRecommendation.query === query && window.activeSearchQuery !== 'online_search');
-     let html = `<div class="poi-item" onclick="window.activeSearchQuery=''; getRecommendation('${safeQuery}')"><div class="poi-info"><div class="poi-icon">${emoji}</div><div><div class="poi-name">${name}</div><div class="poi-sub">${sub}</div></div></div><div class="poi-badge">Check</div></div>`;
+     let html = `<div class="poi-item" onclick="window.activeSearchQuery=''; getRecommendation('${safeQuery}')"><div class="poi-info"><div><div class="poi-name">${name}</div><div class="poi-sub">${sub}</div></div></div><div class="poi-badge">Check</div></div>`;
      if (isActive) {
          html += renderRecommendationBox();
      }
@@ -635,7 +635,7 @@
         ${renderCategory('gas_stations', '⛽', 'Gas Stations')}
         ${renderCategory('ev_charging', '⚡', 'EV Charging')}
         ${renderCategory('public_transit', '🚆', 'Transit & Commuting')}
-        ${renderCategory('wholesale_clubs', '📦', 'Wholesale Clubs')}
+        ${renderCategory('wholesale_clubs', '🏬', 'Wholesale Clubs')}
         ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
         ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
         ${renderCategory('rideshare', '🚗', 'Rideshare (Uber/Lyft)')}
@@ -678,7 +678,7 @@
         ${renderCategory('amazon', '📦', 'Amazon.com')}
         ${renderCategory('restaurants', '🍽️', 'Food Delivery & Dining')}
         ${renderCategory('groceries', '🛒', 'Grocery Delivery')}
-        ${renderCategory('wholesale_clubs', '📦', 'Wholesale Clubs')}
+        ${renderCategory('wholesale_clubs', '🏬', 'Wholesale Clubs')}
         ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
         ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
       </div>
