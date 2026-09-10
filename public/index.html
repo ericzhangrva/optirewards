@@ -799,8 +799,7 @@
       <div class="filter-scroll">
         <button class="filter-pill ${selectedIssuerFilter === 'all' ? 'active' : ''}" onclick="selectedIssuerFilter = 'all'; render();">All (${allCards.length})</button>
         <button class="filter-pill ${selectedIssuerFilter === 'in_wallet' ? 'active' : ''}" onclick="selectedIssuerFilter = 'in_wallet'; render();">✓ Active (${userWallet.length})</button>
-        ${filterPillsHtml.join('
-        ')}
+        ${filterPillsHtml.join('')}
       </div>
 
       <!-- Filter Row 2: Reward Program -->
