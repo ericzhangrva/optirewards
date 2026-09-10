@@ -375,8 +375,10 @@
   }
 
     function isCategoryMatch(cardCategory, queryCategory) {
-    if (cardCategory === queryCategory) return true;
-    if (cardCategory === 'all' || cardCategory === 'general') return true;
+    const c = cardCategory.toLowerCase();
+    const q = queryCategory.toLowerCase();
+    if (c === q) return true;
+    if (c === 'all' || c === 'general') return true;
     
     const equivalents = [
         ['restaurants', 'dining', 'food_delivery', 'food'],
@@ -392,10 +394,10 @@
     ];
     
     for (let group of equivalents) {
-        if (group.includes(cardCategory) && group.includes(queryCategory)) return true;
+        if (group.includes(c) && group.includes(q)) return true;
     }
     
-    if (cardCategory.startsWith(queryCategory) || queryCategory.startsWith(cardCategory)) return true;
+    if (c.startsWith(q) || q.startsWith(c)) return true;
     
     return false;
   }
@@ -657,7 +659,7 @@
       </div>
 
       <div class="poi-list">
-        ${nearbyStores.map(s => renderPOI(s.name, '🏪', s.name, s.address + ' • ' + s.distance)).join('')}
+        ${nearbyStores.map(s => renderPOI(s.name, '🏪', s.name, (s.category.replace('_', ' ')) + ' • ' + s.distance)).join('')}
       </div>
 
       <div class="section-label">
@@ -693,9 +695,9 @@
 
       <div class="section-label">Popular Digital Merchants</div>
       <div class="poi-list">
-        ${renderPOI('Amazon', '📦', 'Amazon.com', 'Prime Visa 5%, Online Shopping 3%')}
-        ${renderPOI('Apple Store', '🍏', 'Apple Store / Services', 'Apple Card 3%, Tech Purchases')}
-        ${renderPOI('Delta Air Lines', '✈️', 'Airlines (Delta, United, AA)', 'Amex Plat 5x, Sapphire 3x')}
+        ${renderPOI('Amazon', '📦', 'Amazon.com', 'Online Shopping')}
+        ${renderPOI('Apple Store', '🍏', 'Apple Store / Services', 'Electronics')}
+        ${renderPOI('Delta Air Lines', '✈️', 'Airlines (Delta, United, AA)', 'Travel / Flights')}
       </div>
 
       <div class="section-label">Travel & Transit Apps</div>
