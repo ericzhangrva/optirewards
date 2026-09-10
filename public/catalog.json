@@ -850,63 +850,63 @@
       "id": "m_109",
       "merchant_name": "American Airlines",
       "merchant_pattern": "american.?airlines|aa",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
       "id": "m_110",
       "merchant_name": "Delta Air Lines",
       "merchant_pattern": "delta",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
       "id": "m_111",
       "merchant_name": "United Airlines",
       "merchant_pattern": "united.?airlines",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
       "id": "m_112",
       "merchant_name": "Southwest Airlines",
       "merchant_pattern": "southwest",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
       "id": "m_113",
       "merchant_name": "Alaska Airlines",
       "merchant_pattern": "alaska.?airlines",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
       "id": "m_114",
       "merchant_name": "JetBlue",
       "merchant_pattern": "jetblue",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
       "id": "m_115",
       "merchant_name": "Spirit Airlines",
       "merchant_pattern": "spirit",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
       "id": "m_116",
       "merchant_name": "Frontier Airlines",
       "merchant_pattern": "frontier",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
       "id": "m_117",
       "merchant_name": "Hawaiian Airlines",
       "merchant_pattern": "hawaiian.?airlines",
-      "category_key": "airlines",
+      "category_key": "flights",
       "brand_icon": "store"
     },
     {
@@ -997,14 +997,14 @@
       "id": "m_130",
       "merchant_name": "Target",
       "merchant_pattern": "target",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_131",
       "merchant_name": "Walmart",
       "merchant_pattern": "walmart",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
@@ -1053,91 +1053,91 @@
       "id": "m_138",
       "merchant_name": "Macy's",
       "merchant_pattern": "macy",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_139",
       "merchant_name": "Kohl's",
       "merchant_pattern": "kohl",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_140",
       "merchant_name": "JCPenney",
       "merchant_pattern": "jcpenney",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_141",
       "merchant_name": "Nordstrom",
       "merchant_pattern": "nordstrom|nordstrom.?rack",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_142",
       "merchant_name": "T.J. Maxx",
       "merchant_pattern": "tj.?maxx|tjmaxx|marshalls|homegoods",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_143",
       "merchant_name": "Ross",
       "merchant_pattern": "ross",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_144",
       "merchant_name": "Burlington",
       "merchant_pattern": "burlington",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_145",
       "merchant_name": "Bed Bath & Beyond",
       "merchant_pattern": "bed.?bath",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_146",
       "merchant_name": "Dick's Sporting Goods",
       "merchant_pattern": "dick.?s",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_147",
       "merchant_name": "Sephora",
       "merchant_pattern": "sephora",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_148",
       "merchant_name": "Ulta",
       "merchant_pattern": "ulta",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_149",
       "merchant_name": "PetSmart",
       "merchant_pattern": "petsmart",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
       "id": "m_150",
       "merchant_name": "Petco",
       "merchant_pattern": "petco",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
@@ -1151,7 +1151,7 @@
       "id": "m_152",
       "merchant_name": "Barnes & Noble",
       "merchant_pattern": "barnes.?noble",
-      "category_key": "department_store",
+      "category_key": "shopping",
       "brand_icon": "store"
     },
     {
@@ -1235,42 +1235,42 @@
       "id": "m_164",
       "merchant_name": "Verizon",
       "merchant_pattern": "verizon",
-      "category_key": "telecom",
+      "category_key": "cell_phone",
       "brand_icon": "store"
     },
     {
       "id": "m_165",
       "merchant_name": "AT&T",
       "merchant_pattern": "at&t|att",
-      "category_key": "telecom",
+      "category_key": "cell_phone",
       "brand_icon": "store"
     },
     {
       "id": "m_166",
       "merchant_name": "T-Mobile",
       "merchant_pattern": "t.?mobile",
-      "category_key": "telecom",
+      "category_key": "cell_phone",
       "brand_icon": "store"
     },
     {
       "id": "m_167",
       "merchant_name": "Xfinity",
       "merchant_pattern": "xfinity|comcast",
-      "category_key": "telecom",
+      "category_key": "cell_phone",
       "brand_icon": "store"
     },
     {
       "id": "m_168",
       "merchant_name": "Spectrum",
       "merchant_pattern": "spectrum|charter",
-      "category_key": "telecom",
+      "category_key": "cell_phone",
       "brand_icon": "store"
     },
     {
       "id": "m_169",
       "merchant_name": "Cox",
       "merchant_pattern": "cox",
-      "category_key": "telecom",
+      "category_key": "cell_phone",
       "brand_icon": "store"
     }
   ],
