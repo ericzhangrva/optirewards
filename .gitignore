@@ -1,0 +1,21 @@
+# Ignore all python scripts and pycache
+*.py
+__pycache__/
+
+# Ignore databases and logs
+*.db
+*.log
+
+# Ignore local zip deployments
+deploy.zip
+
+# Ignore the scratch scripts folder
+scripts/
+
+# Ignore AI documentation context
+AI_CONTEXT.md
+
+# We DO want to include:
+# index.html
+# assets/
+# README.md

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 265" width="420" height="265">
+  <defs>
+    <linearGradient id="cardBg_amex-marriott-brilliant" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="chipGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="glare" x1="0%" y1="0%" x2="70%" y2="70%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="40%" stop-color="rgba(255,255,255,0.03)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <filter id="shadow_amex-marriott-brilliant" x="-8%" y="-8%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="rgba(0,0,0,0.6)"/>
+    </filter>
+  </defs>
+
+  <!-- Card Body -->
+  <rect x="12" y="10" width="396" height="245" rx="18" ry="18" fill="url(#cardBg_amex-marriott-brilliant)" filter="url(#shadow_amex-marriott-brilliant)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  
+  <!-- Design Details -->
+  
+
+  <!-- Lighting Glare Overlay -->
+  <path d="M 12,10 L 280,10 L 12,255 Z" fill="url(#glare)" rx="18"/>
+
+  <!-- Bank Emblem / Logo -->
+  
+        <g transform="translate(36, 36)">
+          <circle cx="10" cy="10" r="8" fill="#38bdf8"/>
+          <text x="24" y="14" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#ffffff">PREMIUM</text>
+        </g>
+
+  <!-- EMV Chip & Contactless -->
+  
+        <!-- Authentic EMV Chip -->
+        <g transform="translate(36, 85)">
+          <rect width="48" height="38" rx="6" ry="6" fill="url(#chipGold)" stroke="#78350f" stroke-width="0.8"/>
+          <!-- Circuitry Trace Pads -->
+          <line x1="0" y1="19" x2="48" y2="19" stroke="#713f12" stroke-width="0.7"/>
+          <line x1="16" y1="0" x2="16" y2="38" stroke="#713f12" stroke-width="0.7"/>
+          <line x1="32" y1="0" x2="32" y2="38" stroke="#713f12" stroke-width="0.7"/>
+          <circle cx="24" cy="19" r="6" fill="none" stroke="#713f12" stroke-width="0.7"/>
+        </g>
+        <!-- Contactless NFC Wave -->
+        <g transform="translate(98, 93)" stroke="rgba(255,255,255,0.65)" stroke-width="2.2" fill="none" stroke-linecap="round">
+          <path d="M 0,3 A 12,12 0 0,1 0,21"/>
+          <path d="M 5,0 A 18,18 0 0,1 5,24"/>
+          <path d="M 10,-3 A 24,24 0 0,1 10,27"/>
+        </g>
+        
+
+  <!-- Card Title / Branding -->
+  <g transform="translate(36, 175)">
+    <text x="0" y="0" font-family="-apple-system, sans-serif" font-size="18" font-weight="900" fill="#ffffff" letter-spacing="1">
+      MARRIOTT BONVOY BRILLI
+    </text>
+    
+  </g>
+
+  <!-- Official Network Logo -->
+  
+        <g transform="translate(315, 199)">
+          <text x="58" y="17" text-anchor="end" font-family="'Arial Black', sans-serif" font-size="20" font-weight="900" font-style="italic" fill="#ffffff" letter-spacing="-1">VISA</text>
+          
+        </g>
+</svg>

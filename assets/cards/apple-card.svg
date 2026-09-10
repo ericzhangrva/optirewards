@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 265" width="420" height="265">
+  <defs>
+    <linearGradient id="cardBg_apple-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    <linearGradient id="chipGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="glare" x1="0%" y1="0%" x2="70%" y2="70%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="40%" stop-color="rgba(255,255,255,0.03)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <filter id="shadow_apple-card" x="-8%" y="-8%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="rgba(0,0,0,0.6)"/>
+    </filter>
+  </defs>
+
+  <!-- Card Body -->
+  <rect x="12" y="10" width="396" height="245" rx="18" ry="18" fill="url(#cardBg_apple-card)" filter="url(#shadow_apple-card)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  
+  <!-- Design Details -->
+  
+
+  <!-- Lighting Glare Overlay -->
+  <path d="M 12,10 L 280,10 L 12,255 Z" fill="url(#glare)" rx="18"/>
+
+  <!-- Bank Emblem / Logo -->
+  
+        <g transform="translate(36, 36)">
+          <!-- Authentic Bitten Apple -->
+          <path d="M 13,3 C 15,1 17,2 17,2 C 17,2 15.5,4.5 13.5,4.5 C 12,4.5 12,3 13,3 Z M 8,7 C 9.5,7 11.5,8 13,8 C 14.5,8 16,7 17.5,7 C 19.5,7 21,8.5 21,10.5 C 21,14 18,18 16.5,20 C 15,22 14,22 13,22 C 11.8,22 11,21 9.5,21 C 8,21 7,22 6,22 C 4.5,22 3.5,20 2,17.5 C 0.5,15 0,12 0,10.5 C 0,7.5 2.5,7 4.5,7 C 6,7 7.2,7.5 8,7 Z" fill="#111827"/>
+        </g>
+
+  <!-- EMV Chip & Contactless -->
+  
+
+  <!-- Card Title / Branding -->
+  <g transform="translate(36, 175)">
+    <text x="0" y="0" font-family="-apple-system, sans-serif" font-size="18" font-weight="900" fill="#111827" letter-spacing="1">
+      
+    </text>
+    
+  </g>
+
+  <!-- Official Network Logo -->
+  
+        <g transform="translate(315, 195)">
+          <circle cx="18" cy="16" r="15" fill="#eb001b" opacity="0.96"/>
+          <circle cx="42" cy="16" r="15" fill="#f79e1b" opacity="0.96"/>
+          <path d="M 30,3.6 A 15,15 0 0,0 30,28.4 A 15,15 0 0,0 30,3.6" fill="#ff5f00"/>
+        </g>
+</svg>

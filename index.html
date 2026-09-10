@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>OptiRewards</title>
+<style>
+  :root {
+    --bg-primary: #000000;
+    --bg-secondary: #1c1c1e;
+    --bg-tertiary: #2c2c2e;
+    --accent: #0a84ff;
+    --accent-green: #30d158;
+    --accent-gold: #ffd60a;
+    --accent-orange: #ff9f0a;
+    --text-primary: #ffffff;
+    --text-secondary: #8e8e93;
+    --border-color: rgba(255, 255, 255, 0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-primary); color: var(--text-primary); -webkit-font-smoothing: antialiased; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+  .device-frame {
+    width: 100%;
+    max-width: 430px;
+    height: 900px;
+    background: var(--bg-primary);
+    border-radius: 54px;
+    border: 9px solid #27272a;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  .dynamic-island {
+    position: absolute;
+    top: 11px; left: 50%; transform: translateX(-50%);
+    width: 124px; height: 35px;
+    background: #000000; border-radius: 20px; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 12px;
+  }
+  .di-camera { width: 10px; height: 10px; background: #080808; border-radius: 50%; border: 1.5px solid #1a1a1a; }
+  .di-sensor { width: 9px; height: 9px; background: #060919; border-radius: 50%; }
+
+  .status-bar {
+    height: 52px; display: flex; justify-content: space-between; align-items: center; padding: 0 28px; font-size: 14px; font-weight: 600; z-index: 90;
+  }
+  .app-content {
+    flex: 1; overflow-y: auto; padding: 10px 18px 90px 18px; scroll-behavior: smooth;
+  }
+  .app-content::-webkit-scrollbar { display: none; }
+
+  .header-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+  .header-sub { font-size: 13px; color: var(--text-secondary); margin-top: 2px; margin-bottom: 14px; }
+
+  .gps-bar {
+    background: linear-gradient(90deg, rgba(10,132,255,0.15) 0%, rgba(48,209,88,0.15) 100%);
+    border: 1px solid rgba(10,132,255,0.3); border-radius: 14px; padding: 10px 12px;
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+  }
+  .gps-info { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }
+  .gps-btn {
+    background: var(--accent); color: white; border: none; border-radius: 8px; padding: 5px 10px; font-size: 11px; font-weight: 700; cursor: pointer;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .poi-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .poi-item {
+    background: var(--bg-secondary); border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); cursor: pointer;
+  }
+  .poi-item:active { transform: scale(0.98); background: var(--bg-tertiary); }
+  .poi-info { display: flex; align-items: center; gap: 10px; }
+  .poi-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .poi-name { font-size: 13px; font-weight: 700; }
+  .poi-sub { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+  .poi-badge { background: rgba(10, 132, 255, 0.15); color: #60a5fa; font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 8px; }
+
+  /* Granular Category Chips */
+  .category-group-title { font-size: 12px; font-weight: 700; color: #93c5fd; margin: 12px 0 6px 0; }
+  .chip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 12px; }
+  .chip-btn {
+    background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--text-primary); cursor: pointer; text-align: left;
+  }
+  .chip-btn:active { background: var(--accent); }
+  .chip-emoji { width: 32px; height: 32px; border-radius: 8px; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+
+  /* Recommendation Card */
+  .rec-card-box {
+    background: linear-gradient(180deg, #1f242e 0%, #16181e 100%);
+    border-radius: 22px; padding: 16px; border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin-bottom: 20px;
+  }
+  .rec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .rec-tag { background: var(--accent-green); color: #000; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
+  .rec-yield { font-size: 22px; font-weight: 900; color: #4ade80; }
+  .rec-card-img { width: 100%; border-radius: 14px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+  .rec-card-img img { width: 100%; height: auto; display: block; }
+  .rec-card-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .rec-explain { font-size: 12px; color: #cbd5e1; line-height: 1.4; }
+
+  /* Wallet Grouping & Multi-Filters */
+  .wallet-search { display: flex; background: var(--bg-secondary); border-radius: 12px; padding: 9px 12px; margin-bottom: 10px; border: 1px solid var(--border-color); align-items: center; gap: 8px; }
+  .wallet-search input { background: transparent; border: none; color: white; font-size: 13px; width: 100%; outline: none; }
+  .filter-row-label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; padding-left: 2px; }
+  .filter-scroll {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
+  .filter-scroll::-webkit-scrollbar { height: 3px; }
+  .filter-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+  .filter-pill {
+    flex-shrink: 0;
+    white-space: nowrap;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 5px 11px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .filter-pill.active { background: #38bdf8; color: #000; font-weight: 700; border-color: #38bdf8; }
+
+  .issuer-group { margin-bottom: 18px; }
+  .issuer-header {
+    font-size: 12px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 6px 4px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 8px;
+  }
+  .wallet-item {
+    background: var(--bg-secondary); border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; border: 1px solid var(--border-color);
+  }
+  .wallet-thumb { width: 72px; height: 46px; border-radius: 6px; overflow: hidden; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+  .wallet-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .wallet-meta { flex: 1; margin-left: 12px; }
+  .wallet-name { font-size: 13px; font-weight: 600; }
+  .wallet-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+  .wallet-toggle-btn { background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
+  .wallet-toggle-btn.in-wallet { background: rgba(48, 209, 88, 0.2); color: #4ade80; }
+
+  /* Point Valuation Sliders */
+  .val-item {
+    background: var(--bg-secondary); border-radius: 14px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border-color);
+  }
+  .val-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .val-cents { color: #4ade80; font-weight: 900; font-size: 14px; }
+  .val-slider { width: 100%; -webkit-appearance: none; height: 6px; border-radius: 3px; background: #374151; outline: none; }
+  .val-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #38bdf8; cursor: pointer; }
+
+  /* Tab Bar */
+  .tab-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 78px; background: rgba(20, 20, 22, 0.94); backdrop-filter: blur(25px); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; padding-bottom: 14px; z-index: 100;
+  }
+  .tab-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text-secondary); font-size: 10px; font-weight: 600; background: none; border: none; cursor: pointer; }
+  .tab-item.active { color: var(--accent); }
+  .tab-icon { font-size: 19px; }
+</style>
+<meta name="apple-mobile-web-app-title" content="OptiRewards">
+</head>
+<body>
+
+<div class="device-frame">
+  <div class="dynamic-island">
+    <div class="di-camera"></div>
+    <div class="di-sensor"></div>
+  </div>
+
+  <div class="status-bar">
+    <span id="current-time">9:41</span>
+    <span style="font-size: 12px; letter-spacing: 1px;">5G 􀛨 100%</span>
+  </div>
+
+  <div class="app-content" id="main-content"></div>
+
+  <div class="tab-bar">
+    <button class="tab-item active" onclick="switchTab('instore')">
+      <span class="tab-icon">􀎫</span>
+      <span>In-Store</span>
+    </button>
+    <button class="tab-item" onclick="switchTab('online')">
+      <span class="tab-icon">􀍩</span>
+      <span>Online</span>
+    </button>
+    <button class="tab-item" onclick="switchTab('valuations')">
+      <span class="tab-icon">􀅵</span>
+      <span>Point Values</span>
+    </button>
+    <button class="tab-item" onclick="switchTab('wallet')">
+      <span class="tab-icon">􀤵</span>
+      <span>Wallet (<span id="wallet-badge">0</span>)</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  window.onerror = function(msg, url, line, col, error) { alert("JS Error: " + msg + " at " + line + ":" + col); };
+
+  let currentTab = 'instore';
+  let userWallet = [];
+  let allCards = [];
+  let nearbyStores = [];
+  let locationName = "San Francisco Financial District";
+  let currentRecommendation = null;
+  let quarterlyData = null;
+  let userValuations = {};
+  let walletSearchQuery = '';
+  let selectedIssuerFilter = 'all';
+  let selectedRewardFilter = 'all';
+  let selectedTypeFilter = 'all';
+
+  function updateTime() {
+    const d = new Date();
+    document.getElementById('current-time').innerText = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  }
+  setInterval(updateTime, 1000);
+  updateTime();
+
+
+
+  function requestUserGPS() {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+    document.getElementById('gps-status-text').innerText = "Locating via GPS...";
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        try {
+          const res = await fetch(`/api/nearby?lat=${lat}&lng=${lng}`);
+          const data = await res.json();
+          if (data.stores && data.stores.length > 0) {
+            nearbyStores = data.stores;
+            locationName = "Your Physical Location (GPS)";
+          }
+          render();
+        } catch(e) {
+          console.error(e);
+        }
+      },
+      (err) => {
+        alert("GPS access denied. Showing Financial District.");
+        render();
+      },
+      { timeout: 8000, enableHighAccuracy: true }
+    );
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-item').forEach((el, idx) => {
+      el.classList.toggle('active', 
+        (tab === 'instore' && idx === 0) || 
+        (tab === 'online' && idx === 1) || 
+        (tab === 'valuations' && idx === 2) || 
+        (tab === 'wallet' && idx === 3)
+      );
+    });
+    render();
+  }
+
+
+
+  async function toggleWalletCard(cardId) {
+    await fetch('/api/wallet/toggle', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({card_id: cardId})
+    });
+    const res = await fetch('/api/wallet');
+    userWallet = await res.json();
+    document.getElementById('wallet-badge').innerText = userWallet.length;
+    render();
+  }
+
+  async function updateValuation(currency, val) {
+    userValuations[currency] = parseFloat(val);
+    document.getElementById(`val-disp-${currency.replace(/\s+/g, '_')}`).innerText = `${parseFloat(val).toFixed(1)}¢`;
+    // await fetch
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({currency_name: currency, valuation_cents: parseFloat(val)})
+    });
+    // If recommendation is currently visible, refresh it
+    if (currentRecommendation) {
+      getRecommendation(currentRecommendation.query);
+    }
+  }
+
+  async function applyValuationPreset(preset) {
+    if (preset === 'cash') {
+      for (let k in userValuations) {
+        userValuations[k] = 1.0;
+        // await fetchmethod: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({currency_name: k, valuation_cents: 1.0})});
+      }
+    } else if (preset === 'travel') {
+      await fetch('/api/valuations/reset', {method: 'POST'});
+      const res = await fetch('/api/valuations');
+      userValuations = await res.json();
+    } else if (preset === 'max') {
+      const maxRates = {"Ultimate Rewards": 2.2, "Membership Rewards": 2.0, "Capital One Miles": 1.8, "Bilt Rewards": 2.2, "ThankYou Points": 1.8};
+      for (let k in maxRates) {
+        userValuations[k] = maxRates[k];
+        // await fetchmethod: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({currency_name: k, valuation_cents: maxRates[k]})});
+      }
+    }
+    render();
+  }
+
+  function render() {
+    const container = document.getElementById('main-content');
+    // Save scroll positions of all filter-scroll elements before re-render
+    const scrollPositions = {};
+    container.querySelectorAll('.filter-scroll').forEach((el, i) => {
+      scrollPositions[i] = el.scrollLeft;
+    });
+    
+    // Save active element (for search input)
+    let activeId = null;
+    let cursorStart = 0;
+    let cursorEnd = 0;
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+      activeId = document.activeElement.id;
+      cursorStart = document.activeElement.selectionStart;
+      cursorEnd = document.activeElement.selectionEnd;
+    }
+    
+    const prevTab = currentTab;
+
+    if (currentTab === 'instore') {
+      container.innerHTML = renderInStoreTab();
+    } else if (currentTab === 'online') {
+      container.innerHTML = renderOnlineTab();
+    } else if (currentTab === 'valuations') {
+      container.innerHTML = renderValuationsTab();
+    } else if (currentTab === 'wallet') {
+      container.innerHTML = renderWalletTab();
+    }
+
+    // Restore scroll positions and focus if same tab
+    if (prevTab === currentTab) {
+      requestAnimationFrame(() => {
+        container.querySelectorAll('.filter-scroll').forEach((el, i) => {
+          if (scrollPositions[i] !== undefined) {
+            el.scrollLeft = scrollPositions[i];
+          }
+        });
+        if (activeId) {
+          const el = document.getElementById(activeId);
+          if (el) {
+            el.focus();
+            el.setSelectionRange(cursorStart, cursorEnd);
+          }
+        }
+      });
+    }
+  }
+
+  function renderRecommendationBox() {
+    if (!currentRecommendation) return '<div id="rec-box-anchor"></div>';
+    const rec = currentRecommendation;
+    const best = rec.best_card;
+    if (!best) return '<div id="rec-box-anchor"></div>';
+
+    return `
+      <div class="rec-card-box" id="rec-box-anchor">
+        <div class="rec-header">
+          <span class="rec-tag">${best.is_rotating ? '🌟 5% Rotating Win' : 'Best Card Match'}</span>
+          <span class="rec-yield">${best.effective_yield_pct}% Yield</span>
+        </div>
+        <div class="rec-card-img">
+          <img src="/${best.local_image_path}" alt="${best.card_name}">
+        </div>
+        <div>
+          <div class="rec-card-name">${best.card_name}</div>
+          <div class="rec-explain">${rec.explanation}</div>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;">
+            Rule: <b>${best.applied_rule}</b> • Currency: ${best.currency_name} (@ ${userValuations[best.currency_name] || 1.0}¢/pt)
+          </div>
+        </div>
+        ${rec.runner_ups && rec.runner_ups.length > 0 ? `
+          <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">RUNNER-UP CHOICES</div>
+            ${rec.runner_ups.map(c => `
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px;">
+                <span style="color: #cbd5e1;">${c.card_name}</span>
+                <span style="font-weight: 700; color: #94a3b8;">${c.effective_yield_pct}% (${c.multiplier}x)</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  function renderInStoreTab() {
+    const q = quarterlyData ? quarterlyData.current_quarter : 'Q3';
+    return `
+      <div class="header-title">Pay with Best</div>
+      <div class="header-sub">Instant store recognition via Apple MapKit & GPS</div>
+
+      <div class="gps-bar">
+        <div class="gps-info">
+          <span>📍</span>
+          <span id="gps-status-text">${locationName}</span>
+        </div>
+        <button class="gps-btn" onclick="requestUserGPS()">Use My GPS</button>
+      </div>
+
+      <div style="background: rgba(255,159,10,0.12); border: 1px solid rgba(255,159,10,0.3); border-radius: 12px; padding: 9px 12px; margin-bottom: 16px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="font-weight: 800; color: #ffb340;">⚡ Active ${q} 5% Bonuses Active</span>
+          <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">Chase: Gas, Transit & Live Entertainment • Discover: Gas, Transit & Drugstores</div>
+        </div>
+      </div>
+
+      ${renderRecommendationBox()}
+
+      <div class="section-label">
+        <span>Nearby Stores Around You (${nearbyStores.length})</span>
+        <span style="color: var(--accent); cursor: pointer;" onclick="requestUserGPS()">Update</span>
+      </div>
+
+      <div class="poi-list">
+        ${nearbyStores.map(s => `
+          <div class="poi-item" onclick="getRecommendation('${s.name}')">
+            <div class="poi-info">
+              <div class="poi-icon">🏪</div>
+              <div>
+                <div class="poi-name">${s.name}</div>
+                <div class="poi-sub">${s.address} • ${s.distance}</div>
+              </div>
+            </div>
+            <div class="poi-badge">Tap for Best</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="section-label">
+        <span>Store Not Listed? Choose Category</span>
+      </div>
+
+      <div class="chip-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+        <button class="chip-btn" onclick="getRecommendation('restaurants')"><span class="chip-emoji">🍽️</span><span>Dining & Restaurants</span></button>
+        <button class="chip-btn" onclick="getRecommendation('groceries')"><span class="chip-emoji">🛒</span><span>Groceries & Supermarkets</span></button>
+        <button class="chip-btn" onclick="getRecommendation('gas_stations')"><span class="chip-emoji">⛽</span><span>Gas & EV Charging</span></button>
+        <button class="chip-btn" onclick="getRecommendation('public_transit')"><span class="chip-emoji">🚆</span><span>Transit & Commuting</span></button>
+        <button class="chip-btn" onclick="getRecommendation('wholesale_clubs')"><span class="chip-emoji">📦</span><span>Costco & Wholesale</span></button>
+        <button class="chip-btn" onclick="getRecommendation('pharmacies')"><span class="chip-emoji">💊</span><span>Drugstores & Pharmacies</span></button>
+        <button class="chip-btn" onclick="getRecommendation('home_improvement')"><span class="chip-emoji">🔨</span><span>Home Improvement</span></button>
+        <button class="chip-btn" onclick="getRecommendation('rideshare')"><span class="chip-emoji">🚗</span><span>Rideshare (Uber/Lyft)</span></button>
+      </div>
+    `;
+  }
+
+  function renderOnlineTab() {
+    return `
+      <div class="header-title">Online Shopping</div>
+      <div class="header-sub">Search merchant or choose purchase category</div>
+
+      ${renderRecommendationBox()}
+
+      <div class="search-box">
+        <span>🔍</span>
+        <input class="search-input" id="online-search-input" placeholder="Type merchant (Amazon, Nike, Delta, Apple)..." onkeypress="if(event.key==='Enter') getRecommendation(this.value)">
+        <button onclick="getRecommendation(document.getElementById('online-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer;">Go</button>
+      </div>
+
+      <div class="section-label">Popular Digital Merchants</div>
+      <div class="poi-list">
+        <div class="poi-item" onclick="getRecommendation('Amazon')">
+          <div class="poi-info"><div class="poi-icon">📦</div><div><div class="poi-name">Amazon.com</div><div class="poi-sub">Prime Visa 5%, Online Shopping 3%</div></div></div>
+          <div class="poi-badge">Check</div>
+        </div>
+        <div class="poi-item" onclick="getRecommendation('Apple Store')">
+          <div class="poi-info"><div class="poi-icon">🍏</div><div><div class="poi-name">Apple Store / Services</div><div class="poi-sub">Apple Card 3%, Tech Purchases</div></div></div>
+          <div class="poi-badge">Check</div>
+        </div>
+        <div class="poi-item" onclick="getRecommendation('Delta Air Lines')">
+          <div class="poi-info"><div class="poi-icon">✈️</div><div><div class="poi-name">Airlines (Delta, United, AA)</div><div class="poi-sub">Amex Plat 5x, Sapphire 3x</div></div></div>
+          <div class="poi-badge">Check</div>
+        </div>
+      </div>
+
+      <div class="section-label">Travel Categories (Separated)</div>
+      <div class="chip-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+        <button class="chip-btn" onclick="getRecommendation('flights')"><span class="chip-emoji">✈️</span><span>Flights & Airfare</span></button>
+        <button class="chip-btn" onclick="getRecommendation('hotels')"><span class="chip-emoji">🏨</span><span>Hotels & Lodging</span></button>
+        <button class="chip-btn" onclick="getRecommendation('travel_portal')"><span class="chip-emoji">🌐</span><span>Bank Travel Portals</span></button>
+        <button class="chip-btn" onclick="getRecommendation('rental_cars')"><span class="chip-emoji">🚘</span><span>Car Rentals</span></button>
+      </div>
+
+      <div class="section-label">Online & Subscriptions</div>
+      <div class="chip-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+        <button class="chip-btn" onclick="getRecommendation('amazon')"><span class="chip-emoji">📦</span><span>Amazon.com</span></button>
+        <button class="chip-btn" onclick="getRecommendation('streaming_video')"><span class="chip-emoji">🎬</span><span>Streaming Services</span></button>
+        <button class="chip-btn" onclick="getRecommendation('cell_phone')"><span class="chip-emoji">📱</span><span>Phone & Internet</span></button>
+        <button class="chip-btn" onclick="getRecommendation('live_events')"><span class="chip-emoji">🎟️</span><span>Live Concerts & Events</span></button>
+      </div>
+    `;
+  }
+
+  function renderValuationsTab() {
+    // 1. Identify which points & miles currencies are used by cards currently active in user's wallet
+    const activePointsCards = userWallet.filter(c => c.currency_type === 'points' || c.currency_type === 'miles');
+    
+    // Group active cards by currency name
+    const activeCurrencyMap = {};
+    activePointsCards.forEach(c => {
+      const cur = c.currency_name;
+      if (!activeCurrencyMap[cur]) {
+        activeCurrencyMap[cur] = [];
+      }
+      activeCurrencyMap[cur].push(c);
+    });
+
+    const activeCurrencies = Object.keys(activeCurrencyMap);
+
+    return `
+      <div class="header-title">Point Values</div>
+      <div class="header-sub">Adjust values only for cards in your active wallet (${activePointsCards.length} points cards)</div>
+
+      ${activeCurrencies.length > 0 ? `
+        <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+          <button onclick="applyValuationPreset('cash')" style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 4px; font-size: 11px; font-weight: 700; color: #cbd5e1; cursor: pointer;">🪙 Cash Only (1.0¢)</button>
+          <button onclick="applyValuationPreset('travel')" style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 4px; font-size: 11px; font-weight: 700; color: #38bdf8; cursor: pointer;">✈️ Standard Travel</button>
+          <button onclick="applyValuationPreset('max')" style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 4px; font-size: 11px; font-weight: 700; color: #4ade80; cursor: pointer;">👑 Max Transfer (2¢+)</button>
+        </div>
+
+        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 14px;">
+          💡 Adjusting these sliders customizes your rewards ranking live for your active wallet.
+        </div>
+
+        ${activeCurrencies.map(curName => {
+          const cardsForCur = activeCurrencyMap[curName];
+          const val = userValuations[curName] !== undefined ? userValuations[curName] : 1.5;
+          const domId = curName.replace(/\s+/g, '_');
+          const cardNames = cardsForCur.map(c => c.name).join(', ');
+
+          // Determine bounds based on currency
+          let min = 1.0, max = 2.5, step = 0.1;
+          if (curName.includes('Hilton')) { min = 0.3; max = 0.8; step = 0.05; }
+          else if (curName.includes('Marriott')) { min = 0.5; max = 1.2; step = 0.1; }
+          else if (curName.includes('IHG')) { min = 0.4; max = 0.9; step = 0.1; }
+
+          return `
+            <div class="val-item">
+              <div class="val-header">
+                <span><b>${curName}</b></span>
+                <span class="val-cents" id="val-disp-${domId}">${parseFloat(val).toFixed(1)}¢</span>
+              </div>
+              <div style="font-size: 11px; color: #93c5fd; margin-bottom: 6px;">
+                Active on: <b>${cardNames}</b>
+              </div>
+              <input type="range" class="val-slider" min="${min}" max="${max}" step="${step}" value="${val}" oninput="updateValuation('${curName}', this.value)">
+              <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-secondary); margin-top: 4px;">
+                <span>${min}¢ (Cash Equivalent)</span>
+                <span>${max}¢ (High Transfer Yield)</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      ` : `
+        <div style="background: var(--bg-secondary); border-radius: 18px; padding: 24px 16px; text-align: center; border: 1px solid var(--border-color); margin-top: 10px;">
+          <div style="font-size: 32px; margin-bottom: 10px;">💵</div>
+          <div style="font-size: 16px; font-weight: 700; margin-bottom: 6px;">All Active Cards Earn Cash Back</div>
+          <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+            All cards currently enabled in your wallet earn direct cash back (fixed at 1.0¢ = $0.01).
+            <br><br>
+            When you activate a points or travel card in <b>My Wallet</b> (like <i>Chase Sapphire</i>, <i>Amex Gold</i>, or <i>Bilt</i>), its valuation slider will automatically appear here.
+          </div>
+          <button onclick="switchTab('wallet')" style="margin-top: 16px; background: var(--accent); color: white; border: none; border-radius: 10px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer;">
+            Open My Wallet
+          </button>
+        </div>
+      `}
+    `;
+  }
+
+  
+  const CATALOG_URL = 'https://pub-3deca09ea7e6435797767728a78f6e1a.r2.dev/catalog.json';
+  let catalog = null;
+  let allCards = [];
+  let userWallet = [];
+  let userValuations = {};
+  let nearbyStores = [];
+  let quarterlyData = {};
+
+  async function initApp() {
+    try {
+      const res = await fetch(CATALOG_URL);
+      if (!res.ok) throw new Error("Network error fetching catalog");
+      catalog = await res.json();
+      allCards = catalog.cards;
+      
+      const savedWallet = localStorage.getItem('userWallet');
+      if (savedWallet) userWallet = JSON.parse(savedWallet);
+      
+      const savedVals = localStorage.getItem('userValuations');
+      if (savedVals) userValuations = JSON.parse(savedVals);
+
+      document.getElementById('wallet-badge').innerText = userWallet.length;
+      
+      // Simulate nearby stores for prototype (since we can't query python backend OSM)
+      nearbyStores = [
+        {"name": "Trader Joe's", "category": "supermarket", "distance": "0.1 mi"},
+        {"name": "Chevron", "category": "gas_stations", "distance": "0.3 mi"},
+        {"name": "Philz Coffee", "category": "coffee_bakery", "distance": "0.4 mi"}
+      ];
+
+      render();
+    } catch(e) {
+      console.error("Failed to load catalog from Cloudflare:", e);
+      alert("Error loading catalog data. Check console.");
+    }
+  }
+
+  function toggleWalletCard(cardId) {
+    const idx = userWallet.findIndex(c => c.id === cardId);
+    if (idx >= 0) {
+      userWallet.splice(idx, 1);
+    } else {
+      const card = allCards.find(c => c.id === cardId);
+      if (card) userWallet.push(card);
+    }
+    localStorage.setItem('userWallet', JSON.stringify(userWallet));
+    document.getElementById('wallet-badge').innerText = userWallet.length;
+    render();
+  }
+
+  function setUserPointValuation(currency, cents) {
+    userValuations[currency] = cents;
+    localStorage.setItem('userValuations', JSON.stringify(userValuations));
+    render();
+  }
+
+  function getLocalRecommendation(query) {
+    if (!catalog) return null;
+    let categoryKey = 'general';
+    let merchantName = null;
+    
+    const qLower = query.toLowerCase();
+    for (let m of catalog.merchant_mappings) {
+      try {
+        const regex = new RegExp(m.merchant_pattern, 'i');
+        if (regex.test(query) || qLower.includes(m.merchant_name.toLowerCase())) {
+          categoryKey = m.category_key;
+          merchantName = m.merchant_name;
+          break;
+        }
+      } catch(e) {}
+    }
+    
+    if (categoryKey === 'general') categoryKey = query; 
+
+    let activeCards = userWallet;
+    let isSimulated = false;
+    if (activeCards.length === 0) {
+      activeCards = catalog.cards.filter(c => c.is_active);
+      isSimulated = true;
+    }
+
+    const scored = [];
+    for (let card of activeCards) {
+      let matchMultiplier = card.base_rate;
+      let ruleDesc = "Base Rate";
+      let isRotating = false;
+
+      if (card.categories) {
+        for (let cat of card.categories) {
+          if (cat.category_key === categoryKey) {
+            if (cat.is_rotating) {
+              const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q3"] : null;
+              if (validQuarters && validQuarters.includes(categoryKey)) {
+                matchMultiplier = cat.multiplier;
+                ruleDesc = cat.category_name;
+                isRotating = true;
+                break;
+              }
+            } else {
+              if (cat.multiplier > matchMultiplier) {
+                matchMultiplier = cat.multiplier;
+                ruleDesc = cat.category_name;
+              }
+            }
+          }
+        }
+      }
+
+      const valCents = userValuations[card.currency_name] || card.point_valuation_cents || 1.0;
+      const yieldPct = matchMultiplier * valCents;
+
+      scored.push({
+        card_id: card.id,
+        card_name: card.name,
+        local_image_path: card.local_image_path,
+        multiplier: matchMultiplier,
+        currency_name: card.currency_name,
+        currency_type: card.currency_type,
+        valuation_cents: valCents,
+        effective_yield_pct: Math.round(yieldPct * 100) / 100,
+        applied_rule: ruleDesc,
+        is_rotating: isRotating
+      });
+    }
+
+    scored.sort((a, b) => b.effective_yield_pct - a.effective_yield_pct);
+    const best = scored[0];
+    return {
+      query: query,
+      resolved_category: categoryKey,
+      merchant_name: merchantName,
+      is_simulated_wallet: isSimulated,
+      best_card: best,
+      runner_ups: scored.slice(1, 3)
+    };
+  }
+
+  async function getRecommendation(query) {
+    activeQuery = query;
+    const elId = 'rec-box-anchor';
+    const el = document.getElementById(elId);
+    if (el) el.innerHTML = '<div style="text-align: center; padding: 20px;">Calculating...</div>';
+    
+    await new Promise(r => setTimeout(r, 100));
+    try {
+      currentRecommendation = getLocalRecommendation(query);
+      render();
+    } catch (e) {
+      console.error(e);
+      if (el) el.innerHTML = 'Error';
+    }
+  }
+
+
+  function filterCardList(list) {
+    return list.filter(c => {
+      // Reward filter
+      if (selectedRewardFilter === 'cash' && c.currency_type !== 'cashback') return false;
+      if (selectedRewardFilter === 'points' && (c.currency_type !== 'points' && c.currency_type !== 'miles')) return false;
+
+      // Type filter
+      if (selectedTypeFilter === 'personal' && c.card_type !== 'personal') return false;
+      if (selectedTypeFilter === 'business' && c.card_type !== 'business') return false;
+
+      // Search query
+      if (walletSearchQuery) {
+        const q = walletSearchQuery;
+        const matchName = c.name.toLowerCase().includes(q);
+        const matchIssuer = (c.issuer_name || '').toLowerCase().includes(q);
+        const matchNetwork = (c.network || '').toLowerCase().includes(q);
+        const matchCur = (c.currency_name || '').toLowerCase().includes(q);
+        if (!matchName && !matchIssuer && !matchNetwork && !matchCur) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderWalletTab() {
+    const inWalletIds = new Set(userWallet.map(c => c.id));
+    
+    // Calculate issuer counts
+    const issuerCounts = {};
+    allCards.forEach(c => {
+      issuerCounts[c.issuer_id] = (issuerCounts[c.issuer_id] || 0) + 1;
+    });
+
+    // Define all base groups
+    const baseGroups = [
+      { id: 'chase', title: 'JPMorgan Chase', shortTitle: 'Chase' },
+      { id: 'amex', title: 'American Express', shortTitle: 'Amex' },
+      { id: 'capital_one', title: 'Capital One', shortTitle: 'Capital One' },
+      { id: 'citi', title: 'Citigroup', shortTitle: 'Citi' },
+      { id: 'bofa', title: 'Bank of America', shortTitle: 'BofA' },
+      { id: 'wells_fargo', title: 'Wells Fargo', shortTitle: 'Wells Fargo' },
+      { id: 'us_bank', title: 'U.S. Bank', shortTitle: 'U.S. Bank' },
+      { id: 'barclays', title: 'Barclays', shortTitle: 'Barclays' },
+      { id: 'goldman_sachs', title: 'Goldman Sachs', shortTitle: 'Goldman Sachs' },
+      { id: 'synchrony', title: 'Synchrony Financial', shortTitle: 'Synchrony' },
+      { id: 'credit_unions', title: 'Credit Unions & Regionals', shortTitle: 'Credit Unions' }
+    ];
+
+    const majorGroups = [];
+    const otherGroupIds = new Set();
+    const filterPillsHtml = [];
+    
+    baseGroups.forEach(bg => {
+      const count = issuerCounts[bg.id] || 0;
+      if (count === 0) return;
+      if (count >= 10) {
+        majorGroups.push({ id: bg.id, title: bg.title, filter: c => c.issuer_id === bg.id });
+        filterPillsHtml.push(`<button class="filter-pill ${selectedIssuerFilter === bg.id ? 'active' : ''}" onclick="selectedIssuerFilter = '${bg.id}'; render();">${bg.shortTitle} (${count})</button>`);
+      } else {
+        otherGroupIds.add(bg.id);
+      }
+    });
+
+    const otherCardsCount = allCards.filter(c => otherGroupIds.has(c.issuer_id)).length;
+    if (otherCardsCount > 0) {
+      majorGroups.push({ id: 'other', title: 'Other Issuers', filter: c => otherGroupIds.has(c.issuer_id) });
+      filterPillsHtml.push(`<button class="filter-pill ${selectedIssuerFilter === 'other' ? 'active' : ''}" onclick="selectedIssuerFilter = 'other'; render();">Other (${otherCardsCount})</button>`);
+    }
+
+    const groups = majorGroups;
+
+    const activeFiltered = filterCardList(userWallet);
+    let totalGroupsRendered = 0;
+
+    return `
+      <div class="header-title">My Wallet</div>
+      <div class="header-sub">${userWallet.length} cards active out of ${allCards.length} available</div>
+
+      <div class="wallet-search">
+        <span>🔍</span>
+        <input id="walletSearchInput" placeholder="Search cards (e.g. Sapphire, Gold, Venture, Costco)..." value="${walletSearchQuery}" oninput="walletSearchQuery = this.value.toLowerCase(); render();">
+      </div>
+
+      <!-- Filter Row 1: Issuers -->
+      <div class="filter-row-label">Bank / Issuer</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedIssuerFilter === 'all' ? 'active' : ''}" onclick="selectedIssuerFilter = 'all'; render();">All (${allCards.length})</button>
+        <button class="filter-pill ${selectedIssuerFilter === 'in_wallet' ? 'active' : ''}" onclick="selectedIssuerFilter = 'in_wallet'; render();">✓ Active (${userWallet.length})</button>
+        ${filterPillsHtml.join('
+        ')}
+      </div>
+
+      <!-- Filter Row 2: Reward Program -->
+      <div class="filter-row-label">Reward Program</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedRewardFilter === 'all' ? 'active' : ''}" onclick="selectedRewardFilter = 'all'; render();">All Rewards</button>
+        <button class="filter-pill ${selectedRewardFilter === 'cash' ? 'active' : ''}" onclick="selectedRewardFilter = 'cash'; render();">🪙 Cash Back</button>
+        <button class="filter-pill ${selectedRewardFilter === 'points' ? 'active' : ''}" onclick="selectedRewardFilter = 'points'; render();">✈️ Points & Miles</button>
+      </div>
+
+      <!-- Filter Row 3: Card Type -->
+      <div class="filter-row-label">Card Type</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedTypeFilter === 'all' ? 'active' : ''}" onclick="selectedTypeFilter = 'all'; render();">All Types</button>
+        <button class="filter-pill ${selectedTypeFilter === 'personal' ? 'active' : ''}" onclick="selectedTypeFilter = 'personal'; render();">👤 Personal</button>
+        <button class="filter-pill ${selectedTypeFilter === 'business' ? 'active' : ''}" onclick="selectedTypeFilter = 'business'; render();">💼 Business</button>
+      </div>
+
+      ${selectedIssuerFilter === 'in_wallet' ? `
+        <div class="issuer-header"><span>Active in My Wallet (${activeFiltered.length})</span></div>
+        ${activeFiltered.length > 0 ? activeFiltered.map(renderWalletCardRow).join('') : '<div style="color: var(--text-secondary); text-align: center; padding: 24px; font-size: 13px;">No cards in your active wallet match the selected filters.</div>'}
+      ` : `
+        ${groups.map(g => {
+          if (selectedIssuerFilter !== 'all' && selectedIssuerFilter !== g.id) {
+            return '';
+          }
+          let cardsInGroup = allCards.filter(g.filter);
+          cardsInGroup = filterCardList(cardsInGroup);
+          if (cardsInGroup.length === 0) return '';
+          totalGroupsRendered++;
+
+          return `
+            <div class="issuer-group">
+              <div class="issuer-header">
+                <span>${g.title} (${cardsInGroup.length})</span>
+              </div>
+              ${cardsInGroup.map(card => renderWalletCardRow(card)).join('')}
+            </div>
+          `;
+        }).join('')}
+        ${totalGroupsRendered === 0 ? '<div style="color: var(--text-secondary); text-align: center; padding: 24px; font-size: 13px;">No cards match the active search and filter criteria.</div>' : ''}
+      `}
+    `;
+  }
+
+  function renderWalletCardRow(card) {
+    const inWallet = userWallet.some(c => c.id === card.id);
+    const svgPath = '/' + card.local_image_path.replace('.png', '.svg');
+    return `
+      <div class="wallet-item">
+        <div class="wallet-thumb">
+          <img src="/${card.local_image_path}" alt="${card.name}" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${svgPath}';}else{this.onerror=null;this.style.opacity='0.3';}">
+        </div>
+        <div class="wallet-meta">
+          <div class="wallet-name">${card.name}</div>
+          <div class="wallet-sub">${card.currency_name || 'Cash Back'}${card.annual_fee > 0 ? ' • $' + card.annual_fee + '/yr' : ''}</div>
+        </div>
+        <button class="wallet-toggle-btn ${inWallet ? 'in-wallet' : ''}" onclick="toggleWalletCard('${card.id}')">
+          ${inWallet ? '✓ In Wallet' : '+ Add'}
+        </button>
+      </div>
+    `;
+  }
+
+  initApp();
+</script>
+</body>
+</html>
