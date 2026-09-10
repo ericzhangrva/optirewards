@@ -594,7 +594,7 @@
     };
   }
 
-  async function getRecommendation(query) {
+  async function getRecommendation(query, forcedCatKey) {
     if (!query) return;
     if (currentRecommendation && currentRecommendation.query === query) {
         currentRecommendation = null;
@@ -607,7 +607,7 @@
     
     await new Promise(r => setTimeout(r, 100));
     try {
-      currentRecommendation = getLocalRecommendation(query);
+      currentRecommendation = getLocalRecommendation(query, forcedCatKey);
       render();
     } catch (e) {
       console.error(e);
