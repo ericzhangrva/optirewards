@@ -241,6 +241,8 @@
     if (el) el.innerText = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   }
   setInterval(updateTime, 1000);
+  setTimeout(() => { if (!gpsLoaded) requestUserGPS(); }, 500);
+
 
   async function initApp() {
     try {
