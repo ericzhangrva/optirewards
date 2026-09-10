@@ -151,23 +151,7 @@ With 105 credit cards in the database, the **My Wallet** tab has been organized 
 
 ---
 
-## 10. Complete 45-Card Chase Suite & Active-Card Point Valuation Filtering
-
-### Full 45 Chase Cards Captured
-Chase's complete credit card catalog is now fully populated in the database (45 cards):
-- **Sapphire:** Sapphire Reserve, Sapphire Preferred, Sapphire (legacy).
-- **Freedom & Slate:** Freedom Unlimited, Freedom Flex, Freedom Rise, Freedom (original Visa), Slate Edge, Slate (legacy).
-- **Ink Business:** Ink Business Preferred, Ink Business Cash, Ink Business Unlimited, Ink Business Premier, Ink Plus (legacy).
-- **Amazon:** Prime Visa, Amazon Visa.
-- **Southwest Airlines:** Southwest Plus, Premier, Priority, Performance Business, Premier Business.
-- **United Airlines:** United Gateway, Explorer, Quest, Club Infinite, United Business, Club Business.
-- **Marriott Bonvoy:** Marriott Bold, Boundless, Bountiful, Premier Plus Business.
-- **IHG Hotels:** IHG One Rewards Premier, Traveler, Premier Business.
-- **World of Hyatt:** World of Hyatt Card, World of Hyatt Business.
-- **Avios & International:** British Airways Visa, Aer Lingus Visa, Iberia Visa, Aeroplan Card.
-- **Disney & Co-Brands:** Disney Premier Visa, Disney Visa, Instacart Mastercard, DoorDash Rewards Mastercard, Starbucks Rewards Visa.
-
-### Active-Wallet Point Valuation Filtering
+## 10. Active-Card Point Valuation Filtering
 The **Point Values** tab automatically inspects your active wallet:
 - Only currencies corresponding to cards **actively enabled in your wallet** are shown (e.g. if you only have Chase Sapphire and Amex Gold active, only *Ultimate Rewards* and *Membership Rewards* appear).
 - Next to each slider, the app displays which of your specific active cards use that point currency.

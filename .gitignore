@@ -13,7 +13,6 @@ deploy.zip
 scripts/
 
 # Ignore AI documentation context
-AI_CONTEXT.md
 
 # We DO want to include:
 # index.html
