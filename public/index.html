@@ -80,7 +80,7 @@
 
   /* Granular Category Chips */
   .category-group-title { font-size: 12px; font-weight: 700; color: #93c5fd; margin: 12px 0 6px 0; }
-  .chip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 12px; }
+  .chip-grid { display: grid; grid-template-columns: 1fr; gap: 7px; margin-bottom: 12px; }
   .chip-btn {
     background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: row; justify-content: flex-start; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--text-primary); cursor: pointer; text-align: left;
   }
@@ -165,6 +165,19 @@
   .tab-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text-secondary); font-size: 10px; font-weight: 600; background: none; border: none; cursor: pointer; }
   .tab-item.active { color: var(--accent); }
   .tab-icon { font-size: 19px; }
+
+  @media (max-width: 768px) {
+    .device-frame {
+      max-width: 100% !important;
+      height: 100vh !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+    .dynamic-island { display: none !important; }
+    .status-bar { display: none !important; }
+    .app-content { padding-top: 15px !important; }
+  }
 </style>
 <meta name="apple-mobile-web-app-title" content="OptiRewards">
 </head>
@@ -527,12 +540,30 @@
     `;
   }
 
+
+  window.activeSearchQuery = '';
+
+  function renderCategory(query, emoji, label) {
+     let isActive = (currentRecommendation && currentRecommendation.query === query && window.activeSearchQuery !== 'online_search');
+     let html = `<button class="chip-btn ${isActive ? 'active' : ''}" onclick="window.activeSearchQuery=''; getRecommendation('${query}')"><span class="chip-emoji">${emoji}</span><span>${label}</span></button>`;
+     if (isActive) {
+         html += renderRecommendationBox();
+     }
+     return html;
+  }
+  
+  function renderPOI(query, emoji, name, sub) {
+     let isActive = (currentRecommendation && currentRecommendation.query === query && window.activeSearchQuery !== 'online_search');
+     let html = `<div class="poi-item" onclick="window.activeSearchQuery=''; getRecommendation('${query}')"><div class="poi-info"><div class="poi-icon">${emoji}</div><div><div class="poi-name">${name}</div><div class="poi-sub">${sub}</div></div></div><div class="poi-badge">Check</div></div>`;
+     if (isActive) {
+         html += renderRecommendationBox();
+     }
+     return html;
+  }
+
   function renderInStoreTab() {
     const q = quarterlyData ? quarterlyData.current_quarter : 'Q3';
     return `
-      <div class="header-title">Pay with Best</div>
-      <div class="header-sub">Instant store recognition via Apple MapKit & GPS</div>
-
       <div class="gps-bar">
         <div class="gps-info">
           <span>📍</span>
@@ -548,92 +579,69 @@
         </div>
       </div>
 
-      ${renderRecommendationBox()}
-
       <div class="section-label">
         <span>Nearby Stores Around You (${nearbyStores.length})</span>
         <span style="color: var(--accent); cursor: pointer;" onclick="requestUserGPS()">Update</span>
       </div>
 
       <div class="poi-list">
-        ${nearbyStores.map(s => `
-          <div class="poi-item" onclick="getRecommendation('${s.name}')">
-            <div class="poi-info">
-              <div class="poi-icon">🏪</div>
-              <div>
-                <div class="poi-name">${s.name}</div>
-                <div class="poi-sub">${s.address} • ${s.distance}</div>
-              </div>
-            </div>
-            <div class="poi-badge">Tap for Best</div>
-          </div>
-        `).join('')}
+        ${nearbyStores.map(s => renderPOI(s.name, '🏪', s.name, s.address + ' • ' + s.distance)).join('')}
       </div>
 
       <div class="section-label">
         <span>Store Not Listed? Choose Category</span>
       </div>
 
-      <div class="chip-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
-        <button class="chip-btn" onclick="getRecommendation('restaurants')"><span class="chip-emoji">🍽️</span><span>Dining & Restaurants</span></button>
-        <button class="chip-btn" onclick="getRecommendation('groceries')"><span class="chip-emoji">🛒</span><span>Groceries & Supermarkets</span></button>
-        <button class="chip-btn" onclick="getRecommendation('gas_stations')"><span class="chip-emoji">⛽</span><span>Gas & EV Charging</span></button>
-        <button class="chip-btn" onclick="getRecommendation('public_transit')"><span class="chip-emoji">🚆</span><span>Transit & Commuting</span></button>
-        <button class="chip-btn" onclick="getRecommendation('wholesale_clubs')"><span class="chip-emoji">📦</span><span>Costco & Wholesale</span></button>
-        <button class="chip-btn" onclick="getRecommendation('pharmacies')"><span class="chip-emoji">💊</span><span>Drugstores & Pharmacies</span></button>
-        <button class="chip-btn" onclick="getRecommendation('home_improvement')"><span class="chip-emoji">🔨</span><span>Home Improvement</span></button>
-        <button class="chip-btn" onclick="getRecommendation('rideshare')"><span class="chip-emoji">🚗</span><span>Rideshare (Uber/Lyft)</span></button>
+      <div class="chip-grid">
+        ${renderCategory('restaurants', '🍽️', 'Dining & Restaurants')}
+        ${renderCategory('groceries', '🛒', 'Groceries & Supermarkets')}
+        ${renderCategory('gas_stations', '⛽', 'Gas & EV Charging')}
+        ${renderCategory('public_transit', '🚆', 'Transit & Commuting')}
+        ${renderCategory('wholesale_clubs', '📦', 'Costco & Wholesale')}
+        ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
+        ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
+        ${renderCategory('rideshare', '🚗', 'Rideshare (Uber/Lyft)')}
       </div>
     `;
   }
 
   function renderOnlineTab() {
+    let searchRec = (window.activeSearchQuery === 'online_search' && currentRecommendation) ? renderRecommendationBox() : '';
+    
     return `
-      <div class="header-title">Online Shopping</div>
-      <div class="header-sub">Search merchant or choose purchase category</div>
-
-      ${renderRecommendationBox()}
-
-      <div class="search-box">
+      <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
         <span>🔍</span>
-        <input class="search-input" id="online-search-input" placeholder="Type merchant (Amazon, Nike, Delta, Apple)..." onkeypress="if(event.key==='Enter') getRecommendation(this.value)">
-        <button onclick="getRecommendation(document.getElementById('online-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer;">Go</button>
+        <input type="search" id="online-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Type merchant (Amazon, Nike)..." value="${window.activeSearchQuery === 'online_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='online_search'; getRecommendation(this.value); }">
+        <span style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px;" onclick="document.getElementById('online-search-input').value=''; currentRecommendation=null; render();">✖</span>
+        <button onclick="window.activeSearchQuery='online_search'; getRecommendation(document.getElementById('online-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
       </div>
+      
+      ${searchRec}
 
       <div class="section-label">Popular Digital Merchants</div>
       <div class="poi-list">
-        <div class="poi-item" onclick="getRecommendation('Amazon')">
-          <div class="poi-info"><div class="poi-icon">📦</div><div><div class="poi-name">Amazon.com</div><div class="poi-sub">Prime Visa 5%, Online Shopping 3%</div></div></div>
-          <div class="poi-badge">Check</div>
-        </div>
-        <div class="poi-item" onclick="getRecommendation('Apple Store')">
-          <div class="poi-info"><div class="poi-icon">🍏</div><div><div class="poi-name">Apple Store / Services</div><div class="poi-sub">Apple Card 3%, Tech Purchases</div></div></div>
-          <div class="poi-badge">Check</div>
-        </div>
-        <div class="poi-item" onclick="getRecommendation('Delta Air Lines')">
-          <div class="poi-info"><div class="poi-icon">✈️</div><div><div class="poi-name">Airlines (Delta, United, AA)</div><div class="poi-sub">Amex Plat 5x, Sapphire 3x</div></div></div>
-          <div class="poi-badge">Check</div>
-        </div>
+        ${renderPOI('Amazon', '📦', 'Amazon.com', 'Prime Visa 5%, Online Shopping 3%')}
+        ${renderPOI('Apple Store', '🍏', 'Apple Store / Services', 'Apple Card 3%, Tech Purchases')}
+        ${renderPOI('Delta Air Lines', '✈️', 'Airlines (Delta, United, AA)', 'Amex Plat 5x, Sapphire 3x')}
       </div>
 
       <div class="section-label">Travel Categories (Separated)</div>
-      <div class="chip-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
-        <button class="chip-btn" onclick="getRecommendation('flights')"><span class="chip-emoji">✈️</span><span>Flights & Airfare</span></button>
-        <button class="chip-btn" onclick="getRecommendation('hotels')"><span class="chip-emoji">🏨</span><span>Hotels & Lodging</span></button>
-        <button class="chip-btn" onclick="getRecommendation('travel_portal')"><span class="chip-emoji">🌐</span><span>Bank Travel Portals</span></button>
-        <button class="chip-btn" onclick="getRecommendation('rental_cars')"><span class="chip-emoji">🚘</span><span>Car Rentals</span></button>
+      <div class="chip-grid">
+        ${renderCategory('flights', '✈️', 'Flights & Airfare')}
+        ${renderCategory('hotels', '🏨', 'Hotels & Lodging')}
+        ${renderCategory('travel_portal', '🌐', 'Bank Travel Portals')}
+        ${renderCategory('rental_cars', '🚘', 'Car Rentals')}
       </div>
 
       <div class="section-label">Online & Subscriptions</div>
-      <div class="chip-grid" style="grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
-        <button class="chip-btn" onclick="getRecommendation('amazon')"><span class="chip-emoji">📦</span><span>Amazon.com</span></button>
-        <button class="chip-btn" onclick="getRecommendation('streaming_video')"><span class="chip-emoji">🎬</span><span>Streaming Services</span></button>
-        <button class="chip-btn" onclick="getRecommendation('cell_phone')"><span class="chip-emoji">📱</span><span>Phone & Internet</span></button>
-        <button class="chip-btn" onclick="getRecommendation('live_events')"><span class="chip-emoji">🎟️</span><span>Live Concerts & Events</span></button>
+      <div class="chip-grid">
+        ${renderCategory('amazon', '📦', 'Amazon.com')}
+        ${renderCategory('streaming_video', '🎬', 'Streaming Services')}
+        ${renderCategory('cell_phone', '📱', 'Phone & Internet')}
+        ${renderCategory('live_events', '🎟️', 'Live Concerts & Events')}
       </div>
     `;
   }
-
   function renderValuationsTab() {
     // 1. Identify which points & miles currencies are used by cards currently active in user's wallet
     const activePointsCards = userWallet.filter(c => c.currency_type === 'points' || c.currency_type === 'miles');
@@ -651,8 +659,8 @@
     const activeCurrencies = Object.keys(activeCurrencyMap);
 
     return `
-      <div class="header-title">Point Values</div>
-      <div class="header-sub">Adjust values only for cards in your active wallet (${activePointsCards.length} points cards)</div>
+      
+      
 
       ${activeCurrencies.length > 0 ? `
         <div style="display: flex; gap: 6px; margin-bottom: 16px;">
@@ -786,13 +794,16 @@
     let totalGroupsRendered = 0;
 
     return `
-      <div class="header-title">My Wallet</div>
-      <div class="header-sub">${userWallet.length} cards active out of ${allCards.length} available</div>
+      
+      
 
-      <div class="wallet-search">
+      
+      <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
         <span>🔍</span>
-        <input id="walletSearchInput" placeholder="Search cards (e.g. Sapphire, Gold, Venture, Costco)..." value="${walletSearchQuery}" oninput="walletSearchQuery = this.value.toLowerCase(); render();">
+        <input type="search" id="walletSearchInput" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search cards (e.g. Sapphire, Gold)..." value="${walletSearchQuery}" oninput="walletSearchQuery = this.value.toLowerCase(); render();">
+        <span style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px;" onclick="walletSearchQuery=''; render();">✖</span>
       </div>
+
 
       <!-- Filter Row 1: Issuers -->
       <div class="filter-row-label">Bank / Issuer</div>
