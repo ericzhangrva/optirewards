@@ -640,19 +640,21 @@
 
     // Restore scroll positions and focus if same tab
     if (prevTab === currentTab) {
+      // Restore focus synchronously to prevent iOS keyboard drop
+      if (activeId) {
+        const el = document.getElementById(activeId);
+        if (el) {
+          el.focus();
+          try { el.setSelectionRange(cursorStart, cursorEnd); } catch(e) {}
+        }
+      }
+      
       requestAnimationFrame(() => {
         container.querySelectorAll('.filter-scroll').forEach((el, i) => {
           if (scrollPositions[i] !== undefined) {
             el.scrollLeft = scrollPositions[i];
           }
         });
-        if (activeId) {
-          const el = document.getElementById(activeId);
-          if (el) {
-            el.focus();
-            el.setSelectionRange(cursorStart, cursorEnd);
-          }
-        }
       });
     }
   }
