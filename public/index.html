@@ -553,8 +553,9 @@
   }
   
   function renderPOI(query, emoji, name, sub) {
+     let safeQuery = query.replace(/'/g, "\\'");
      let isActive = (currentRecommendation && currentRecommendation.query === query && window.activeSearchQuery !== 'online_search');
-     let html = `<div class="poi-item" onclick="window.activeSearchQuery=''; getRecommendation('${query}')"><div class="poi-info"><div class="poi-icon">${emoji}</div><div><div class="poi-name">${name}</div><div class="poi-sub">${sub}</div></div></div><div class="poi-badge">Check</div></div>`;
+     let html = `<div class="poi-item" onclick="window.activeSearchQuery=''; getRecommendation('${safeQuery}')"><div class="poi-info"><div class="poi-icon">${emoji}</div><div><div class="poi-name">${name}</div><div class="poi-sub">${sub}</div></div></div><div class="poi-badge">Check</div></div>`;
      if (isActive) {
          html += renderRecommendationBox();
      }
