@@ -686,8 +686,7 @@
     return `
       <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
         <span>🔍</span>
-        <input type="search" id="online-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Type merchant (Amazon, Nike)..." value="${window.activeSearchQuery === 'online_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='online_search'; getRecommendation(this.value); }">
-        <span style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px;" onclick="document.getElementById('online-search-input').value=''; currentRecommendation=null; render();">✖</span>
+        <input type="search" id="online-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Type merchant (Amazon, Nike)..." value="${window.activeSearchQuery === 'online_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='online_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); }">
         <button onclick="window.activeSearchQuery='online_search'; getRecommendation(document.getElementById('online-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
       </div>
       
