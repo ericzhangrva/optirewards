@@ -11064,6 +11064,40 @@
           "notes": ""
         }
       ]
+    },
+    {
+      "id": "choice_privileges_mastercard",
+      "issuer_id": "wells_fargo",
+      "name": "Choice Privileges\u00ae Mastercard\u00ae",
+      "slug": "choice-privileges-mastercard",
+      "network": "Mastercard",
+      "card_type": "personal",
+      "annual_fee": 0.0,
+      "foreign_tx_fee": 3.0,
+      "credit_tier": "Good/Excellent",
+      "apply_url": null,
+      "image_url": null,
+      "local_image_path": "assets/cards/choice-privileges-mastercard.png",
+      "is_active": true,
+      "created_at": "2026-09-10 02:01:40",
+      "updated_at": "2026-09-10 06:43:59",
+      "currency_type": "points",
+      "currency_name": "Choice Privileges Points",
+      "base_rate": 1.0,
+      "point_valuation_cents": 0.6,
+      "welcome_bonus_desc": "60,000 points",
+      "categories": [
+        {
+          "category_key": "general",
+          "category_name": "All Purchases",
+          "multiplier": 1.0,
+          "spend_cap": null,
+          "cap_period": null,
+          "is_rotating": false,
+          "rotating_quarter": null,
+          "notes": ""
+        }
+      ]
     }
   ]
 }
