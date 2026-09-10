@@ -263,11 +263,8 @@
       const wb = document.getElementById('wallet-badge');
       if (wb) wb.innerText = userWallet.length;
       
-      nearbyStores = [
-        {"name": "Trader Joe's", "category": "supermarket", "distance": "0.1 mi"},
-        {"name": "Chevron", "category": "gas_stations", "distance": "0.3 mi"},
-        {"name": "Philz Coffee", "category": "coffee_bakery", "distance": "0.4 mi"}
-      ];
+      // Clear initial stores, force user to click GPS
+      nearbyStores = [];
 
       render();
     } catch(e) {
@@ -320,7 +317,7 @@
         
         // Fetch real nearby merchants via Overpass API
         try {
-            const query = `[out:json];(node["amenity"~"restaurant|fast_food|cafe"](around:2000,${lat},${lng});node["shop"~"supermarket|convenience|wholesale|department_store|clothes"](around:2000,${lat},${lng}););out 20;`;
+            const query = `[out:json];(nwr["amenity"~"restaurant|fast_food|cafe"](around:5000,${lat},${lng});nwr["shop"~"supermarket|convenience|wholesale|department_store|clothes"](around:5000,${lat},${lng}););out center 30;`;
             const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
             const overpassRes = await fetch(url);
             const overpassData = await overpassRes.json();
@@ -338,9 +335,11 @@
                     }
                     
                     const R = 3958.8; // miles
-                    const dLat = (e.lat - lat) * Math.PI / 180;
-                    const dLon = (e.lon - lng) * Math.PI / 180;
-                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat * Math.PI / 180) * Math.cos(e.lat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                    const eLat = e.lat || (e.center && e.center.lat) || lat;
+                    const eLon = e.lon || (e.center && e.center.lon) || lng;
+                    const dLat = (eLat - lat) * Math.PI / 180;
+                    const dLon = (eLon - lng) * Math.PI / 180;
+                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat * Math.PI / 180) * Math.cos(eLat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
                     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
                     const d = R * c;
                     
@@ -368,7 +367,7 @@
             if (unique.length > 0) {
                 nearbyStores = unique;
             } else {
-                nearbyStores = [{"name": "Whole Foods Market", "category": "Supermarket", "distance": "0.2 mi"}, {"name": "Shell", "category": "Gas Station", "distance": "0.5 mi"}];
+                nearbyStores = [{"name": "No stores found nearby", "category": "Try searching manually", "distance": "--"}];
             }
         } catch(e) {
             console.error("Overpass failed", e);
@@ -478,7 +477,24 @@
       } catch(e) {}
     }
     
-    if (categoryKey === 'general') categoryKey = query; 
+    if (categoryKey === 'general') {
+        const qLower = query.toLowerCase();
+        if (qLower.includes('grocery') || qLower.includes('supermarket') || qLower.includes('kroger') || qLower.includes('food lion') || qLower.includes('safeway') || qLower.includes('publix') || qLower.includes('wegmans') || qLower.includes('aldi') || qLower.includes('trader joe') || qLower.includes('heb')) {
+            categoryKey = 'groceries';
+        } else if (qLower.includes('restaurant') || qLower.includes('cafe') || qLower.includes('food') || qLower.includes('dining') || qLower.includes('burger') || qLower.includes('pizza') || qLower.includes('sushi') || qLower.includes('steak') || qLower.includes('taco') || qLower.includes('mcdonald') || qLower.includes('starbucks') || qLower.includes('wendy') || qLower.includes('chipotle') || qLower.includes('chick-fil')) {
+            categoryKey = 'dining';
+        } else if (qLower.includes('gas') || qLower.includes('fuel') || qLower.includes('shell') || qLower.includes('chevron') || qLower.includes('exxon') || qLower.includes('bp') || qLower.includes('mobil') || qLower.includes('speedway') || qLower.includes('wawa')) {
+            categoryKey = 'gas_stations';
+        } else if (qLower.includes('airline') || qLower.includes('flight') || qLower.includes('airways') || qLower.includes('delta') || qLower.includes('united') || qLower.includes('american') || qLower.includes('southwest')) {
+            categoryKey = 'travel';
+        } else if (qLower.includes('hotel') || qLower.includes('motel') || qLower.includes('resort') || qLower.includes('marriott') || qLower.includes('hilton') || qLower.includes('hyatt')) {
+            categoryKey = 'hotels';
+        } else if (qLower.includes('uber') || qLower.includes('lyft')) {
+            categoryKey = 'rideshare';
+        } else {
+            categoryKey = query;
+        }
+    }
 
     let activeCards = userWallet;
     let isSimulated = false;
