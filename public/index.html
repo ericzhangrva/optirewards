@@ -206,11 +206,11 @@
       <span>Online</span>
     </button>
     <button class="tab-item" onclick="switchTab('valuations')">
-      <span class="tab-icon">􀅵</span>
+      <span class="tab-icon">$</span>
       <span>Point Values</span>
     </button>
     <button class="tab-item" onclick="switchTab('wallet')">
-      <span class="tab-icon">􀤵</span>
+      <span class="tab-icon">💳</span>
       <span>Wallet (<span id="wallet-badge">0</span>)</span>
     </button>
   </div>
@@ -590,8 +590,9 @@
 
       <div class="chip-grid">
         ${renderCategory('restaurants', '🍽️', 'Dining & Restaurants')}
-        ${renderCategory('groceries', '🛒', 'Groceries & Supermarkets')}
-        ${renderCategory('gas_stations', '⛽', 'Gas & EV Charging')}
+        ${renderCategory('groceries', '🛒', 'Groceries')}
+        ${renderCategory('gas_stations', '⛽', 'Gas Stations')}
+        ${renderCategory('ev_charging', '⚡', 'EV Charging')}
         ${renderCategory('public_transit', '🚆', 'Transit & Commuting')}
         ${renderCategory('wholesale_clubs', '📦', 'Costco & Wholesale')}
         ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
@@ -621,7 +622,7 @@
         ${renderPOI('Delta Air Lines', '✈️', 'Airlines (Delta, United, AA)', 'Amex Plat 5x, Sapphire 3x')}
       </div>
 
-      <div class="section-label">Travel Categories (Separated)</div>
+      <div class="section-label">Travel & Bookings</div>
       <div class="chip-grid">
         ${renderCategory('flights', '✈️', 'Flights & Airfare')}
         ${renderCategory('hotels', '🏨', 'Hotels & Lodging')}
@@ -629,12 +630,13 @@
         ${renderCategory('rental_cars', '🚘', 'Car Rentals')}
       </div>
 
-      <div class="section-label">Online & Subscriptions</div>
+      <div class="section-label">Online Shopping & Delivery</div>
       <div class="chip-grid">
         ${renderCategory('amazon', '📦', 'Amazon.com')}
         ${renderCategory('streaming_video', '🎬', 'Streaming Services')}
+        ${renderCategory('restaurants', '🍽️', 'Food Delivery & Dining')}
+        ${renderCategory('groceries', '🛒', 'Grocery Delivery')}
         ${renderCategory('cell_phone', '📱', 'Phone & Internet')}
-        ${renderCategory('live_events', '🎟️', 'Live Concerts & Events')}
       </div>
     `;
   }
