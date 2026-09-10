@@ -286,26 +286,40 @@
 
   function requestUserGPS() {
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser");
+      locationName = "Current Location";
+      render();
       return;
     }
     const el = document.getElementById('gps-status-text');
-    if (el) el.innerText = "Locating via GPS...";
+    if (el) el.innerText = "Locating...";
     
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
+        gpsLoaded = true;
         nearbyStores = [
           {"name": "Whole Foods Market", "category": "supermarket", "distance": "0.2 mi"},
           {"name": "Shell", "category": "gas_stations", "distance": "0.5 mi"}
         ];
-        locationName = "Your Physical Location (GPS)";
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+            const data = await res.json();
+            if (data && data.address) {
+                const city = data.address.city || data.address.town || data.address.village || data.address.county || "Your Location";
+                locationName = `${city}${data.address.state ? ', ' + data.address.state : ''}`;
+            } else {
+                locationName = "Current Location";
+            }
+        } catch(e) {
+            locationName = "Current Location";
+        }
         render();
       },
       (err) => {
-        alert("GPS access denied.");
+        gpsLoaded = true;
+        locationName = "Current Location";
         render();
       },
-      { timeout: 8000, enableHighAccuracy: true }
+      { timeout: 5000, enableHighAccuracy: true }
     );
   }
 
@@ -480,6 +494,12 @@
   }
 
   async function getRecommendation(query) {
+    if (!query) return;
+    if (currentRecommendation && currentRecommendation.query === query) {
+        currentRecommendation = null;
+        render();
+        return;
+    }
     const elId = 'rec-box-anchor';
     const el = document.getElementById(elId);
     if (el) el.innerHTML = '<div style="text-align: center; padding: 20px;">Calculating...</div>';
