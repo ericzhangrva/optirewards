@@ -84,648 +84,1194 @@
   },
   "merchant_mappings": [
     {
-      "id": "m_whole_foods_market",
-      "merchant_name": "Whole Foods Market",
-      "merchant_pattern": "whole.?foods",
-      "category_key": "supermarket",
-      "brand_icon": "leaf"
-    },
-    {
-      "id": "m_trader_joe's",
-      "merchant_name": "Trader Joe's",
-      "merchant_pattern": "trader.?joe",
-      "category_key": "supermarket",
-      "brand_icon": "basket"
-    },
-    {
-      "id": "m_kroger",
-      "merchant_name": "Kroger",
-      "merchant_pattern": "kroger|ralphs|dillons|smiths|fred.?meyer|fry'?s",
-      "category_key": "supermarket",
-      "brand_icon": "cart"
-    },
-    {
-      "id": "m_safeway",
-      "merchant_name": "Safeway",
-      "merchant_pattern": "safeway|vons|albertsons|jewel.?osco|shaw'?s|tom.?thumb",
-      "category_key": "supermarket",
-      "brand_icon": "cart"
-    },
-    {
-      "id": "m_costco_wholesale",
-      "merchant_name": "Costco Wholesale",
-      "merchant_pattern": "costco",
-      "category_key": "wholesale_clubs",
-      "brand_icon": "building-store"
-    },
-    {
-      "id": "m_sam's_club",
-      "merchant_name": "Sam's Club",
-      "merchant_pattern": "sam'?s.?club",
-      "category_key": "wholesale_clubs",
-      "brand_icon": "building-store"
-    },
-    {
-      "id": "m_aldi",
-      "merchant_name": "Aldi",
-      "merchant_pattern": "aldi",
-      "category_key": "supermarket",
-      "brand_icon": "basket"
-    },
-    {
-      "id": "m_h_mart",
-      "merchant_name": "H Mart",
-      "merchant_pattern": "h.?mart",
-      "category_key": "supermarket",
-      "brand_icon": "basket"
-    },
-    {
-      "id": "m_wegmans",
-      "merchant_name": "Wegmans",
-      "merchant_pattern": "wegmans",
-      "category_key": "supermarket",
-      "brand_icon": "basket"
-    },
-    {
-      "id": "m_publix",
-      "merchant_name": "Publix",
-      "merchant_pattern": "publix",
-      "category_key": "supermarket",
-      "brand_icon": "basket"
-    },
-    {
-      "id": "m_instacart",
-      "merchant_name": "Instacart",
-      "merchant_pattern": "instacart",
-      "category_key": "online_grocery",
-      "brand_icon": "carrot"
-    },
-    {
-      "id": "m_starbucks",
-      "merchant_name": "Starbucks",
-      "merchant_pattern": "starbucks",
-      "category_key": "dining",
-      "brand_icon": "coffee"
-    },
-    {
-      "id": "m_mcdonald's",
-      "merchant_name": "McDonald's",
-      "merchant_pattern": "mcdonald'?s",
-      "category_key": "dining",
-      "brand_icon": "burger"
-    },
-    {
-      "id": "m_chipotle_mexican_grill",
-      "merchant_name": "Chipotle Mexican Grill",
-      "merchant_pattern": "chipotle",
-      "category_key": "dining",
-      "brand_icon": "burrito"
-    },
-    {
-      "id": "m_panera_bread",
-      "merchant_name": "Panera Bread",
-      "merchant_pattern": "panera",
-      "category_key": "fast_food",
-      "brand_icon": "bread"
-    },
-    {
-      "id": "m_subway",
-      "merchant_name": "Subway",
-      "merchant_pattern": "subway",
-      "category_key": "fast_food",
-      "brand_icon": "sandwich"
-    },
-    {
-      "id": "m_uber_eats",
-      "merchant_name": "Uber Eats",
-      "merchant_pattern": "uber.?eats",
-      "category_key": "food_delivery",
-      "brand_icon": "truck"
-    },
-    {
-      "id": "m_doordash",
-      "merchant_name": "DoorDash",
-      "merchant_pattern": "doordash",
-      "category_key": "food_delivery",
-      "brand_icon": "truck"
-    },
-    {
-      "id": "m_grubhub",
-      "merchant_name": "Grubhub",
-      "merchant_pattern": "grubhub",
-      "category_key": "food_delivery",
-      "brand_icon": "truck"
-    },
-    {
-      "id": "m_cheesecake_factory",
-      "merchant_name": "Cheesecake Factory",
-      "merchant_pattern": "cheesecake.?factory",
-      "category_key": "dining",
-      "brand_icon": "dining"
-    },
-    {
-      "id": "m_chick-fil-a",
-      "merchant_name": "Chick-fil-A",
-      "merchant_pattern": "chick.?fil.?a",
-      "category_key": "fast_food",
-      "brand_icon": "fastfood"
-    },
-    {
-      "id": "m_shell_gas",
-      "merchant_name": "Shell Gas",
-      "merchant_pattern": "shell",
-      "category_key": "gas_stations",
-      "brand_icon": "fuel"
-    },
-    {
-      "id": "m_chevron",
-      "merchant_name": "Chevron",
-      "merchant_pattern": "chevron|texaco",
-      "category_key": "gas_stations",
-      "brand_icon": "fuel"
-    },
-    {
-      "id": "m_exxonmobil",
-      "merchant_name": "ExxonMobil",
-      "merchant_pattern": "exxon|mobil",
-      "category_key": "gas_stations",
-      "brand_icon": "fuel"
-    },
-    {
-      "id": "m_bp",
-      "merchant_name": "BP",
-      "merchant_pattern": "bp|amoco",
-      "category_key": "gas_stations",
-      "brand_icon": "fuel"
-    },
-    {
-      "id": "m_tesla_supercharger",
-      "merchant_name": "Tesla Supercharger",
-      "merchant_pattern": "tesla.?supercharg|tesla.?charg",
-      "category_key": "ev_charging",
-      "brand_icon": "battery-charging"
-    },
-    {
-      "id": "m_electrify_america",
-      "merchant_name": "Electrify America",
-      "merchant_pattern": "electrify.?america",
-      "category_key": "ev_charging",
-      "brand_icon": "battery-charging"
-    },
-    {
-      "id": "m_7-eleven_gas",
-      "merchant_name": "7-Eleven Gas",
-      "merchant_pattern": "7.?eleven",
-      "category_key": "gas",
-      "brand_icon": "fuel"
-    },
-    {
-      "id": "m_cvs_pharmacy",
-      "merchant_name": "CVS Pharmacy",
-      "merchant_pattern": "cvs",
-      "category_key": "pharmacies",
-      "brand_icon": "prescription"
-    },
-    {
-      "id": "m_walgreens",
-      "merchant_name": "Walgreens",
-      "merchant_pattern": "walgreens|duane.?reade",
-      "category_key": "pharmacies",
-      "brand_icon": "prescription"
-    },
-    {
-      "id": "m_rite_aid",
-      "merchant_name": "Rite Aid",
-      "merchant_pattern": "rite.?aid",
-      "category_key": "pharmacies",
-      "brand_icon": "prescription"
-    },
-    {
-      "id": "m_apple_store",
-      "merchant_name": "Apple Store",
-      "merchant_pattern": "apple.?store|apple[.]com|itunes",
-      "category_key": "apple_purchases",
-      "brand_icon": "apple"
-    },
-    {
-      "id": "m_amazon",
-      "merchant_name": "Amazon",
-      "merchant_pattern": "amazon|amzn",
-      "category_key": "amazon",
-      "brand_icon": "shopping-bag"
-    },
-    {
-      "id": "m_best_buy",
-      "merchant_name": "Best Buy",
-      "merchant_pattern": "best.?buy",
-      "category_key": "electronics",
-      "brand_icon": "tv"
-    },
-    {
-      "id": "m_target",
-      "merchant_name": "Target",
-      "merchant_pattern": "target",
-      "category_key": "department_stores",
-      "brand_icon": "bullseye"
-    },
-    {
-      "id": "m_walmart",
-      "merchant_name": "Walmart",
-      "merchant_pattern": "walmart",
-      "category_key": "department_stores",
+      "id": "m_0",
+      "merchant_name": "Kroger Family",
+      "merchant_pattern": "kroger|ralphs|dillons|smith'?s|fred.?meyer|fry'?s|qfc|harris.?teeter|king.?soopers|marianos|pick.?n.?save",
+      "category_key": "groceries",
       "brand_icon": "store"
     },
     {
-      "id": "m_nike",
-      "merchant_name": "Nike",
-      "merchant_pattern": "nike",
-      "category_key": "clothing",
-      "brand_icon": "shirt"
+      "id": "m_1",
+      "merchant_name": "Albertsons Family",
+      "merchant_pattern": "albertsons|safeway|vons|jewel.?osco|shaw'?s|tom.?thumb|randalls|acme|pavilions|star.?market|haggen|carrs",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_ebay",
-      "merchant_name": "eBay",
-      "merchant_pattern": "ebay",
-      "category_key": "online_retail",
-      "brand_icon": "shopping-cart"
+      "id": "m_2",
+      "merchant_name": "Ahold Delhaize",
+      "merchant_pattern": "food.?lion|stop.?&.?shop|stop.?and.?shop|giant.?food|hannaford|martin'?s",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_delta_air_lines",
-      "merchant_name": "Delta Air Lines",
-      "merchant_pattern": "delta.?air",
-      "category_key": "flights",
-      "brand_icon": "plane"
+      "id": "m_3",
+      "merchant_name": "Publix",
+      "merchant_pattern": "publix",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_united_airlines",
-      "merchant_name": "United Airlines",
-      "merchant_pattern": "united.?air",
-      "category_key": "flights",
-      "brand_icon": "plane"
+      "id": "m_4",
+      "merchant_name": "H-E-B",
+      "merchant_pattern": "h.?e.?b|heb|central.?market",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_american_airlines",
-      "merchant_name": "American Airlines",
-      "merchant_pattern": "american.?air",
-      "category_key": "flights",
-      "brand_icon": "plane"
+      "id": "m_5",
+      "merchant_name": "Meijer",
+      "merchant_pattern": "meijer",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_southwest_airlines",
-      "merchant_name": "Southwest Airlines",
-      "merchant_pattern": "southwest",
-      "category_key": "flights",
-      "brand_icon": "plane"
+      "id": "m_6",
+      "merchant_name": "Wegmans",
+      "merchant_pattern": "wegmans",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_marriott_hotels",
-      "merchant_name": "Marriott Hotels",
-      "merchant_pattern": "marriott|sheraton|westin|ritz.?carlton|courtyard",
-      "category_key": "hotels",
-      "brand_icon": "hotel"
+      "id": "m_7",
+      "merchant_name": "Aldi",
+      "merchant_pattern": "aldi",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_hilton_hotels",
-      "merchant_name": "Hilton Hotels",
-      "merchant_pattern": "hilton|hampton.?inn|doubletree|embassy.?suites",
-      "category_key": "hotels",
-      "brand_icon": "hotel"
+      "id": "m_8",
+      "merchant_name": "Trader Joe's",
+      "merchant_pattern": "trader.?joe",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_hyatt",
-      "merchant_name": "Hyatt",
-      "merchant_pattern": "hyatt",
-      "category_key": "hotels",
-      "brand_icon": "hotel"
+      "id": "m_9",
+      "merchant_name": "Whole Foods",
+      "merchant_pattern": "whole.?foods",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_airbnb",
-      "merchant_name": "Airbnb",
-      "merchant_pattern": "airbnb",
-      "category_key": "vacation_rentals",
-      "brand_icon": "home"
+      "id": "m_10",
+      "merchant_name": "Sprouts",
+      "merchant_pattern": "sprouts",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_uber",
-      "merchant_name": "Uber",
-      "merchant_pattern": "^uber$|uber.?trip|uber.?ride",
-      "category_key": "public_transit",
-      "brand_icon": "car"
+      "id": "m_11",
+      "merchant_name": "WinCo",
+      "merchant_pattern": "winco",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_lyft",
-      "merchant_name": "Lyft",
-      "merchant_pattern": "lyft",
-      "category_key": "public_transit",
-      "brand_icon": "car"
+      "id": "m_12",
+      "merchant_name": "Save A Lot",
+      "merchant_pattern": "save.?a.?lot",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_netflix",
-      "merchant_name": "Netflix",
-      "merchant_pattern": "netflix",
-      "category_key": "streaming_video",
-      "brand_icon": "film"
+      "id": "m_13",
+      "merchant_name": "Hy-Vee",
+      "merchant_pattern": "hy.?vee",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_spotify",
-      "merchant_name": "Spotify",
-      "merchant_pattern": "spotify",
-      "category_key": "streaming_audio",
-      "brand_icon": "music"
+      "id": "m_14",
+      "merchant_name": "Winn-Dixie",
+      "merchant_pattern": "winn.?dixie|harveys|fresco.?y.?mas",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_hulu",
-      "merchant_name": "Hulu",
-      "merchant_pattern": "hulu",
-      "category_key": "streaming_video",
-      "brand_icon": "tv"
+      "id": "m_15",
+      "merchant_name": "ShopRite",
+      "merchant_pattern": "shoprite|price.?rite",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_disney+",
-      "merchant_name": "Disney+",
-      "merchant_pattern": "disney[+]?|disney.?plus",
-      "category_key": "streaming_video",
-      "brand_icon": "sparkles"
+      "id": "m_16",
+      "merchant_name": "Weis",
+      "merchant_pattern": "weis",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_amc_theatres",
-      "merchant_name": "AMC Theatres",
-      "merchant_pattern": "amc.?theat",
-      "category_key": "movie_theaters",
-      "brand_icon": "film"
+      "id": "m_17",
+      "merchant_name": "Ingles",
+      "merchant_pattern": "ingles",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_ticketmaster",
-      "merchant_name": "Ticketmaster",
-      "merchant_pattern": "ticketmaster|livenation",
-      "category_key": "live_events",
-      "brand_icon": "ticket"
+      "id": "m_18",
+      "merchant_name": "Grocery Outlet",
+      "merchant_pattern": "grocery.?outlet",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_the_home_depot",
-      "merchant_name": "The Home Depot",
-      "merchant_pattern": "home.?depot",
-      "category_key": "home_improvement",
-      "brand_icon": "hammer"
+      "id": "m_19",
+      "merchant_name": "Lidl",
+      "merchant_pattern": "lidl",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_lowe's",
-      "merchant_name": "Lowe's",
-      "merchant_pattern": "lowe'?s",
-      "category_key": "home_improvement",
-      "brand_icon": "hammer"
+      "id": "m_20",
+      "merchant_name": "Stater Bros",
+      "merchant_pattern": "stater.?bros",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_ace_hardware",
-      "merchant_name": "Ace Hardware",
-      "merchant_pattern": "ace.?hardware",
-      "category_key": "home_improvement",
-      "brand_icon": "wrench"
+      "id": "m_21",
+      "merchant_name": "Giant Eagle",
+      "merchant_pattern": "giant.?eagle",
+      "category_key": "groceries",
+      "brand_icon": "store"
     },
     {
-      "id": "m_bj's_wholesale_club",
-      "merchant_name": "BJ's Wholesale Club",
+      "id": "m_22",
+      "merchant_name": "Costco",
+      "merchant_pattern": "costco",
+      "category_key": "wholesale_clubs",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_23",
+      "merchant_name": "Sam's Club",
+      "merchant_pattern": "sam'?s.?club",
+      "category_key": "wholesale_clubs",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_24",
+      "merchant_name": "BJ's Wholesale",
       "merchant_pattern": "bj'?s.?wholesale",
       "category_key": "wholesale_clubs",
-      "brand_icon": "building-store"
+      "brand_icon": "store"
     },
     {
-      "id": "m_dunkin'",
-      "merchant_name": "Dunkin'",
-      "merchant_pattern": "dunkin",
-      "category_key": "dining",
-      "brand_icon": "coffee"
-    },
-    {
-      "id": "m_taco_bell",
-      "merchant_name": "Taco Bell",
-      "merchant_pattern": "taco.?bell",
-      "category_key": "fast_food",
-      "brand_icon": "taco"
-    },
-    {
-      "id": "m_wendy's",
-      "merchant_name": "Wendy's",
-      "merchant_pattern": "wendy'?s",
-      "category_key": "fast_food",
-      "brand_icon": "burger"
-    },
-    {
-      "id": "m_the_cheesecake_factory",
-      "merchant_name": "The Cheesecake Factory",
-      "merchant_pattern": "cheesecake.?factory",
-      "category_key": "casual_dining",
-      "brand_icon": "dining"
-    },
-    {
-      "id": "m_olive_garden",
-      "merchant_name": "Olive Garden",
-      "merchant_pattern": "olive.?garden",
-      "category_key": "casual_dining",
-      "brand_icon": "dining"
-    },
-    {
-      "id": "m_texas_roadhouse",
-      "merchant_name": "Texas Roadhouse",
-      "merchant_pattern": "texas.?roadhouse",
-      "category_key": "casual_dining",
-      "brand_icon": "dining"
-    },
-    {
-      "id": "m_7-eleven_fuel",
-      "merchant_name": "7-Eleven Fuel",
-      "merchant_pattern": "7.?eleven",
+      "id": "m_25",
+      "merchant_name": "Shell",
+      "merchant_pattern": "shell",
       "category_key": "gas_stations",
-      "brand_icon": "fuel"
+      "brand_icon": "store"
     },
     {
-      "id": "m_circle_k",
+      "id": "m_26",
+      "merchant_name": "Chevron",
+      "merchant_pattern": "chevron|texaco",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_27",
+      "merchant_name": "ExxonMobil",
+      "merchant_pattern": "exxon|mobil",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_28",
+      "merchant_name": "BP",
+      "merchant_pattern": "bp|amoco",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_29",
+      "merchant_name": "Marathon",
+      "merchant_pattern": "marathon|speedway",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_30",
+      "merchant_name": "Phillips 66",
+      "merchant_pattern": "phillips.?66|conoco|76",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_31",
+      "merchant_name": "Valero",
+      "merchant_pattern": "valero",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_32",
+      "merchant_name": "Sunoco",
+      "merchant_pattern": "sunoco",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_33",
+      "merchant_name": "Citgo",
+      "merchant_pattern": "citgo",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_34",
+      "merchant_name": "Wawa",
+      "merchant_pattern": "wawa",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_35",
+      "merchant_name": "QuikTrip",
+      "merchant_pattern": "quiktrip|qt",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_36",
+      "merchant_name": "Sheetz",
+      "merchant_pattern": "sheetz",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_37",
+      "merchant_name": "RaceTrac",
+      "merchant_pattern": "racetrac",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_38",
       "merchant_name": "Circle K",
       "merchant_pattern": "circle.?k",
       "category_key": "gas_stations",
-      "brand_icon": "fuel"
+      "brand_icon": "store"
     },
     {
-      "id": "m_chargepoint",
-      "merchant_name": "ChargePoint",
-      "merchant_pattern": "chargepoint",
-      "category_key": "ev_charging",
-      "brand_icon": "battery-charging"
+      "id": "m_39",
+      "merchant_name": "7-Eleven",
+      "merchant_pattern": "7.?eleven|seven.?eleven",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
     },
     {
-      "id": "m_evgo",
-      "merchant_name": "EVgo",
-      "merchant_pattern": "evgo",
-      "category_key": "ev_charging",
-      "brand_icon": "battery-charging"
+      "id": "m_40",
+      "merchant_name": "Buc-ee's",
+      "merchant_pattern": "buc.?ee",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
     },
     {
-      "id": "m_planet_fitness",
-      "merchant_name": "Planet Fitness",
-      "merchant_pattern": "planet.?fitness",
-      "category_key": "gyms_fitness",
-      "brand_icon": "dumbbell"
+      "id": "m_41",
+      "merchant_name": "Casey's",
+      "merchant_pattern": "casey'?s",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
     },
     {
-      "id": "m_equinox",
-      "merchant_name": "Equinox",
-      "merchant_pattern": "equinox",
-      "category_key": "gyms_fitness",
-      "brand_icon": "dumbbell"
+      "id": "m_42",
+      "merchant_name": "Kwik Trip",
+      "merchant_pattern": "kwik.?trip|kwik.?star",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
     },
     {
-      "id": "m_la_fitness",
-      "merchant_name": "LA Fitness",
-      "merchant_pattern": "la.?fitness",
-      "category_key": "gyms_fitness",
-      "brand_icon": "dumbbell"
+      "id": "m_43",
+      "merchant_name": "Murphy USA",
+      "merchant_pattern": "murphy.?usa|murphy.?express",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
     },
     {
-      "id": "m_jetblue_airways",
-      "merchant_name": "JetBlue Airways",
-      "merchant_pattern": "jetblue",
-      "category_key": "flights",
-      "brand_icon": "plane"
+      "id": "m_44",
+      "merchant_name": "Cumberland Farms",
+      "merchant_pattern": "cumberland.?farms",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
     },
     {
-      "id": "m_alaska_airlines",
-      "merchant_name": "Alaska Airlines",
-      "merchant_pattern": "alaska.?air",
-      "category_key": "flights",
-      "brand_icon": "plane"
+      "id": "m_45",
+      "merchant_name": "Pilot Flying J",
+      "merchant_pattern": "pilot|flying.?j",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
     },
     {
-      "id": "m_ihg_hotels",
-      "merchant_name": "IHG Hotels",
-      "merchant_pattern": "ihg|holiday.?inn|intercontinental|crowne.?plaza",
-      "category_key": "hotels",
-      "brand_icon": "hotel"
+      "id": "m_46",
+      "merchant_name": "Love's",
+      "merchant_pattern": "love'?s",
+      "category_key": "gas_stations",
+      "brand_icon": "store"
     },
     {
-      "id": "m_vrbo",
-      "merchant_name": "VRBO",
-      "merchant_pattern": "vrbo",
-      "category_key": "vacation_rentals",
-      "brand_icon": "home"
+      "id": "m_47",
+      "merchant_name": "CVS",
+      "merchant_pattern": "cvs",
+      "category_key": "pharmacies",
+      "brand_icon": "store"
     },
     {
-      "id": "m_enterprise_rent-a-car",
-      "merchant_name": "Enterprise Rent-A-Car",
-      "merchant_pattern": "enterprise.?rent",
+      "id": "m_48",
+      "merchant_name": "Walgreens",
+      "merchant_pattern": "walgreens|duane.?reade",
+      "category_key": "pharmacies",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_49",
+      "merchant_name": "Rite Aid",
+      "merchant_pattern": "rite.?aid",
+      "category_key": "pharmacies",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_50",
+      "merchant_name": "McDonald's",
+      "merchant_pattern": "mcdonald",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_51",
+      "merchant_name": "Starbucks",
+      "merchant_pattern": "starbucks",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_52",
+      "merchant_name": "Subway",
+      "merchant_pattern": "subway",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_53",
+      "merchant_name": "Taco Bell",
+      "merchant_pattern": "taco.?bell",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_54",
+      "merchant_name": "Chick-fil-A",
+      "merchant_pattern": "chick.?fil",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_55",
+      "merchant_name": "Wendy's",
+      "merchant_pattern": "wendy",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_56",
+      "merchant_name": "Burger King",
+      "merchant_pattern": "burger.?king|bk",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_57",
+      "merchant_name": "Dunkin'",
+      "merchant_pattern": "dunkin",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_58",
+      "merchant_name": "Domino's",
+      "merchant_pattern": "domino",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_59",
+      "merchant_name": "Pizza Hut",
+      "merchant_pattern": "pizza.?hut",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_60",
+      "merchant_name": "Panera Bread",
+      "merchant_pattern": "panera",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_61",
+      "merchant_name": "Chipotle",
+      "merchant_pattern": "chipotle",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_62",
+      "merchant_name": "Sonic",
+      "merchant_pattern": "sonic",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_63",
+      "merchant_name": "KFC",
+      "merchant_pattern": "kfc|kentucky.?fried",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_64",
+      "merchant_name": "Arby's",
+      "merchant_pattern": "arby",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_65",
+      "merchant_name": "Dairy Queen",
+      "merchant_pattern": "dairy.?queen|dq",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_66",
+      "merchant_name": "Panda Express",
+      "merchant_pattern": "panda.?express",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_67",
+      "merchant_name": "Popeyes",
+      "merchant_pattern": "popeyes",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_68",
+      "merchant_name": "Papa John's",
+      "merchant_pattern": "papa.?john",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_69",
+      "merchant_name": "Little Caesars",
+      "merchant_pattern": "little.?caesars",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_70",
+      "merchant_name": "Texas Roadhouse",
+      "merchant_pattern": "texas.?roadhouse",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_71",
+      "merchant_name": "Olive Garden",
+      "merchant_pattern": "olive.?garden",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_72",
+      "merchant_name": "Applebee's",
+      "merchant_pattern": "applebee",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_73",
+      "merchant_name": "Outback Steakhouse",
+      "merchant_pattern": "outback",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_74",
+      "merchant_name": "Chili's",
+      "merchant_pattern": "chili",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_75",
+      "merchant_name": "Red Lobster",
+      "merchant_pattern": "red.?lobster",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_76",
+      "merchant_name": "Cracker Barrel",
+      "merchant_pattern": "cracker.?barrel",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_77",
+      "merchant_name": "Buffalo Wild Wings",
+      "merchant_pattern": "buffalo.?wild|bww",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_78",
+      "merchant_name": "The Cheesecake Factory",
+      "merchant_pattern": "cheesecake.?factory",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_79",
+      "merchant_name": "Shake Shack",
+      "merchant_pattern": "shake.?shack",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_80",
+      "merchant_name": "Five Guys",
+      "merchant_pattern": "five.?guys",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_81",
+      "merchant_name": "In-N-Out",
+      "merchant_pattern": "in.?n.?out",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_82",
+      "merchant_name": "Cava",
+      "merchant_pattern": "cava",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_83",
+      "merchant_name": "Sweetgreen",
+      "merchant_pattern": "sweetgreen",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_84",
+      "merchant_name": "Jimmy John's",
+      "merchant_pattern": "jimmy.?john",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_85",
+      "merchant_name": "Jersey Mike's",
+      "merchant_pattern": "jersey.?mike",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_86",
+      "merchant_name": "Uber Eats",
+      "merchant_pattern": "uber.?eats",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_87",
+      "merchant_name": "DoorDash",
+      "merchant_pattern": "doordash",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_88",
+      "merchant_name": "Grubhub",
+      "merchant_pattern": "grubhub|seamless",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_89",
+      "merchant_name": "Postmates",
+      "merchant_pattern": "postmates",
+      "category_key": "dining",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_90",
+      "merchant_name": "Instacart",
+      "merchant_pattern": "instacart",
+      "category_key": "groceries",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_91",
+      "merchant_name": "Shipt",
+      "merchant_pattern": "shipt",
+      "category_key": "groceries",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_92",
+      "merchant_name": "Uber",
+      "merchant_pattern": "uber",
+      "category_key": "rideshare",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_93",
+      "merchant_name": "Lyft",
+      "merchant_pattern": "lyft",
+      "category_key": "rideshare",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_94",
+      "merchant_name": "Enterprise",
+      "merchant_pattern": "enterprise",
       "category_key": "rental_cars",
-      "brand_icon": "car"
+      "brand_icon": "store"
     },
     {
-      "id": "m_hertz",
+      "id": "m_95",
       "merchant_name": "Hertz",
       "merchant_pattern": "hertz",
       "category_key": "rental_cars",
-      "brand_icon": "car"
+      "brand_icon": "store"
     },
     {
-      "id": "m_avis",
+      "id": "m_96",
       "merchant_name": "Avis",
       "merchant_pattern": "avis",
       "category_key": "rental_cars",
-      "brand_icon": "car"
+      "brand_icon": "store"
     },
     {
-      "id": "m_mta_new_york",
-      "merchant_name": "MTA New York",
-      "merchant_pattern": "mta|omny",
-      "category_key": "public_transit",
-      "brand_icon": "train"
+      "id": "m_97",
+      "merchant_name": "Budget",
+      "merchant_pattern": "budget",
+      "category_key": "rental_cars",
+      "brand_icon": "store"
     },
     {
-      "id": "m_bart_san_francisco",
-      "merchant_name": "BART San Francisco",
-      "merchant_pattern": "bart.?clipper",
-      "category_key": "public_transit",
-      "brand_icon": "train"
+      "id": "m_98",
+      "merchant_name": "National",
+      "merchant_pattern": "national.?car",
+      "category_key": "rental_cars",
+      "brand_icon": "store"
     },
     {
-      "id": "m_fastrak_/_e-zpass",
-      "merchant_name": "FasTrak / E-ZPass",
-      "merchant_pattern": "fastrak|ezpass|e-zpass|toll",
-      "category_key": "parking_tolls",
-      "brand_icon": "road"
+      "id": "m_99",
+      "merchant_name": "Alamo",
+      "merchant_pattern": "alamo",
+      "category_key": "rental_cars",
+      "brand_icon": "store"
     },
     {
-      "id": "m_amazon.com",
-      "merchant_name": "Amazon.com",
-      "merchant_pattern": "amazon|amzn",
-      "category_key": "amazon",
-      "brand_icon": "shopping-bag"
+      "id": "m_100",
+      "merchant_name": "Expedia",
+      "merchant_pattern": "expedia",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
     },
     {
-      "id": "m_macy's",
+      "id": "m_101",
+      "merchant_name": "Booking.com",
+      "merchant_pattern": "booking.com",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_102",
+      "merchant_name": "Priceline",
+      "merchant_pattern": "priceline",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_103",
+      "merchant_name": "Hotels.com",
+      "merchant_pattern": "hotels.com",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_104",
+      "merchant_name": "Agoda",
+      "merchant_pattern": "agoda",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_105",
+      "merchant_name": "Travelocity",
+      "merchant_pattern": "travelocity",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_106",
+      "merchant_name": "Orbitz",
+      "merchant_pattern": "orbitz",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_107",
+      "merchant_name": "Kayak",
+      "merchant_pattern": "kayak",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_108",
+      "merchant_name": "Hopper",
+      "merchant_pattern": "hopper",
+      "category_key": "travel_portal",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_109",
+      "merchant_name": "American Airlines",
+      "merchant_pattern": "american.?airlines|aa",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_110",
+      "merchant_name": "Delta Air Lines",
+      "merchant_pattern": "delta",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_111",
+      "merchant_name": "United Airlines",
+      "merchant_pattern": "united.?airlines",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_112",
+      "merchant_name": "Southwest Airlines",
+      "merchant_pattern": "southwest",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_113",
+      "merchant_name": "Alaska Airlines",
+      "merchant_pattern": "alaska.?airlines",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_114",
+      "merchant_name": "JetBlue",
+      "merchant_pattern": "jetblue",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_115",
+      "merchant_name": "Spirit Airlines",
+      "merchant_pattern": "spirit",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_116",
+      "merchant_name": "Frontier Airlines",
+      "merchant_pattern": "frontier",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_117",
+      "merchant_name": "Hawaiian Airlines",
+      "merchant_pattern": "hawaiian.?airlines",
+      "category_key": "airlines",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_118",
+      "merchant_name": "Marriott",
+      "merchant_pattern": "marriott|bonvoy|courtyard|sheraton|westin|ritz.?carlton|renaissance|fairfield|springhill",
+      "category_key": "hotels",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_119",
+      "merchant_name": "Hilton",
+      "merchant_pattern": "hilton|hampton|doubletree|embassy.?suites|homewood|waldorf",
+      "category_key": "hotels",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_120",
+      "merchant_name": "IHG",
+      "merchant_pattern": "ihg|holiday.?inn|intercontinental|crowne.?plaza|staybridge",
+      "category_key": "hotels",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_121",
+      "merchant_name": "Hyatt",
+      "merchant_pattern": "hyatt|andaz|grand.?hyatt|park.?hyatt",
+      "category_key": "hotels",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_122",
+      "merchant_name": "Wyndham",
+      "merchant_pattern": "wyndham|days.?inn|super.?8|ramada|la.?quinta|microtel",
+      "category_key": "hotels",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_123",
+      "merchant_name": "Choice Hotels",
+      "merchant_pattern": "choice.?hotels|comfort.?inn|quality.?inn|sleep.?inn|econo.?lodge",
+      "category_key": "hotels",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_124",
+      "merchant_name": "Best Western",
+      "merchant_pattern": "best.?western",
+      "category_key": "hotels",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_125",
+      "merchant_name": "Amazon",
+      "merchant_pattern": "amazon",
+      "category_key": "online_shopping",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_126",
+      "merchant_name": "eBay",
+      "merchant_pattern": "ebay",
+      "category_key": "online_shopping",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_127",
+      "merchant_name": "Etsy",
+      "merchant_pattern": "etsy",
+      "category_key": "online_shopping",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_128",
+      "merchant_name": "Wayfair",
+      "merchant_pattern": "wayfair",
+      "category_key": "online_shopping",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_129",
+      "merchant_name": "Chewy",
+      "merchant_pattern": "chewy",
+      "category_key": "online_shopping",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_130",
+      "merchant_name": "Target",
+      "merchant_pattern": "target",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_131",
+      "merchant_name": "Walmart",
+      "merchant_pattern": "walmart",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_132",
+      "merchant_name": "Best Buy",
+      "merchant_pattern": "best.?buy",
+      "category_key": "online_shopping",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_133",
+      "merchant_name": "Home Depot",
+      "merchant_pattern": "home.?depot",
+      "category_key": "home_improvement",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_134",
+      "merchant_name": "Lowe's",
+      "merchant_pattern": "lowe",
+      "category_key": "home_improvement",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_135",
+      "merchant_name": "IKEA",
+      "merchant_pattern": "ikea",
+      "category_key": "home_improvement",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_136",
+      "merchant_name": "Ace Hardware",
+      "merchant_pattern": "ace.?hardware",
+      "category_key": "home_improvement",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_137",
+      "merchant_name": "Apple",
+      "merchant_pattern": "apple",
+      "category_key": "online_shopping",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_138",
       "merchant_name": "Macy's",
-      "merchant_pattern": "macy'?s",
-      "category_key": "department_stores",
-      "brand_icon": "bag"
+      "merchant_pattern": "macy",
+      "category_key": "department_store",
+      "brand_icon": "store"
     },
     {
-      "id": "m_nordstrom",
+      "id": "m_139",
+      "merchant_name": "Kohl's",
+      "merchant_pattern": "kohl",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_140",
+      "merchant_name": "JCPenney",
+      "merchant_pattern": "jcpenney",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_141",
       "merchant_name": "Nordstrom",
-      "merchant_pattern": "nordstrom",
-      "category_key": "department_stores",
-      "brand_icon": "bag"
+      "merchant_pattern": "nordstrom|nordstrom.?rack",
+      "category_key": "department_store",
+      "brand_icon": "store"
     },
     {
-      "id": "m_staples",
-      "merchant_name": "Staples",
-      "merchant_pattern": "staples",
-      "category_key": "office_supplies",
-      "brand_icon": "paperclip"
+      "id": "m_142",
+      "merchant_name": "T.J. Maxx",
+      "merchant_pattern": "tj.?maxx|tjmaxx|marshalls|homegoods",
+      "category_key": "department_store",
+      "brand_icon": "store"
     },
     {
-      "id": "m_office_depot",
-      "merchant_name": "Office Depot",
-      "merchant_pattern": "office.?depot|officemax",
-      "category_key": "office_supplies",
-      "brand_icon": "paperclip"
+      "id": "m_143",
+      "merchant_name": "Ross",
+      "merchant_pattern": "ross",
+      "category_key": "department_store",
+      "brand_icon": "store"
     },
     {
-      "id": "m_hbo_max",
+      "id": "m_144",
+      "merchant_name": "Burlington",
+      "merchant_pattern": "burlington",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_145",
+      "merchant_name": "Bed Bath & Beyond",
+      "merchant_pattern": "bed.?bath",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_146",
+      "merchant_name": "Dick's Sporting Goods",
+      "merchant_pattern": "dick.?s",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_147",
+      "merchant_name": "Sephora",
+      "merchant_pattern": "sephora",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_148",
+      "merchant_name": "Ulta",
+      "merchant_pattern": "ulta",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_149",
+      "merchant_name": "PetSmart",
+      "merchant_pattern": "petsmart",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_150",
+      "merchant_name": "Petco",
+      "merchant_pattern": "petco",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_151",
+      "merchant_name": "GameStop",
+      "merchant_pattern": "gamestop",
+      "category_key": "online_shopping",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_152",
+      "merchant_name": "Barnes & Noble",
+      "merchant_pattern": "barnes.?noble",
+      "category_key": "department_store",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_153",
+      "merchant_name": "Netflix",
+      "merchant_pattern": "netflix",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_154",
+      "merchant_name": "Hulu",
+      "merchant_pattern": "hulu",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_155",
+      "merchant_name": "Disney+",
+      "merchant_pattern": "disney",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_156",
       "merchant_name": "HBO Max",
-      "merchant_pattern": "hbo|max.?stream",
-      "category_key": "streaming_video",
-      "brand_icon": "film"
+      "merchant_pattern": "hbo|max",
+      "category_key": "streaming",
+      "brand_icon": "store"
     },
     {
-      "id": "m_apple_music",
+      "id": "m_157",
+      "merchant_name": "Amazon Prime Video",
+      "merchant_pattern": "prime.?video",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_158",
+      "merchant_name": "Spotify",
+      "merchant_pattern": "spotify",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_159",
       "merchant_name": "Apple Music",
       "merchant_pattern": "apple.?music",
-      "category_key": "streaming_audio",
-      "brand_icon": "music"
+      "category_key": "streaming",
+      "brand_icon": "store"
     },
     {
-      "id": "m_verizon_wireless",
-      "merchant_name": "Verizon Wireless",
+      "id": "m_160",
+      "merchant_name": "YouTube",
+      "merchant_pattern": "youtube",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_161",
+      "merchant_name": "Peacock",
+      "merchant_pattern": "peacock",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_162",
+      "merchant_name": "Paramount+",
+      "merchant_pattern": "paramount",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_163",
+      "merchant_name": "SiriusXM",
+      "merchant_pattern": "sirius",
+      "category_key": "streaming",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_164",
+      "merchant_name": "Verizon",
       "merchant_pattern": "verizon",
-      "category_key": "cell_phone",
-      "brand_icon": "phone"
+      "category_key": "telecom",
+      "brand_icon": "store"
     },
     {
-      "id": "m_at&t",
+      "id": "m_165",
       "merchant_name": "AT&T",
       "merchant_pattern": "at&t|att",
-      "category_key": "cell_phone",
-      "brand_icon": "phone"
+      "category_key": "telecom",
+      "brand_icon": "store"
     },
     {
-      "id": "m_t-mobile",
+      "id": "m_166",
       "merchant_name": "T-Mobile",
       "merchant_pattern": "t.?mobile",
-      "category_key": "cell_phone",
-      "brand_icon": "phone"
+      "category_key": "telecom",
+      "brand_icon": "store"
     },
     {
-      "id": "m_comcast_xfinity",
-      "merchant_name": "Comcast Xfinity",
-      "merchant_pattern": "comcast|xfinity",
-      "category_key": "internet_cable",
-      "brand_icon": "wifi"
+      "id": "m_167",
+      "merchant_name": "Xfinity",
+      "merchant_pattern": "xfinity|comcast",
+      "category_key": "telecom",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_168",
+      "merchant_name": "Spectrum",
+      "merchant_pattern": "spectrum|charter",
+      "category_key": "telecom",
+      "brand_icon": "store"
+    },
+    {
+      "id": "m_169",
+      "merchant_name": "Cox",
+      "merchant_pattern": "cox",
+      "category_key": "telecom",
+      "brand_icon": "store"
     }
   ],
   "issuers": [
