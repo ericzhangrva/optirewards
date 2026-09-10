@@ -206,6 +206,241 @@
 <script>
   window.onerror = function(msg, url, line, col, error) { alert("JS Error: " + msg + " at " + line + ":" + col); };
 
+  const CATALOG_URL = 'catalog.json';
+  let catalog = null;
+  let allCards = [];
+  let userWallet = [];
+  let userValuations = {};
+  let nearbyStores = [];
+  let quarterlyData = null;
+  
+  let currentTab = 'instore';
+  let locationName = "San Francisco Financial District";
+  let currentRecommendation = null;
+  let walletSearchQuery = '';
+  let selectedIssuerFilter = 'all';
+  let selectedRewardFilter = 'all';
+  let selectedTypeFilter = 'all';
+
+  function updateTime() {
+    const d = new Date();
+    const el = document.getElementById('current-time');
+    if (el) el.innerText = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  }
+  setInterval(updateTime, 1000);
+
+  async function initApp() {
+    try {
+      const res = await fetch(CATALOG_URL);
+      if (!res.ok) throw new Error("Network error fetching catalog");
+      catalog = await res.json();
+      allCards = catalog.cards;
+      
+      const savedWallet = localStorage.getItem('userWallet');
+      if (savedWallet) userWallet = JSON.parse(savedWallet);
+      
+      const savedVals = localStorage.getItem('userValuations');
+      if (savedVals) userValuations = JSON.parse(savedVals);
+
+      const wb = document.getElementById('wallet-badge');
+      if (wb) wb.innerText = userWallet.length;
+      
+      nearbyStores = [
+        {"name": "Trader Joe's", "category": "supermarket", "distance": "0.1 mi"},
+        {"name": "Chevron", "category": "gas_stations", "distance": "0.3 mi"},
+        {"name": "Philz Coffee", "category": "coffee_bakery", "distance": "0.4 mi"}
+      ];
+
+      render();
+    } catch(e) {
+      console.error("Failed to load catalog:", e);
+      alert("Error loading catalog data. Check console.");
+    }
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-item').forEach((el, idx) => {
+      el.classList.toggle('active', 
+        (tab === 'instore' && idx === 0) || 
+        (tab === 'online' && idx === 1) || 
+        (tab === 'valuations' && idx === 2) || 
+        (tab === 'wallet' && idx === 3)
+      );
+    });
+    render();
+  }
+
+  function requestUserGPS() {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+    const el = document.getElementById('gps-status-text');
+    if (el) el.innerText = "Locating via GPS...";
+    
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        nearbyStores = [
+          {"name": "Whole Foods Market", "category": "supermarket", "distance": "0.2 mi"},
+          {"name": "Shell", "category": "gas_stations", "distance": "0.5 mi"}
+        ];
+        locationName = "Your Physical Location (GPS)";
+        render();
+      },
+      (err) => {
+        alert("GPS access denied.");
+        render();
+      },
+      { timeout: 8000, enableHighAccuracy: true }
+    );
+  }
+
+  function toggleWalletCard(cardId) {
+    const idx = userWallet.findIndex(c => c.id === cardId);
+    if (idx >= 0) {
+      userWallet.splice(idx, 1);
+    } else {
+      const card = allCards.find(c => c.id === cardId);
+      if (card) userWallet.push(card);
+    }
+    localStorage.setItem('userWallet', JSON.stringify(userWallet));
+    const wb = document.getElementById('wallet-badge');
+    if (wb) wb.innerText = userWallet.length;
+    render();
+  }
+
+  function updateValuation(currency, val) {
+    userValuations[currency] = parseFloat(val);
+    localStorage.setItem('userValuations', JSON.stringify(userValuations));
+    
+    const disp = document.getElementById(`val-disp-${currency.replace(/\s+/g, '_')}`);
+    if (disp) disp.innerText = `${parseFloat(val).toFixed(1)}¢`;
+    
+    if (currentRecommendation) {
+      getRecommendation(currentRecommendation.query);
+    }
+  }
+
+  function applyValuationPreset(preset) {
+    if (preset === 'cash') {
+      for (let k in userValuations) {
+        userValuations[k] = 1.0;
+      }
+    } else if (preset === 'travel') {
+      for (let k in userValuations) {
+        if (k.includes('Hilton')) userValuations[k] = 0.5;
+        else if (k.includes('Marriott')) userValuations[k] = 0.8;
+        else if (k.includes('IHG')) userValuations[k] = 0.5;
+        else userValuations[k] = 1.5;
+      }
+    } else if (preset === 'max') {
+      const maxRates = {"Ultimate Rewards": 2.2, "Membership Rewards": 2.0, "Capital One Miles": 1.8, "Bilt Rewards": 2.2, "ThankYou Points": 1.8};
+      for (let k in userValuations) {
+        if (maxRates[k]) userValuations[k] = maxRates[k];
+      }
+    }
+    localStorage.setItem('userValuations', JSON.stringify(userValuations));
+    render();
+  }
+
+  function getLocalRecommendation(query) {
+    if (!catalog) return null;
+    let categoryKey = 'general';
+    let merchantName = null;
+    
+    const qLower = query.toLowerCase();
+    for (let m of catalog.merchant_mappings) {
+      try {
+        const regex = new RegExp(m.merchant_pattern, 'i');
+        if (regex.test(query) || qLower.includes(m.merchant_name.toLowerCase())) {
+          categoryKey = m.category_key;
+          merchantName = m.merchant_name;
+          break;
+        }
+      } catch(e) {}
+    }
+    
+    if (categoryKey === 'general') categoryKey = query; 
+
+    let activeCards = userWallet;
+    let isSimulated = false;
+    if (activeCards.length === 0) {
+      activeCards = catalog.cards.filter(c => c.is_active);
+      isSimulated = true;
+    }
+
+    const scored = [];
+    for (let card of activeCards) {
+      let matchMultiplier = card.base_rate;
+      let ruleDesc = "Base Rate";
+      let isRotating = false;
+
+      if (card.categories) {
+        for (let cat of card.categories) {
+          if (cat.category_key === categoryKey) {
+            if (cat.is_rotating) {
+              const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q3"] : null;
+              if (validQuarters && validQuarters.includes(categoryKey)) {
+                matchMultiplier = cat.multiplier;
+                ruleDesc = cat.category_name;
+                isRotating = true;
+                break;
+              }
+            } else {
+              if (cat.multiplier > matchMultiplier) {
+                matchMultiplier = cat.multiplier;
+                ruleDesc = cat.category_name;
+              }
+            }
+          }
+        }
+      }
+
+      const valCents = userValuations[card.currency_name] || card.point_valuation_cents || 1.0;
+      const yieldPct = matchMultiplier * valCents;
+
+      scored.push({
+        card_id: card.id,
+        card_name: card.name,
+        local_image_path: card.local_image_path,
+        multiplier: matchMultiplier,
+        currency_name: card.currency_name,
+        currency_type: card.currency_type,
+        valuation_cents: valCents,
+        effective_yield_pct: Math.round(yieldPct * 100) / 100,
+        applied_rule: ruleDesc,
+        is_rotating: isRotating
+      });
+    }
+
+    scored.sort((a, b) => b.effective_yield_pct - a.effective_yield_pct);
+    const best = scored[0];
+    return {
+      query: query,
+      resolved_category: categoryKey,
+      merchant_name: merchantName,
+      is_simulated_wallet: isSimulated,
+      best_card: best,
+      runner_ups: scored.slice(1, 3)
+    };
+  }
+
+  async function getRecommendation(query) {
+    const elId = 'rec-box-anchor';
+    const el = document.getElementById(elId);
+    if (el) el.innerHTML = '<div style="text-align: center; padding: 20px;">Calculating...</div>';
+    
+    await new Promise(r => setTimeout(r, 100));
+    try {
+      currentRecommendation = getLocalRecommendation(query);
+      render();
+    } catch (e) {
+      console.error(e);
+      if (el) el.innerHTML = 'Error';
+    }
+  }
+
   function filterCardList(list) {
     return list.filter(c => {
       // Reward filter
