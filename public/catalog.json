@@ -4657,7 +4657,7 @@
       "credit_tier": "Good/Excellent",
       "apply_url": null,
       "image_url": null,
-      "local_image_path": "assets/cards/fidelity-rewards-visa.png",
+      "local_image_path": "assets/cards/fidelity-rewards-visa.svg",
       "is_active": true,
       "created_at": "2026-09-10 02:26:49",
       "updated_at": "2026-09-10 06:43:59",
