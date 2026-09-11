@@ -958,15 +958,26 @@
     const otherGroupIds = new Set();
     const filterPillsHtml = [];
     
+    const handledIssuerIds = new Set();
+    
     baseGroups.forEach(bg => {
       const count = issuerCounts[bg.id] || 0;
       if (count === 0) return;
       if (count >= 10 || ['chase', 'amex', 'citi', 'capital_one', 'bofa', 'wells_fargo'].includes(bg.id)) {
         majorGroups.push({ id: bg.id, title: bg.title, filter: c => c.issuer_id === bg.id });
         filterPillsHtml.push(`<button class="filter-pill ${selectedIssuerFilter === bg.id ? 'active' : ''}" onclick="selectedIssuerFilter = '${bg.id}'; render();">${bg.shortTitle} (${count})</button>`);
+        handledIssuerIds.add(bg.id);
       } else {
         otherGroupIds.add(bg.id);
+        handledIssuerIds.add(bg.id);
       }
+    });
+
+    // Add any issuer_ids that were completely missing from baseGroups to 'Other'
+    Object.keys(issuerCounts).forEach(issuerId => {
+       if (!handledIssuerIds.has(issuerId)) {
+           otherGroupIds.add(issuerId);
+       }
     });
 
     const otherCardsCount = allCards.filter(c => otherGroupIds.has(c.issuer_id)).length;
