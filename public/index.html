@@ -174,10 +174,18 @@
   .tab-icon { font-size: 19px; }
 
   @media (max-width: 768px) {
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: fixed;
+      top: 0; left: 0;
+    }
     .device-frame {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
       max-width: 100% !important;
-      height: 100vh !important;
-      height: 100dvh !important;
+      height: 100% !important;
       border: none !important;
       border-radius: 0 !important;
       box-shadow: none !important;
@@ -186,7 +194,7 @@
     .dynamic-island { display: none !important; }
     .status-bar { display: none !important; }
     .app-content { padding-top: 15px !important; }
-    .tab-bar { padding-bottom: calc(14px + env(safe-area-inset-bottom)) !important; height: calc(78px + env(safe-area-inset-bottom)) !important; }
+    .tab-bar { position: fixed !important; padding-bottom: calc(14px + env(safe-area-inset-bottom)) !important; height: calc(78px + env(safe-area-inset-bottom)) !important; }
   }
   input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
 </style>
