@@ -10,8 +10,3 @@ If you make changes to the Javascript engine inside `public/index.html`, you MUS
 Because Node.js is not installed on this machine, you must use macOS's built-in Javascript engine via the terminal:
 `osascript -l JavaScript -e "$(cat public/index.html | grep -o '<script>.*</script>' || awk '/<script>/{flag=1; next} /<\/script>/{flag=0} flag')"`
 If it throws `ReferenceError: Can't find variable: window`, it means the syntax successfully parsed.
-
-## Action and Planning Policy
-1. **Questions vs Actions:** Do not immediately take actions when the user simply asks a question. Always assume the user is looking for information, clarification, or a discussion.
-2. **Always Plan Before Acting:** When explicitly asked to do something (e.g., modifying files, running commands), ALWAYS present a plan before starting to work on it. Wait for approval if the plan is complex.
-3. **Explain While Doing:** If the task is small enough that a full prior plan isn't necessary, at minimum explain exactly how you plan to accomplish the task while you are doing it.
