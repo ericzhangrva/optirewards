@@ -156,6 +156,27 @@
   .wallet-toggle-btn { background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
   .wallet-toggle-btn.in-wallet { background: rgba(48, 209, 88, 0.2); color: #4ade80; }
 
+  /* Drag-to-Reorder */
+  .drag-handle {
+    width: 28px; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; cursor: grab; flex-shrink: 0; margin-right: 4px; touch-action: none; padding: 8px 2px;
+  }
+  .drag-handle span {
+    display: block; width: 16px; height: 1.5px; background: var(--text-secondary); border-radius: 1px;
+    transition: background 0.15s ease;
+  }
+  .drag-handle:active span { background: var(--accent); }
+  .wallet-item.dragging {
+    opacity: 0.9; transform: scale(1.03); box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 0 1.5px var(--accent);
+    z-index: 999; position: relative; pointer-events: none;
+  }
+  .wallet-item.drag-shift {
+    transition: transform 0.2s ease;
+  }
+  .sortable-wallet-hint {
+    font-size: 11px; color: var(--text-secondary); text-align: center; padding: 2px 0 10px 0;
+  }
+
   /* Point Valuation Sliders */
   .val-item {
     background: var(--bg-secondary); border-radius: 14px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--border-color);
@@ -579,15 +600,12 @@
       if (Math.abs(b.effective_yield_pct - a.effective_yield_pct) > 0.001) {
         return b.effective_yield_pct - a.effective_yield_pct;
       }
-      const rank = {
-        'wells_fargo_active_cash': 4,
-        'capital_one_venture_x': 3,
-        'citi_costco_business': 2,
-        'citi_costco': 2,
-        'amex_blue_business_cash': 1
-      };
-      const rA = rank[a.card_id] || 0;
-      const rB = rank[b.card_id] || 0;
+      // Tie-breaker: user's wallet order (earlier = higher priority)
+      const idxA = userWallet.findIndex(c => c.id === a.card_id);
+      const idxB = userWallet.findIndex(c => c.id === b.card_id);
+      // Lower index = higher priority; cards not in wallet get lowest priority
+      const rA = idxA >= 0 ? (userWallet.length - idxA) : 0;
+      const rB = idxB >= 0 ? (userWallet.length - idxB) : 0;
       return rB - rA;
     });
     const best = scored[0];
@@ -650,6 +668,7 @@
       container.innerHTML = renderValuationsTab();
     } else if (currentTab === 'wallet') {
       container.innerHTML = renderWalletTab();
+      if (selectedIssuerFilter === 'in_wallet') initWalletDrag();
     }
 
     // Restore scroll positions and focus if same tab
@@ -1029,7 +1048,10 @@
 
       ${selectedIssuerFilter === 'in_wallet' ? `
         <div class="issuer-header"><span>Active in My Wallet (${activeFiltered.length})</span></div>
-        ${activeFiltered.length > 0 ? activeFiltered.map(renderWalletCardRow).join('') : '<div style="color: var(--text-secondary); text-align: center; padding: 24px; font-size: 13px;">No cards in your active wallet match the selected filters.</div>'}
+        ${activeFiltered.length > 1 ? '<div class="sortable-wallet-hint">Drag to set your card priority</div>' : ''}
+        <div id="sortable-wallet">
+        ${activeFiltered.length > 0 ? activeFiltered.map(c => renderWalletCardRow(c, true)).join('') : '<div style="color: var(--text-secondary); text-align: center; padding: 24px; font-size: 13px;">No cards in your active wallet match the selected filters.</div>'}
+        </div>
       ` : `
         ${groups.map(g => {
           if (selectedIssuerFilter !== 'all' && selectedIssuerFilter !== g.id) {
@@ -1054,11 +1076,12 @@
     `;
   }
 
-  function renderWalletCardRow(card) {
+  function renderWalletCardRow(card, isActive) {
     const inWallet = userWallet.some(c => c.id === card.id);
     const svgPath = '/' + card.local_image_path.replace('.png', '.svg');
     return `
-      <div class="wallet-item">
+      <div class="wallet-item" ${isActive ? `data-card-id="${card.id}"` : ''}>
+        ${isActive ? '<div class="drag-handle"><span></span><span></span><span></span></div>' : ''}
         <div class="wallet-thumb">
           <img src="/${card.local_image_path}" alt="${card.name}" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${svgPath}';}else{this.onerror=null;this.style.opacity='0.3';}">
         </div>
@@ -1071,6 +1094,133 @@
         </button>
       </div>
     `;
+  }
+
+  function initWalletDrag() {
+    const container = document.getElementById('sortable-wallet');
+    if (!container) return;
+    const items = Array.from(container.querySelectorAll('.wallet-item[data-card-id]'));
+    if (items.length < 2) return;
+
+    let dragItem = null;
+    let dragCardId = null;
+    let startY = 0;
+    let currentY = 0;
+    let itemRects = [];
+    let origIndex = -1;
+    let shifted = new Map(); // index -> direction (1 = down, -1 = up)
+    const appContent = document.querySelector('.app-content');
+
+    function captureRects() {
+      itemRects = items.map(el => {
+        const r = el.getBoundingClientRect();
+        return { top: r.top, bottom: r.bottom, height: r.height, mid: r.top + r.height / 2 };
+      });
+    }
+
+    function onStart(e) {
+      const handle = e.target.closest('.drag-handle');
+      if (!handle) return;
+      dragItem = handle.closest('.wallet-item');
+      if (!dragItem) return;
+      dragCardId = dragItem.dataset.cardId;
+      origIndex = items.indexOf(dragItem);
+
+      const point = e.touches ? e.touches[0] : e;
+      startY = point.clientY;
+      currentY = startY;
+      captureRects();
+      shifted.clear();
+
+      dragItem.classList.add('dragging');
+      items.forEach((el, i) => { if (i !== origIndex) el.classList.add('drag-shift'); });
+
+      if (appContent) appContent.style.overflowY = 'hidden';
+      e.preventDefault();
+    }
+
+    function onMove(e) {
+      if (!dragItem) return;
+      const point = e.touches ? e.touches[0] : e;
+      currentY = point.clientY;
+      const dy = currentY - startY;
+
+      dragItem.style.transform = `scale(1.03) translateY(${dy}px)`;
+
+      const dragMid = itemRects[origIndex].mid + dy;
+
+      items.forEach((el, i) => {
+        if (i === origIndex) return;
+        const rect = itemRects[i];
+        const h = rect.height + 8; // include margin
+
+        if (i < origIndex && dragMid < rect.mid) {
+          // dragging up past this item -> push it down
+          el.style.transform = `translateY(${h}px)`;
+          shifted.set(i, 1);
+        } else if (i > origIndex && dragMid > rect.mid) {
+          // dragging down past this item -> push it up
+          el.style.transform = `translateY(-${h}px)`;
+          shifted.set(i, -1);
+        } else {
+          el.style.transform = '';
+          shifted.delete(i);
+        }
+      });
+      e.preventDefault();
+    }
+
+    function onEnd(e) {
+      if (!dragItem) return;
+
+      // Calculate new index
+      let newIndex = origIndex;
+      if (shifted.size > 0) {
+        const shiftedIndices = Array.from(shifted.keys());
+        const minShifted = Math.min(...shiftedIndices);
+        const maxShifted = Math.max(...shiftedIndices);
+        if (currentY < startY) {
+          newIndex = minShifted; // moved up
+        } else {
+          newIndex = maxShifted; // moved down
+        }
+      }
+
+      // Reset all transforms
+      dragItem.classList.remove('dragging');
+      dragItem.style.transform = '';
+      items.forEach(el => { el.classList.remove('drag-shift'); el.style.transform = ''; });
+
+      if (appContent) appContent.style.overflowY = '';
+
+      // Reorder userWallet
+      if (newIndex !== origIndex && dragCardId) {
+        // Map visual indices to wallet indices
+        const walletIds = items.map(el => el.dataset.cardId);
+        const walletOrigIdx = userWallet.findIndex(c => c.id === dragCardId);
+        if (walletOrigIdx >= 0) {
+          const [moved] = userWallet.splice(walletOrigIdx, 1);
+          // Find the card at the target visual position
+          const targetCardId = walletIds[newIndex];
+          let targetIdx = userWallet.findIndex(c => c.id === targetCardId);
+          if (targetIdx < 0) targetIdx = newIndex;
+          userWallet.splice(targetIdx, 0, moved);
+          localStorage.setItem('userWallet', JSON.stringify(userWallet));
+          render();
+        }
+      }
+
+      dragItem = null;
+      dragCardId = null;
+      shifted.clear();
+    }
+
+    container.addEventListener('touchstart', onStart, { passive: false });
+    container.addEventListener('touchmove', onMove, { passive: false });
+    container.addEventListener('touchend', onEnd);
+    container.addEventListener('mousedown', onStart);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
   }
 
   initApp();
