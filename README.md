@@ -13,28 +13,19 @@ OptiRewards detects where you are standing or what you are buying online, cross-
 
 ---
 
-## 2. Real Geolocation & Apple MapKit Architecture
+### 2. Real Geolocation & Nearby Store Detection
 
-### Q1: Does it actually grab my real physical location?
-* **Answer:** **Yes!**
-* The app now includes **Real GPS Location integration**:
-  - In the web prototype, tap **"Use My GPS"**: the browser calls `navigator.geolocation.getCurrentPosition()`.
-  - The backend connects in real-time to the **OpenStreetMap Overpass API**, queries physical businesses within 500–700 meters of your exact coordinates, and lists the real supermarkets, coffee shops, and stores on your street with real distances!
-  - In native iOS, the app pairs `CoreLocation` (`CLLocationManager`) with `MKLocalPointsOfInterestRequest` for real-time offline-capable beacon and GPS detection.
+### Does it actually grab my real physical location?
+**Yes!** OptiRewards includes real GPS location integration directly in the browser:
+* Tap **"Use My GPS"** and the browser will securely request your location.
+* The app connects in real-time to the **OpenStreetMap Overpass API**, querying physical businesses within a 500-meter radius of your coordinates.
+* It instantly lists the real supermarkets, coffee shops, and stores on your street, along with their distances.
 
-### Q2: Is it Apple Maps only? What if the user deleted the Apple Maps app?
-* **Answer:** **Deleting the Apple Maps app will NOT break the app.**
-* In iOS, `MapKit` and `CoreLocation` are system-level OS frameworks compiled directly into iOS (`import MapKit`). Deleting the consumer-facing "Apple Maps" application from the home screen only removes the user icon; it does **not** remove `MapKit.framework` or location services. Any iOS app calling `import MapKit` will continue to render maps and resolve nearby Points of Interest (POIs) with 100% functionality.
-
-### Q3: Can we use other maps like Google Maps?
-* **Answer:** **Yes.** Pluggable architecture supports Google Maps iOS SDK and Google Places API if desired, though Apple MapKit has zero licensing costs and zero cold-start delay on iOS devices.
-
-### Q4: Do we actually *need* Apple Maps or a visual map at all?
-* **Answer:** **A visual map is optional; instant store recognition is primary.**
-* At the physical checkout counter, a user has 2 to 3 seconds before paying. Opening a full-screen map, waiting for tiles to load, and zooming in creates unnecessary friction.
-* **The OptiRewards Solution:**
-  1. **Instant Nearby POI List (Primary In-Store Flow):** On app open, GPS queries businesses within 300–500 feet. The top stores appear at the top as 1-tap quick buttons.
-  2. **Granular Category Fallback:** If GPS is disabled, signal is lost, or a store is unlisted, the user can tap 35+ granular category chips (*Fast Food*, *Supermarket*, *Wholesale Clubs*, *Gas Stations*, *EV Charging*, *Pharmacies*, *Gyms*, *Streaming*).
+### Do we actually *need* a visual map?
+**A visual map is intentionally omitted for speed.** 
+At the physical checkout counter, a user has 2 to 3 seconds before paying. Opening a full-screen map, waiting for tiles to load, and zooming in creates unnecessary friction.
+* **The OptiRewards Solution:** On app open, GPS queries nearby businesses. The closest stores appear as 1-tap quick buttons.
+* **Granular Category Fallback:** If GPS is disabled, signal is lost, or a store is unlisted, you can instantly tap one of the granular category chips (*Fast Food*, *Supermarket*, *Wholesale Clubs*, etc.).
 
 ---
 
@@ -112,18 +103,19 @@ All credit cards feature **official, unaltered card art** directly fetched from 
 
 ---
 
-## 7. Running the Server
+## 7. Running the App
 
-```bash
-# Ingest cards and generate photorealistic assets
-python3 /Users/eric/Dropbox/ai/OptiRewards/ingest_cards.py
+Since OptiRewards is a 100% serverless static application, there are no build steps or backend servers required.
 
-# Start the interactive iOS web prototype
-python3 /Users/eric/Dropbox/ai/OptiRewards/app.py
-```
-Open **`http://localhost:8085`** in your browser or iPhone.
+1. **Local Testing:** You can open `public/index.html` directly in your browser, or spin up a simple local server:
+   ```bash
+   cd public
+   python3 -m http.server 8085
+   ```
+   Then open **`http://localhost:8085`** in your browser.
 
----
+2. **Production:** Simply deploy the `public/` directory to any static hosting provider (e.g., Cloudflare Pages, GitHub Pages, Vercel).
+
 
 ## 8. Customizable User Point Valuations
 
