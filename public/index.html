@@ -734,8 +734,9 @@
   window.activeSearchQuery = '';
 
   function renderCategory(query, emoji, label) {
+     let safeQuery = query.replace(/'/g, '\\x27');
      let isActive = (currentRecommendation && currentRecommendation.query === query && window.activeSearchQuery !== 'online_search');
-     let html = `<button class="chip-btn ${isActive ? 'active' : ''}" onclick="window.activeSearchQuery=''; getRecommendation('${query}')"><span class="chip-emoji">${emoji}</span><span>${label}</span></button>`;
+     let html = `<button class="chip-btn ${isActive ? 'active' : ''}" onclick="window.activeSearchQuery=''; getRecommendation('${safeQuery}')"><span class="chip-emoji">${emoji}</span><span>${label}</span></button>`;
      if (isActive) {
          html += renderRecommendationBox();
      }
@@ -794,7 +795,9 @@
         ${renderCategory('gas_stations', '⛽', 'Gas Stations')}
         ${renderCategory('ev_charging', '⚡', 'EV Charging')}
         ${renderCategory('public_transit', '🚆', 'Transit & Commuting')}
-        ${renderCategory('wholesale_clubs', '🏬', 'Wholesale Clubs')}
+        ${renderCategory('Costco', '🏬', 'Costco (Visa Only)')}
+        ${renderCategory("Sam's Club", '🏬', "Sam's Club")}
+        ${renderCategory("BJ's Wholesale", '🏬', "BJ's Wholesale")}
         ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
         ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
         ${renderCategory('rideshare', '🚗', 'Rideshare (Uber/Lyft)')}
@@ -837,7 +840,9 @@
         ${renderCategory('amazon', '📦', 'Amazon.com')}
         ${renderCategory('restaurants', '🍽️', 'Food Delivery & Dining')}
         ${renderCategory('groceries', '🛒', 'Grocery Delivery')}
-        ${renderCategory('wholesale_clubs', '🏬', 'Wholesale Clubs')}
+        ${renderCategory('Costco', '🏬', 'Costco (Visa Only)')}
+        ${renderCategory("Sam's Club", '🏬', "Sam's Club")}
+        ${renderCategory("BJ's Wholesale", '🏬', "BJ's Wholesale")}
         ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
         ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
       </div>
