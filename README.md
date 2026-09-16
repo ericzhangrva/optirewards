@@ -87,7 +87,7 @@ Rather than artificial micro-splits or bundling unrelated spend, categories are 
 - 🏨 **Hotels & Lodging:** Separated from flights! Directly targets hotel stays, resorts, Airbnb, and boutique lodges.
 - 🚆 **Transit & Commuting:** Subways, buses, trains, ferries, rideshare (Uber/Lyft), parking, and tolls.
 - 💊 **Drugstores & Pharmacies:** Stand-alone pharmacies (CVS, Walgreens, Rite Aid).
-- 📦 **Wholesale Clubs:** Costco, Sam's Club, BJ's Wholesale Club.
+- 📦 **Wholesale Clubs:** Groups Costco, Sam's Club, and BJ's Wholesale Club into a single quick-access button, displaying recommendations for all three concurrently.
 - 🔨 **Home Improvement:** The Home Depot, Lowe's, Ace Hardware.
 - 📱 **Phone & Internet:** AT&T, Verizon, T-Mobile, Comcast/Xfinity, broadband utilities.
 - 🎬 **Streaming & Subscriptions:** Netflix, Disney+, Hulu, Spotify, Apple Music.

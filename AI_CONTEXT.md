@@ -64,7 +64,7 @@ Users can adjust valuations in the UI, overriding the baseline `catalog.json` va
 
 ## 5. UI and Behavioral Requirements
 
-*   **Mobile Layout (Safe Areas & 100dvh):** The app must fill the screen dynamically on iOS (`height: 100dvh`) to prevent the bottom tab bar from floating above or hiding below the Safari navigation bar. The app must use `padding-top: env(safe-area-inset-top)` to push content safely below the OS time/battery status indicators, avoiding overlap.
+*   **Mobile Layout (Safe Areas & 100dvh):** The app must fill the screen dynamically on iOS (`height: 100dvh`) to prevent the bottom tab bar from floating above or hiding below the Safari navigation bar. The app must use `padding-top: env(safe-area-inset-top)` to push content safely below the OS time/battery status indicators, avoiding overlap. Avoid using `position: fixed` for the device-frame or tab bar, as it causes bottom gaps on iOS Safari with rounded corners; instead, rely on `position: absolute` inside the `100dvh` container.
 *   **Search Bars & Input Fields:** 
     *   The native WebKit blue "X" clear button is disabled globally via CSS. Do not use it. We strictly use custom gray `✖` buttons with conditional rendering (`display: ${query ? 'block' : 'none'}`) to ensure reliable, cross-browser consistency.
     *   When an input dynamically triggers a re-render (e.g., typing in the Wallet search bar), focus and cursor position must be synchronously restored within the `render()` function to prevent the iOS virtual keyboard from closing or jumping.
