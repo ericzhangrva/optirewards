@@ -133,3 +133,35 @@ The core function `getLocalRecommendation(query, forcedCatKey)` computes the opt
 
 ### 4.5 Wholesale Clubs Split
 *   Tapping the Wholesale Clubs category triggers a hardcoded `wholesale_clubs_split` query, returning a multi-view recommendation displaying Costco (Visa restriction applied), Sam's Club, and BJ's concurrently.
+
+## 5. View Layer & Tab Specifications
+
+### 5.1 Tab Structure
+The application strictly contains 4 main tabs navigating the UI:
+1.  **In-Store (`instore`)**: Features the GPS button, nearby store list, a live search bar, and 9 granular physical category chips (Dining, Groceries, Gas, Transit, Wholesale, etc.).
+2.  **Online (`online`)**: Features a distinct live search bar, digital merchant shortcuts (Amazon, Apple, Airlines), and category chips tailored for digital spend (Online Retailers, Streaming, Food Delivery).
+3.  **Point Values (`valuations`)**: Features dynamic sliders to adjust cents-per-point valuations. **Crucially:** Sliders are only rendered for currencies that are present in the cards actively enabled in `userWallet`. Includes the 3 hardcoded presets (Cash, Travel, Max).
+4.  **Wallet (`wallet`)**: Displays the full catalog of 199 cards. Cards must be filterable by Issuer, Reward Type (Cash vs Points), and Card Type (Personal vs Business). Users toggle "+ Add" / "✓ In Wallet".
+
+### 5.2 Asset & Data Preservation (CRITICAL)
+When rebuilding this app, an AI must **never attempt to mock or hallucinate `catalog.json` or the `assets/` directory**. The catalog contains 199 hand-curated cards and exact regex patterns. The UI heavily relies on the real image paths (`local_image_path`) for rendering the wallet and recommendations.
+*   **Rule:** Always copy `catalog.json` and the `assets/` directory directly from the original source repository. Do not build them from scratch.
+
+## 6. Data Ingestion & Catalog Maintenance
+
+While the app relies on the static `catalog.json` at runtime, any scripts or processes built to *update* the catalog must adhere to the following rules:
+
+### 6.1 Sourcing Bank Card Art
+Do not generate fake card art. Real, high-resolution PNG/SVG images must be scraped or fetched directly from official bank Content Delivery Networks (CDNs) and saved into the `assets/cards/` directory:
+*   **American Express:** Fetch from `icm.aexp-static.com`
+*   **Capital One:** Fetch from `ecm.capitalone.com`
+*   **Chase / Citi / BofA:** Extract images natively from their respective public credit card marketing pages.
+
+### 6.2 Ingesting Reward Programs
+When adding new cards to the database:
+1.  **Multipliers:** Parse the issuer's terms to extract multipliers (e.g., 3x Dining) and map them strictly to our internal `category_key` strings (e.g., `dining`, `groceries`, `travel`).
+2.  **Rotating Quarters:** For cards like Chase Freedom Flex or Discover it Cash Back, 5% rotating categories must be manually updated in the `quarterly_calendars` object within `catalog.json`, mapped by Quarter (`Q1`, `Q2`, `Q3`, `Q4`).
+
+### 6.3 Wallet Grouping & Taxonomy
+To ensure the Wallet Tab renders correctly, every card object must have a standardized `issuer_id` (e.g., `chase`, `amex`, `capital_one`, `citi`, `bofa`, `discover`, `wells_fargo`, `us_bank`). 
+The UI relies on these exact ID strings to group the 199 cards into collapsible bank sections and dynamically generate the Wallet filter ribbons. Cards must also be accurately tagged with `currency_type` (`points` vs `cashback`) and `card_type` (`personal` vs `business`) to support UI filtering.
