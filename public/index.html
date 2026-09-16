@@ -635,7 +635,19 @@
     
     await new Promise(r => setTimeout(r, 100));
     try {
-      currentRecommendation = getLocalRecommendation(query, forcedCatKey);
+      if (query === 'wholesale_clubs_split') {
+        currentRecommendation = {
+          query: query,
+          is_multi: true,
+          subs: [
+            { title: 'Costco (Visa Only)', rec: getLocalRecommendation('Costco') },
+            { title: "Sam's Club", rec: getLocalRecommendation("Sam's Club") },
+            { title: "BJ's Wholesale", rec: getLocalRecommendation("BJ's Wholesale") }
+          ]
+        };
+      } else {
+        currentRecommendation = getLocalRecommendation(query, forcedCatKey);
+      }
       render();
     } catch (e) {
       console.error(e);
@@ -695,14 +707,12 @@
     }
   }
 
-  function renderRecommendationBox() {
-    if (!currentRecommendation) return '<div id="rec-box-anchor"></div>';
-    const rec = currentRecommendation;
+  function renderSingleRec(rec, customTitle = null) {
     const best = rec.best_card;
-    if (!best) return '<div id="rec-box-anchor"></div>';
-
+    if (!best) return '';
     return `
-      <div class="rec-card-box" id="rec-box-anchor">
+      <div class="rec-card-box" ${customTitle ? 'style="margin-top:0;"' : 'id="rec-box-anchor"'}>
+        ${customTitle ? `<div style="font-size: 13px; font-weight: 800; color: white; margin-bottom: 8px; text-align: left; padding: 0 4px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">${customTitle}</div>` : ''}
         <div class="rec-header" style="justify-content: flex-end; padding: 0 16px 8px 16px;">
           <span class="rec-yield" style="background: #22c55e; color: white; padding: 4px 10px; border-radius: 12px; font-weight: 800; font-size: 13px;">${best.effective_yield_pct}% Yield</span>
         </div>
@@ -728,6 +738,23 @@
         ` : ''}
       </div>
     `;
+  }
+
+  function renderRecommendationBox() {
+    if (!currentRecommendation) return '<div id="rec-box-anchor"></div>';
+    
+    if (currentRecommendation.is_multi) {
+      let html = '<div id="rec-box-anchor" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">';
+      for (let sub of currentRecommendation.subs) {
+        html += renderSingleRec(sub.rec, sub.title);
+      }
+      html += '</div>';
+      return html;
+    }
+    
+    const rec = currentRecommendation;
+    if (!rec.best_card) return '<div id="rec-box-anchor"></div>';
+    return renderSingleRec(rec);
   }
 
 
@@ -795,9 +822,7 @@
         ${renderCategory('gas_stations', '⛽', 'Gas Stations')}
         ${renderCategory('ev_charging', '⚡', 'EV Charging')}
         ${renderCategory('public_transit', '🚆', 'Transit & Commuting')}
-        ${renderCategory('Costco', '🏬', 'Costco (Visa Only)')}
-        ${renderCategory("Sam's Club", '🏬', "Sam's Club")}
-        ${renderCategory("BJ's Wholesale", '🏬', "BJ's Wholesale")}
+        ${renderCategory('wholesale_clubs_split', '🏬', 'Wholesale Clubs')}
         ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
         ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
         ${renderCategory('rideshare', '🚗', 'Rideshare (Uber/Lyft)')}
@@ -840,9 +865,7 @@
         ${renderCategory('amazon', '📦', 'Amazon.com')}
         ${renderCategory('restaurants', '🍽️', 'Food Delivery & Dining')}
         ${renderCategory('groceries', '🛒', 'Grocery Delivery')}
-        ${renderCategory('Costco', '🏬', 'Costco (Visa Only)')}
-        ${renderCategory("Sam's Club", '🏬', "Sam's Club")}
-        ${renderCategory("BJ's Wholesale", '🏬', "BJ's Wholesale")}
+        ${renderCategory('wholesale_clubs_split', '🏬', 'Wholesale Clubs')}
         ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
         ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
       </div>
