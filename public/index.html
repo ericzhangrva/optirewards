@@ -195,25 +195,20 @@
   .tab-icon { font-size: 17px; }
 
   @media (max-width: 768px) {
-    html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; overscroll-behavior: none; background: var(--bg-primary); }
+    html, body { margin: 0; padding: 0; background: var(--bg-primary); }
     .device-frame {
-      position: fixed !important;
-      top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
       max-width: 100% !important;
-      width: 100% !important;
-      height: 100% !important;
+      height: 100vh !important;
+      height: 100dvh !important;
       border: none !important;
       border-radius: 0 !important;
       box-shadow: none !important;
       padding-top: env(safe-area-inset-top) !important;
-      padding-bottom: 0 !important;
     }
     .dynamic-island { display: none !important; }
     .status-bar { display: none !important; }
     .app-content { padding-top: 10px !important; padding-bottom: calc(50px + env(safe-area-inset-bottom)) !important; }
     .tab-bar {
-      position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
-      height: auto !important;
       padding: 6px 0 calc(6px + env(safe-area-inset-bottom)) 0 !important;
     }
   }
