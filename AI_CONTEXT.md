@@ -1,74 +1,123 @@
-# AI Agent Context & Developer Blueprint: OptiRewards
+# OptiRewards: AI Agent Design Document & Blueprint
 
 > **Target Audience:** Autonomous AI Agents, LLM Code Assistants, and Systems Engineers.
-> **Role:** Authoritative reference for codebase architecture, data schemas, and extension workflows.
+> **Purpose:** This document provides the rigorous architectural, logic, and UI specifications required to replicate OptiRewards exactly, without needing to reference the original source code.
 
----
+## 1. System Architecture (Serverless Client-Side)
 
-## 1. System Architecture Overview (Serverless)
+OptiRewards operates as a **100% Serverless, Client-Side Application**. It relies purely on static file hosting for 0ms latency and full offline capability.
 
-OptiRewards operates as a **100% Serverless, Client-Side Application**. It relies purely on static file hosting and a global CDN (Cloudflare Pages) for 0ms latency and full offline capability.
+*   **`index.html`**: A Vanilla JS Single Page Application (SPA). Contains all CSS, DOM logic, state management, and the recommendation engine.
+*   **`catalog.json`**: The static database containing card metadata, reward rules, merchant regex mappings, and quarterly calendars.
+*   **No Build Step:** There is no Webpack, Babel, or React. Everything runs natively in modern browsers.
+*   **PWA Readiness:** `index.html` requires `<link rel="manifest" href="manifest.json">`, `<meta name="apple-mobile-web-app-capable" content="yes">`, and `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">` to function as an installable Progressive Web App.
 
-```mermaid
-graph TD
-    subgraph Client Application (Browser / iOS WebKit)
-        App[index.html: Vanilla JS UI & Recommendation Engine]
-        LocalStorage[(Browser localStorage: Wallet & Valuations)]
-        
-        App -- Fetches on boot --> Catalog
-        App -- Reads/Writes --> LocalStorage
-        App -- Computes --> Recommendations
-    end
+## 2. Data Models & State Management
 
-    subgraph CDN Layer (Cloudflare Pages)
-        Catalog[catalog.json: 199 cards, merchant regex]
-        Assets[assets/cards/*.png, *.svg]
-        AppUI[index.html]
-    end
+### 2.1 `catalog.json` Schema
+The static JSON payload fetched on boot must conform to this structure:
+```json
+{
+  "metadata": { "version": "1.0", "card_count": 199 },
+  "quarterly_calendars": {
+    "chase_freedom_flex": { "Q1": ["groceries"], "Q3": ["gas_stations", "public_transit"] }
+  },
+  "merchant_mappings": [
+    {
+      "id": "m_0",
+      "merchant_name": "Kroger Family",
+      "merchant_pattern": "kroger|ralphs|dillons",
+      "category_key": "groceries",
+      "brand_icon": "store"
+    }
+  ],
+  "cards": [
+    {
+      "id": "chase_sapphire_reserve",
+      "name": "Chase Sapphire Reserve",
+      "issuer_id": "chase",
+      "network": "Visa",
+      "card_type": "personal",
+      "currency_name": "Ultimate Rewards",
+      "currency_type": "points",
+      "point_valuation_cents": 2.0,
+      "base_rate": 1.0,
+      "annual_fee": 550,
+      "local_image_path": "assets/cards/chase_sapphire_reserve.png",
+      "categories": [
+        { "category_key": "dining", "category_name": "Dining", "multiplier": 3.0 },
+        { "category_key": "travel", "category_name": "Travel", "multiplier": 3.0 }
+      ]
+    }
+  ]
+}
 ```
 
----
+### 2.2 Client-Side State
+The app manages state purely in memory and persists critical data to `localStorage`:
+*   **Persistent State (`localStorage`)**:
+    *   `userWallet`: JSON Array of full card objects the user has added to their wallet.
+    *   `userValuations`: JSON Dictionary mapping `currency_name` to a float `cents_per_point`.
+*   **In-Memory UI State (`index.html`)**:
+    *   `selectedIssuerFilter`, `selectedRewardFilter`, `selectedTypeFilter`: String states that control the visual filtering of the Wallet tab.
+    *   **Valuation Presets:** Hardcoded preset functions in the UI:
+        *   `cash`: Sets all valuations to 1.0.
+        *   `travel`: Hilton=0.5, Marriott=0.8, IHG=0.5, all others=1.5.
+        *   `max`: Ultimate Rewards=2.2, Membership Rewards=2.0, Capital One Miles=1.8, Bilt Rewards=2.2, ThankYou Points=1.8.
 
-## 2. Directory & File Organization
+## 3. Core Algorithms & Logic
 
-The repository has been thoroughly cleaned to enforce this serverless architecture:
+### 3.1 Recommendation Engine (Yield Calculation)
+The core function `getLocalRecommendation(query, forcedCatKey)` computes the optimal card:
+1.  **Merchant Resolution:** 
+    *   Iterates through `catalog.merchant_mappings`. If the query regex matches `merchant_pattern` or includes `merchant_name`, it sets `categoryKey`.
+    *   **Heuristic Fallbacks:** If no match, it aggressively scans the query for exact keywords:
+        *   `grocery`, `supermarket`, `kroger`, `safeway`, `publix`, `aldi`, `heb` -> `groceries`
+        *   `restaurant`, `cafe`, `burger`, `pizza`, `mcdonald`, `chipotle` -> `dining`
+        *   `gas`, `fuel`, `shell`, `exxon`, `wawa` -> `gas_stations`
+        *   `airline`, `flight`, `delta`, `united` -> `travel`
+        *   `hotel`, `resort`, `marriott`, `hilton`, `hyatt` -> `hotels`
+        *   `uber`, `lyft` -> `rideshare`
+2.  **Category Equivalency (`isCategoryMatch`):**
+    *   The app uses a 2D array of strict equivalencies: `['restaurants', 'dining', 'food_delivery', 'food']`, `['flights', 'airfare', 'travel']`, `['hotels', 'travel']`, `['groceries', 'supermarket', 'grocery_delivery']`, etc.
+    *   It also checks if `cardCategory.startsWith(queryCategory)` or vice versa.
+3.  **Multiplier Evaluation:**
+    *   Base rate is applied.
+    *   Checks `card.categories` for matches against `categoryKey` using the equivalency logic.
+    *   **Rotating Bonus Logic:** If `category_key` is `rotating_bonus`, it checks `catalog.quarterly_calendars[card.id][currentQuarter]`. If a match exists, applies 5%.
+4.  **Yield Math:** `Effective Yield = Multiplier × Valuation Cents`.
+5.  **Edge Cases:** Costco only accepts Visa. If query contains "costco" and card network is not Visa, `yieldPct` is forced to 0.0.
+6.  **Sorting & Tie-Breakers:** Cards are sorted by `Effective Yield` descending. Ties are broken by the card's index position in `userWallet` (lower index = higher priority). Cards **not** in the wallet are forced to the lowest possible priority (`0`).
 
-*   **`index.html`**: The single-page application. Contains all CSS, UI rendering logic, and the Javascript recommendation engine.
-*   **`catalog.json`**: The sole source of truth for credit card data. It contains an array of 199 cards, their reward rules, 5% rotating quarterly calendars, and regex-based merchant mappings. **To update a multiplier or add a card, edit this file directly.**
-*   **`assets/`**: Contains photorealistic, unaltered PNG/SVG card artwork fetched directly from bank CDNs.
-*   **`scripts/`**: Contains auxiliary developer tools.
-    *   `download_all_official_cards.py`: Used to fetch new card artwork from official bank URLs.
-    *   `serve.py`: A simple Python HTTP server to test the app locally (`localhost:8085`).
-*   **`README.md` & `AI_CONTEXT.md`**: Project documentation and agent guidelines.
+### 3.2 GPS & OpenStreetMap Overpass Integration
+*   Uses Overpass API to query nodes within 5000m:
+    *   `amenity~restaurant|fast_food|cafe` -> `dining`
+    *   `shop~supermarket|convenience` -> `groceries`
+    *   `shop~wholesale` -> `wholesale_clubs`
+    *   `shop~department_store|clothes` -> `online_shopping`
+*   Calculates Haversine distance, deduplicates by name, sorts by distance, and renders the top 5 `poi-item`s. Tapping one passes its exact `catKey` to the recommendation engine as `forcedCatKey`.
 
-*(Note: All legacy Python backend logic, SQLite databases (`cards.db`), and data ingestion scripts have been permanently retired in favor of the single `catalog.json` architecture).*
+## 4. UI / UX Specifications
 
----
+### 4.1 Simulated iOS Native Interface
+*   **Simulated UI Quirks:** The web interface renders a `.dynamic-island` (with mock camera/sensor divs) and a `.status-bar` featuring a real-time JS clock (`setInterval(updateTime, 1000)`) to perfectly mock a native iPhone environment when viewed on desktop browsers.
 
-## 3. The Recommendation Engine (Javascript)
+### 4.2 Global CSS & Mobile Layout
+*   **Mobile Device Frame:** The `.device-frame` class expands on mobile (`max-width: 768px`) to:
+    ```css
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    ```
+    **Critical:** `position: fixed` must NOT be used for the `.device-frame` or `.tab-bar` on iOS Safari. Use `position: absolute` within the `100dvh` container.
 
-Because the app is serverless, all math happens directly in `index.html`:
-1.  **Resolution:** User query (e.g. "Amazon") is regex-matched against `catalog.merchant_mappings` to resolve to a category key (e.g. `amazon` or `online_retail`).
-2.  **State Loading:** The engine reads `userWallet` (array of active card IDs) and `userValuations` (custom cents-per-point) from `localStorage`.
-3.  **Computation:** It iterates through the user's active wallet, checking each card's rules against the resolved category. It checks `catalog.quarterly_calendars` for active 5% rotations.
-4.  **Yield Formula:** `Effective Yield = Match Multiplier × Point Valuation`.
-5.  **Sorting:** Cards are sorted by `Effective Yield` descending, instantly returning the top card.
+### 4.3 Search Inputs & Focus Preservation
+*   Native WebKit clear buttons (`::-webkit-search-cancel-button`) are disabled. The app uses a custom `✖` button.
+*   Because the app is a VDOM-less SPA, `render()` wipes `innerHTML`. The active input ID and cursor selection (`selectionStart`/`selectionEnd`) are cached before rendering and synchronously restored afterward to prevent the iOS keyboard from dismissing mid-keystroke.
 
----
+### 4.4 Drag-and-Drop Wallet Ordering
+*   In the Wallet tab, users drag a handle to reorder cards using touch events (`touchstart`, `touchmove`, `touchend`).
+*   During drag, the item scales up (`scale(1.03)`) and gains a shadow. A `transform: translateY` is applied dynamically to siblings to create space.
+*   On release, the visual order mutates the `userWallet` array in `localStorage`.
 
-## 4. Customizing Point Valuations
-
-Users can adjust valuations in the UI, overriding the baseline `catalog.json` values. This data is written to `localStorage.getItem('userValuations')` as a dictionary (e.g., `{"Ultimate Rewards": 2.0, "Membership Rewards": 1.8}`).
-
----
-
-## 5. UI and Behavioral Requirements
-
-*   **Mobile Layout (Safe Areas & 100dvh):** The app must fill the screen dynamically on iOS (`height: 100dvh`) to prevent the bottom tab bar from floating above or hiding below the Safari navigation bar. The app must use `padding-top: env(safe-area-inset-top)` to push content safely below the OS time/battery status indicators, avoiding overlap. Avoid using `position: fixed` for the device-frame or tab bar, as it causes bottom gaps on iOS Safari with rounded corners; instead, rely on `position: absolute` inside the `100dvh` container.
-*   **Search Bars & Input Fields:** 
-    *   The native WebKit blue "X" clear button is disabled globally via CSS. Do not use it. We strictly use custom gray `✖` buttons with conditional rendering (`display: ${query ? 'block' : 'none'}`) to ensure reliable, cross-browser consistency.
-    *   When an input dynamically triggers a re-render (e.g., typing in the Wallet search bar), focus and cursor position must be synchronously restored within the `render()` function to prevent the iOS virtual keyboard from closing or jumping.
-*   **OpenStreetMap Integration (Overpass API):** The "Nearby Stores" feature dynamically fetches real buildings and nodes within a 5000-meter radius using the free Overpass API (`nwr`). It parses OSM tags (`amenity=cafe`, `shop=supermarket`) into internal category keys (`dining`, `groceries`) and calculates precise Haversine distances.
-*   **Recommendation Hand-off:** When a user clicks a store from the GPS nearby list, the exact category key derived from OpenStreetMap (e.g., `dining`) is passed explicitly into `getRecommendation(query, forcedCatKey)`. This bypasses the text scanner and ensures obscure local merchants (like "Sugar Shack") are accurately evaluated without needing to be mapped in the JSON.
-*   **Fallback Keyword Heuristics:** If a search query is completely unknown (not in `catalog.merchant_mappings` and lacks a `forcedCatKey`), the engine scans the raw string for common keywords (e.g., "pizza", "burger" -> `dining`; "kroger", "publix" -> `groceries`) before giving up and returning a 1x base-rate card.
-*   **AwardWallet Data:** The proprietary AwardWallet Merchant Lookup API is closed-source and protected by reCAPTCHA. Do not attempt to dynamically proxy or scrape AwardWallet in real-time. We rely exclusively on our static JSON mappings and heuristic fallbacks for instant, serverless resolution.
+### 4.5 Wholesale Clubs Split
+*   Tapping the Wholesale Clubs category triggers a hardcoded `wholesale_clubs_split` query, returning a multi-view recommendation displaying Costco (Visa restriction applied), Sam's Club, and BJ's concurrently.
