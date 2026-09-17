@@ -1,0 +1,1098 @@
+
+  const CATALOG_URL = 'catalog.json?v=' + new Date().getTime();
+  let catalog = null;
+  let allCards = [];
+  let userWallet = [];
+  let userValuations = {};
+  let nearbyStores = [];
+  let quarterlyData = null;
+  
+  let currentTab = 'instore';
+  let locationName = "Locating...";
+  let gpsLoaded = false;
+  let currentRecommendation = null;
+  let walletSearchQuery = '';
+  let selectedIssuerFilter = 'all';
+  let selectedRewardFilter = 'all';
+  let selectedTypeFilter = 'all';
+  let activeExpandedCardId = null;
+  let selectedNetworkFilter = 'all';
+
+  function updateTime() {
+    const d = new Date();
+    const el = document.getElementById('current-time');
+    if (el) el.innerText = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  }
+  setInterval(updateTime, 1000);
+  setTimeout(() => { if (!gpsLoaded) requestUserGPS(); }, 500);
+
+
+  async function initApp() {
+    try {
+      const res = await fetch(CATALOG_URL);
+      if (!res.ok) throw new Error("Network error fetching catalog");
+      catalog = await res.json();
+      allCards = catalog.cards;
+      
+      const savedWallet = localStorage.getItem('userWallet');
+      if (savedWallet) userWallet = JSON.parse(savedWallet);
+      
+      const savedVals = localStorage.getItem('userValuations');
+      if (savedVals) userValuations = JSON.parse(savedVals);
+
+      const wb = document.getElementById('wallet-badge');
+      if (wb) wb.innerText = userWallet.length;
+      
+      // Clear initial stores, force user to click GPS
+      nearbyStores = [];
+
+      render();
+    } catch(e) {
+      console.error("Failed to load catalog:", e);
+      alert("Error loading catalog data. Check console.");
+    }
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-item').forEach((el, idx) => {
+      el.classList.toggle('active', 
+        (tab === 'instore' && idx === 0) || 
+        (tab === 'online' && idx === 1) || 
+        (tab === 'valuations' && idx === 2) || 
+        (tab === 'wallet' && idx === 3)
+      );
+    });
+    render();
+  }
+
+  function requestUserGPS() {
+    if (!navigator.geolocation) {
+      locationName = "Current Location";
+      render();
+      return;
+    }
+    const el = document.getElementById('gps-status-text');
+    if (el) el.innerText = "Locating...";
+    
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        gpsLoaded = true;
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        
+        // Fetch city name via Nominatim
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+            const data = await res.json();
+            if (data && data.address) {
+                const city = data.address.city || data.address.town || data.address.village || data.address.county || "Your Location";
+                locationName = `${city}${data.address.state ? ', ' + data.address.state : ''}`;
+            } else {
+                locationName = "Current Location";
+            }
+        } catch(e) {
+            locationName = "Current Location";
+        }
+        
+        // Fetch real nearby merchants via Overpass API
+        try {
+            const query = `[out:json];(nwr["amenity"~"restaurant|fast_food|cafe"](around:5000,${lat},${lng});nwr["shop"~"supermarket|convenience|wholesale|department_store|clothes"](around:5000,${lat},${lng}););out center 30;`;
+            const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+            const overpassRes = await fetch(url);
+            const overpassData = await overpassRes.json();
+            
+            let merchants = [];
+            for (let e of overpassData.elements) {
+                if (e.tags && e.tags.name) {
+                    let catString = 'Shop';
+                    let catKey = 'general';
+                    if (e.tags.amenity) {
+                        if (['restaurant', 'fast_food', 'cafe'].includes(e.tags.amenity)) { catString = 'Dining'; catKey = 'dining'; }
+                    } else if (e.tags.shop) {
+                        if (['supermarket', 'convenience'].includes(e.tags.shop)) { catString = 'Groceries'; catKey = 'groceries'; }
+                        else if (e.tags.shop === 'wholesale') { catString = 'Wholesale'; catKey = 'wholesale_clubs'; }
+                        else { catString = 'Shopping'; catKey = 'online_shopping'; }
+                    }
+                    
+                    const R = 3958.8; // miles
+                    const eLat = e.lat || (e.center && e.center.lat) || lat;
+                    const eLon = e.lon || (e.center && e.center.lon) || lng;
+                    const dLat = (eLat - lat) * Math.PI / 180;
+                    const dLon = (eLon - lng) * Math.PI / 180;
+                    const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat * Math.PI / 180) * Math.cos(eLat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                    const d = R * c;
+                    
+                    merchants.push({
+                        name: e.tags.name,
+                        category: catString,
+                        catKey: catKey,
+                        distanceNum: d,
+                        distance: d.toFixed(1) + ' mi'
+                    });
+                }
+            }
+            
+            // Deduplicate and get closest 5
+            let unique = [];
+            let seen = new Set();
+            merchants.sort((a,b) => a.distanceNum - b.distanceNum);
+            for (let m of merchants) {
+               if (!seen.has(m.name)) {
+                   seen.add(m.name);
+                   unique.push(m);
+                   if (unique.length >= 5) break;
+               }
+            }
+            
+            if (unique.length > 0) {
+                nearbyStores = unique;
+            } else {
+                nearbyStores = [{"name": "No stores found nearby", "category": "Try searching manually", "distance": "--"}];
+            }
+        } catch(e) {
+            console.error("Overpass failed", e);
+        }
+        
+        render();
+      },
+      (err) => {
+        gpsLoaded = true;
+        locationName = "Current Location";
+        render();
+      },
+      { timeout: 5000, enableHighAccuracy: true }
+    );
+  }
+
+  function toggleWalletCard(cardId) {
+    const idx = userWallet.findIndex(c => c.id === cardId);
+    if (idx >= 0) {
+      userWallet.splice(idx, 1);
+    } else {
+      const card = allCards.find(c => c.id === cardId);
+      if (card) userWallet.push(card);
+    }
+    localStorage.setItem('userWallet', JSON.stringify(userWallet));
+    const wb = document.getElementById('wallet-badge');
+    if (wb) wb.innerText = userWallet.length;
+    render();
+  }
+
+  function updateValuation(currency, val) {
+    userValuations[currency] = parseFloat(val);
+    localStorage.setItem('userValuations', JSON.stringify(userValuations));
+    
+    const disp = document.getElementById(`val-disp-${currency.replace(/\s+/g, '_')}`);
+    if (disp) disp.innerText = `${parseFloat(val).toFixed(1)}¢`;
+    
+    if (currentRecommendation) {
+      getRecommendation(currentRecommendation.query);
+    }
+  }
+
+  function applyValuationPreset(preset) {
+    if (preset === 'cash') {
+      for (let k in userValuations) {
+        userValuations[k] = 1.0;
+      }
+    } else if (preset === 'travel') {
+      for (let k in userValuations) {
+        if (k.includes('Hilton')) userValuations[k] = 0.5;
+        else if (k.includes('Marriott')) userValuations[k] = 0.8;
+        else if (k.includes('IHG')) userValuations[k] = 0.5;
+        else userValuations[k] = 1.5;
+      }
+    } else if (preset === 'max') {
+      const maxRates = {"Ultimate Rewards": 2.2, "Membership Rewards": 2.0, "Capital One Miles": 1.8, "Bilt Rewards": 2.2, "ThankYou Points": 1.8};
+      for (let k in userValuations) {
+        if (maxRates[k]) userValuations[k] = maxRates[k];
+      }
+    }
+    localStorage.setItem('userValuations', JSON.stringify(userValuations));
+    render();
+  }
+
+    function isCategoryMatch(cardCategory, queryCategory) {
+    const c = cardCategory.toLowerCase();
+    const q = queryCategory.toLowerCase();
+    if (c === q) return true;
+    if (c === 'all' || c === 'general') return true;
+    
+    const equivalents = [
+        ['restaurants', 'dining', 'food_delivery', 'food'],
+        ['groceries', 'supermarket', 'grocery_delivery'],
+        ['gas_stations', 'gas'],
+        ['flights', 'airfare', 'travel'],
+        ['hotels', 'travel'],
+        ['travel_portal', 'travel'],
+        ['rental_cars', 'travel'],
+        ['public_transit', 'transit', 'travel'],
+        ['rideshare', 'transit', 'travel'],
+        ['online_shopping', 'shopping']
+    ];
+    
+    for (let group of equivalents) {
+        if (group.includes(c) && group.includes(q)) return true;
+    }
+    
+    if (c.startsWith(q) || q.startsWith(c)) return true;
+    
+    return false;
+  }
+
+  function getLocalRecommendation(query, forcedCatKey) {
+    if (!catalog) return null;
+    let categoryKey = 'general';
+    let merchantName = null;
+    
+    const qLower = query.toLowerCase();
+    for (let m of catalog.merchant_mappings) {
+      try {
+        const regex = new RegExp(m.merchant_pattern, 'i');
+        if (regex.test(query) || qLower.includes(m.merchant_name.toLowerCase())) {
+          categoryKey = m.category_key;
+          merchantName = m.merchant_name;
+          break;
+        }
+      } catch(e) {}
+    }
+    
+    if (categoryKey === 'general') {
+        if (forcedCatKey) {
+            categoryKey = forcedCatKey;
+        } else {
+        const qLower = query.toLowerCase();
+        if (qLower.includes('grocery') || qLower.includes('supermarket') || qLower.includes('kroger') || qLower.includes('food lion') || qLower.includes('safeway') || qLower.includes('publix') || qLower.includes('wegmans') || qLower.includes('aldi') || qLower.includes('trader joe') || qLower.includes('heb')) {
+            categoryKey = 'groceries';
+        } else if (qLower.includes('restaurant') || qLower.includes('cafe') || qLower.includes('food') || qLower.includes('dining') || qLower.includes('burger') || qLower.includes('pizza') || qLower.includes('sushi') || qLower.includes('steak') || qLower.includes('taco') || qLower.includes('mcdonald') || qLower.includes('starbucks') || qLower.includes('wendy') || qLower.includes('chipotle') || qLower.includes('chick-fil')) {
+            categoryKey = 'dining';
+        } else if (qLower.includes('gas') || qLower.includes('fuel') || qLower.includes('shell') || qLower.includes('chevron') || qLower.includes('exxon') || qLower.includes('bp') || qLower.includes('mobil') || qLower.includes('speedway') || qLower.includes('wawa')) {
+            categoryKey = 'gas_stations';
+        } else if (qLower.includes('airline') || qLower.includes('flight') || qLower.includes('airways') || qLower.includes('delta') || qLower.includes('united') || qLower.includes('american') || qLower.includes('southwest')) {
+            categoryKey = 'travel';
+        } else if (qLower.includes('hotel') || qLower.includes('motel') || qLower.includes('resort') || qLower.includes('marriott') || qLower.includes('hilton') || qLower.includes('hyatt')) {
+            categoryKey = 'hotels';
+        } else if (qLower.includes('uber') || qLower.includes('lyft')) {
+            categoryKey = 'rideshare';
+        } else {
+            categoryKey = query;
+        }
+        }
+    }
+
+    let activeCards = userWallet;
+    let isSimulated = false;
+    if (activeCards.length === 0) {
+      activeCards = catalog.cards.filter(c => c.is_active);
+      isSimulated = true;
+    }
+
+    const scored = [];
+    for (let card of activeCards) {
+      let matchMultiplier = card.base_rate;
+      let ruleDesc = "Base Rate";
+      let isRotating = false;
+
+      if (card.categories) {
+        for (let cat of card.categories) {
+          // Check for rotating bonus first
+          if (cat.is_rotating || cat.category_key === 'rotating_bonus') {
+             const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q" + Math.ceil((new Date().getMonth() + 1) / 3)] : null;
+             let rotMatch = false;
+             if (validQuarters) {
+                for (let vq of validQuarters) {
+                   if (isCategoryMatch(vq, categoryKey)) rotMatch = true;
+                }
+             }
+             if (rotMatch) {
+                if (cat.multiplier > matchMultiplier) {
+                   matchMultiplier = cat.multiplier;
+                   ruleDesc = cat.category_name;
+                   isRotating = true;
+                }
+             }
+          } else if (isCategoryMatch(cat.category_key, categoryKey)) {
+             if (cat.multiplier > matchMultiplier) {
+                matchMultiplier = cat.multiplier;
+                ruleDesc = cat.category_name;
+             }
+          }
+        }
+      }
+
+      const valCents = userValuations[card.currency_name] || card.point_valuation_cents || 1.0;
+      let yieldPct = matchMultiplier * valCents;
+      let isAccepted = true;
+      let appliedRuleFinal = ruleDesc;
+      
+      if (query.toLowerCase().includes('costco') && card.network && !card.network.toLowerCase().includes('visa')) {
+          isAccepted = false;
+          yieldPct = 0.0;
+          appliedRuleFinal = "Not accepted (Costco only takes Visa)";
+      }
+
+      scored.push({
+        card_id: card.id,
+        card_name: card.name,
+        local_image_path: card.local_image_path,
+        multiplier: isAccepted ? matchMultiplier : 0,
+        currency_name: card.currency_name,
+        currency_type: card.currency_type,
+        valuation_cents: valCents,
+        effective_yield_pct: Math.round(yieldPct * 100) / 100,
+        applied_rule: appliedRuleFinal,
+        is_rotating: isRotating
+      });
+    }
+
+    scored.sort((a, b) => {
+      if (Math.abs(b.effective_yield_pct - a.effective_yield_pct) > 0.001) {
+        return b.effective_yield_pct - a.effective_yield_pct;
+      }
+      // Tie-breaker: user's wallet order (earlier = higher priority)
+      const idxA = userWallet.findIndex(c => c.id === a.card_id);
+      const idxB = userWallet.findIndex(c => c.id === b.card_id);
+      // Lower index = higher priority; cards not in wallet get lowest priority
+      const rA = idxA >= 0 ? (userWallet.length - idxA) : 0;
+      const rB = idxB >= 0 ? (userWallet.length - idxB) : 0;
+      return rB - rA;
+    });
+    const best = scored[0];
+    return {
+      query: query,
+      resolved_category: categoryKey,
+      merchant_name: merchantName,
+      is_simulated_wallet: isSimulated,
+      best_card: best,
+      runner_ups: scored.slice(1, 3)
+    };
+  }
+
+  async function getRecommendation(query, forcedCatKey) {
+    if (!query) return;
+    if (currentRecommendation && currentRecommendation.query === query) {
+        currentRecommendation = null;
+        render();
+        return;
+    }
+    const elId = 'rec-box-anchor';
+    const el = document.getElementById(elId);
+    if (el) el.innerHTML = '<div style="text-align: center; padding: 20px;">Calculating...</div>';
+    
+    await new Promise(r => setTimeout(r, 100));
+    try {
+      if (query === 'wholesale_clubs_split') {
+        currentRecommendation = {
+          query: query,
+          is_multi: true,
+          subs: [
+            { title: 'Costco (Visa Only)', rec: getLocalRecommendation('Costco') },
+            { title: "Sam's Club", rec: getLocalRecommendation("Sam's Club") },
+            { title: "BJ's Wholesale", rec: getLocalRecommendation("BJ's Wholesale") }
+          ]
+        };
+      } else {
+        currentRecommendation = getLocalRecommendation(query, forcedCatKey);
+      }
+      render();
+    } catch (e) {
+      console.error(e);
+      if (el) el.innerHTML = 'Error';
+    }
+  }
+
+  function render() {
+    const container = document.getElementById('main-content');
+    // Save scroll positions of all filter-scroll elements before re-render
+    const scrollPositions = {};
+    container.querySelectorAll('.filter-scroll').forEach((el, i) => {
+      scrollPositions[i] = el.scrollLeft;
+    });
+    
+    // Save active element (for search input)
+    let activeId = null;
+    let cursorStart = 0;
+    let cursorEnd = 0;
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+      activeId = document.activeElement.id;
+      cursorStart = document.activeElement.selectionStart;
+      cursorEnd = document.activeElement.selectionEnd;
+    }
+    
+    const prevTab = currentTab;
+
+    if (currentTab === 'instore') {
+      container.innerHTML = renderInStoreTab();
+    } else if (currentTab === 'online') {
+      container.innerHTML = renderOnlineTab();
+    } else if (currentTab === 'valuations') {
+      container.innerHTML = renderValuationsTab();
+    } else if (currentTab === 'wallet') {
+      container.innerHTML = renderWalletTab();
+      if (selectedIssuerFilter === 'in_wallet') initWalletDrag();
+    }
+
+    // Restore scroll positions and focus if same tab
+    if (prevTab === currentTab) {
+      // Restore focus synchronously to prevent iOS keyboard drop
+      if (activeId) {
+        const el = document.getElementById(activeId);
+        if (el) {
+          el.focus();
+          try { el.setSelectionRange(cursorStart, cursorEnd); } catch(e) {}
+        }
+      }
+      
+      requestAnimationFrame(() => {
+        container.querySelectorAll('.filter-scroll').forEach((el, i) => {
+          if (scrollPositions[i] !== undefined) {
+            el.scrollLeft = scrollPositions[i];
+          }
+        });
+      });
+    }
+  }
+
+  function renderSingleRec(rec, customTitle = null) {
+    const best = rec.best_card;
+    if (!best) return '';
+    return `
+      <div class="rec-card-box" ${customTitle ? 'style="margin-top:0;"' : 'id="rec-box-anchor"'}>
+        ${customTitle ? `<div style="font-size: 13px; font-weight: 800; color: white; margin-bottom: 8px; text-align: left; padding: 0 4px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">${customTitle}</div>` : ''}
+        <div class="rec-header" style="justify-content: flex-end; padding: 0 16px 8px 16px;">
+          <span class="rec-yield" style="background: #22c55e; color: white; padding: 4px 10px; border-radius: 12px; font-weight: 800; font-size: 13px;">${best.effective_yield_pct}% Yield</span>
+        </div>
+        <div class="rec-card-img">
+          <img src="/${best.local_image_path}" alt="${best.card_name}">
+        </div>
+        <div>
+          <div class="rec-card-name">${best.card_name}</div>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;">
+            Rule: <b>${best.applied_rule}</b> • Currency: ${best.currency_name} (@ ${userValuations[best.currency_name] || 1.0}¢/pt)
+          </div>
+        </div>
+        ${rec.runner_ups && rec.runner_ups.length > 0 ? `
+          <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">
+            <div style="font-size: 10px; font-weight: 700; color: var(--text-secondary); margin-bottom: 5px;">RUNNER-UP CHOICES</div>
+            ${rec.runner_ups.map(c => `
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px;">
+                <span style="color: #cbd5e1;">${c.card_name}</span>
+                <span style="font-weight: 700; color: #94a3b8;">${c.effective_yield_pct}% (${c.multiplier}x)</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  function renderRecommendationBox() {
+    if (!currentRecommendation) return '<div id="rec-box-anchor"></div>';
+    
+    if (currentRecommendation.is_multi) {
+      let html = '<div id="rec-box-anchor" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">';
+      for (let sub of currentRecommendation.subs) {
+        html += renderSingleRec(sub.rec, sub.title);
+      }
+      html += '</div>';
+      return html;
+    }
+    
+    const rec = currentRecommendation;
+    if (!rec.best_card) return '<div id="rec-box-anchor"></div>';
+    return renderSingleRec(rec);
+  }
+
+
+  window.activeSearchQuery = '';
+
+  function renderCategory(query, emoji, label) {
+     let safeQuery = query.replace(/'/g, '\\x27');
+     let isActive = (currentRecommendation && currentRecommendation.query === query && window.activeSearchQuery !== 'online_search');
+     let html = `<button class="chip-btn ${isActive ? 'active' : ''}" onclick="window.activeSearchQuery=''; getRecommendation('${safeQuery}')"><span class="chip-emoji">${emoji}</span><span>${label}</span></button>`;
+     if (isActive) {
+         html += renderRecommendationBox();
+     }
+     return html;
+  }
+  
+  function renderPOI(query, emoji, name, sub, forcedCatKey) {
+     let safeQuery = query.replace(/'/g, "\\'");
+     let isActive = (currentRecommendation && currentRecommendation.query === query && window.activeSearchQuery !== 'online_search');
+     let arg2 = forcedCatKey ? `'${forcedCatKey}'` : 'null';
+     let html = `<div class="poi-item" onclick="window.activeSearchQuery=''; getRecommendation('${safeQuery}', ${arg2})"><div class="poi-info"><div><div class="poi-name">${name}</div><div class="poi-sub">${sub}</div></div></div><div class="poi-badge">Check</div></div>`;
+     if (isActive) {
+         html += renderRecommendationBox();
+     }
+     return html;
+  }
+
+  function renderInStoreTab() {
+    const q = quarterlyData ? quarterlyData.current_quarter : 'Q3';
+    let searchRec = (window.activeSearchQuery === 'instore_search' && currentRecommendation) ? renderRecommendationBox() : '';
+    
+    return `
+      <div class="gps-bar">
+        <div class="gps-info">
+          <span>📍</span>
+          <span id="gps-status-text">${locationName}</span>
+        </div>
+        <button class="gps-btn" onclick="requestUserGPS()">Use My GPS</button>
+      </div>
+
+      <div class="section-label">
+        <span>Nearby Stores Around You (${nearbyStores.length})</span>
+        <span style="color: var(--accent); cursor: pointer;" onclick="requestUserGPS()">Update</span>
+      </div>
+
+      <div class="poi-list">
+        ${nearbyStores.map(s => renderPOI(s.name, '🏪', s.name, (s.category.replace('_', ' ')) + ' • ' + s.distance, s.catKey)).join('')}
+      </div>
+
+      <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px; margin-top: 20px;">
+        <span>🔍</span>
+        <input type="search" id="instore-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search any store..." value="${window.activeSearchQuery === 'instore_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='instore_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); } else { document.getElementById('instore-clear-btn').style.display='block'; }">
+        <span id="instore-clear-btn" style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px; display: ${(window.activeSearchQuery === 'instore_search' && currentRecommendation && currentRecommendation.query) ? 'block' : 'none'};" onclick="document.getElementById('instore-search-input').value=''; currentRecommendation=null; window.activeSearchQuery=''; render();">✖</span>
+        <button onclick="window.activeSearchQuery='instore_search'; getRecommendation(document.getElementById('instore-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
+      </div>
+      
+      ${searchRec}
+
+      <div class="section-label">
+        <span>Store Not Listed? Choose Category</span>
+      </div>
+
+      <div class="chip-grid">
+        ${renderCategory('restaurants', '🍽️', 'Dining & Restaurants')}
+        ${renderCategory('groceries', '🛒', 'Groceries')}
+        ${renderCategory('gas_stations', '⛽', 'Gas Stations')}
+        ${renderCategory('ev_charging', '⚡', 'EV Charging')}
+        ${renderCategory('public_transit', '🚆', 'Transit & Commuting')}
+        ${renderCategory('wholesale_clubs_split', '🏬', 'Wholesale Clubs')}
+        ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
+        ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
+        ${renderCategory('rideshare', '🚗', 'Rideshare (Uber/Lyft)')}
+      </div>
+    `;
+  }
+
+  function renderOnlineTab() {
+    let searchRec = (window.activeSearchQuery === 'online_search' && currentRecommendation) ? renderRecommendationBox() : '';
+    
+    return `
+      <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
+        <span>🔍</span>
+        <input type="search" id="online-search-input" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Type merchant (Amazon, Nike)..." value="${window.activeSearchQuery === 'online_search' && currentRecommendation ? currentRecommendation.query : ''}" onkeypress="if(event.key==='Enter') { window.activeSearchQuery='online_search'; getRecommendation(this.value); }" oninput="if(this.value==='') { currentRecommendation=null; window.activeSearchQuery=''; render(); } else { document.getElementById('online-clear-btn').style.display='block'; }">
+        <span id="online-clear-btn" style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px; display: ${(window.activeSearchQuery === 'online_search' && currentRecommendation && currentRecommendation.query) ? 'block' : 'none'};" onclick="document.getElementById('online-search-input').value=''; currentRecommendation=null; window.activeSearchQuery=''; render();">✖</span>
+        <button onclick="window.activeSearchQuery='online_search'; getRecommendation(document.getElementById('online-search-input').value)" style="background: var(--accent); color: white; border: none; border-radius: 8px; padding: 6px 12px; font-weight: 700; cursor: pointer;">Go</button>
+      </div>
+      
+      ${searchRec}
+
+      <div class="section-label">Popular Digital Merchants</div>
+      <div class="poi-list">
+        ${renderPOI('Amazon', '📦', 'Amazon.com', 'Online Shopping')}
+        ${renderPOI('Apple Store', '🍏', 'Apple Store / Services', 'Electronics')}
+        ${renderPOI('Delta Air Lines', '✈️', 'Airlines (Delta, United, AA)', 'Travel / Flights')}
+      </div>
+
+      <div class="section-label">Travel & Transit Apps</div>
+      <div class="chip-grid">
+        ${renderCategory('flights', '✈️', 'Flights & Airfare')}
+        ${renderCategory('hotels', '🏨', 'Hotels & Lodging')}
+        ${renderCategory('travel_portal', '🌐', 'Bank Travel Portals')}
+        ${renderCategory('rental_cars', '🚘', 'Car Rentals')}
+        ${renderCategory('rideshare', '🚗', 'Rideshare (Uber/Lyft)')}
+      </div>
+
+      <div class="section-label">Online Shopping & Delivery</div>
+      <div class="chip-grid">
+        ${renderCategory('online_shopping', '🛍️', 'Online Retailers')}
+        ${renderCategory('amazon', '📦', 'Amazon.com')}
+        ${renderCategory('restaurants', '🍽️', 'Food Delivery & Dining')}
+        ${renderCategory('groceries', '🛒', 'Grocery Delivery')}
+        ${renderCategory('wholesale_clubs_split', '🏬', 'Wholesale Clubs')}
+        ${renderCategory('pharmacies', '💊', 'Drugstores & Pharmacies')}
+        ${renderCategory('home_improvement', '🔨', 'Home Improvement')}
+      </div>
+
+      <div class="section-label">Digital Services & Subscriptions</div>
+      <div class="chip-grid">
+        ${renderCategory('streaming_video', '🎬', 'Streaming Services')}
+        ${renderCategory('cell_phone', '📱', 'Phone & Internet')}
+        ${renderCategory('live_events', '🎟️', 'Live Concerts & Events')}
+        ${renderCategory('digital_wallet', '📲', 'Digital Wallets (Apple Pay)')}
+      </div>
+    `;
+  }
+  function renderValuationsTab() {
+    // 1. Identify which points & miles currencies are used by cards currently active in user's wallet
+    const activePointsCards = userWallet.filter(c => c.currency_type === 'points' || c.currency_type === 'miles' || c.currency_name === 'Ultimate Rewards' || c.currency_name === 'ThankYou Points');
+    
+    // Group active cards by currency name
+    const activeCurrencyMap = {};
+    activePointsCards.forEach(c => {
+      const cur = c.currency_name;
+      if (!activeCurrencyMap[cur]) {
+        activeCurrencyMap[cur] = [];
+      }
+      activeCurrencyMap[cur].push(c);
+    });
+
+    const activeCurrencies = Object.keys(activeCurrencyMap);
+
+    return `
+      
+      
+
+      ${activeCurrencies.length > 0 ? `
+        <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+          <button onclick="applyValuationPreset('cash')" style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 4px; font-size: 11px; font-weight: 700; color: #cbd5e1; cursor: pointer;">🪙 Cash Only (1.0¢)</button>
+          <button onclick="applyValuationPreset('travel')" style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 4px; font-size: 11px; font-weight: 700; color: #38bdf8; cursor: pointer;">✈️ Standard Travel</button>
+          <button onclick="applyValuationPreset('max')" style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 4px; font-size: 11px; font-weight: 700; color: #4ade80; cursor: pointer;">👑 Max Transfer (2¢+)</button>
+        </div>
+
+        <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 14px;">
+          💡 Adjusting these sliders customizes your rewards ranking live for your active wallet.
+        </div>
+
+        ${activeCurrencies.map(curName => {
+          const cardsForCur = activeCurrencyMap[curName];
+          const val = userValuations[curName] !== undefined ? userValuations[curName] : 1.5;
+          const domId = curName.replace(/\s+/g, '_');
+          const cardNames = cardsForCur.map(c => c.name).join(', ');
+
+          // Determine bounds based on currency
+          let min = 1.0, max = 2.5, step = 0.1;
+          if (curName.includes('Hilton')) { min = 0.3; max = 0.8; step = 0.05; }
+          else if (curName.includes('Marriott')) { min = 0.5; max = 1.2; step = 0.1; }
+          else if (curName.includes('IHG')) { min = 0.4; max = 0.9; step = 0.1; }
+
+          return `
+            <div class="val-item">
+              <div class="val-header">
+                <span><b>${curName}</b></span>
+                <span class="val-cents" id="val-disp-${domId}">${parseFloat(val).toFixed(1)}¢</span>
+              </div>
+              <div style="font-size: 11px; color: #93c5fd; margin-bottom: 6px;">
+                Active on: <b>${cardNames}</b>
+              </div>
+              <input type="range" class="val-slider" min="${min}" max="${max}" step="${step}" value="${val}" oninput="updateValuation('${curName}', this.value)">
+              <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-secondary); margin-top: 4px;">
+                <span>${min}¢ (Cash Equivalent)</span>
+                <span>${max}¢ (High Transfer Yield)</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      ` : `
+        <div style="background: var(--bg-secondary); border-radius: 18px; padding: 24px 16px; text-align: center; border: 1px solid var(--border-color); margin-top: 10px;">
+          <div style="font-size: 32px; margin-bottom: 10px;">💵</div>
+          <div style="font-size: 16px; font-weight: 700; margin-bottom: 6px;">All Active Cards Earn Cash Back</div>
+          <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;">
+            All cards currently enabled in your wallet earn direct cash back (fixed at 1.0¢ = $0.01).
+            <br><br>
+            When you activate a points or travel card in <b>My Wallet</b> (like <i>Chase Sapphire</i>, <i>Amex Gold</i>, or <i>Bilt</i>), its valuation slider will automatically appear here.
+          </div>
+          <button onclick="switchTab('wallet')" style="margin-top: 16px; background: var(--accent); color: white; border: none; border-radius: 10px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer;">
+            Open My Wallet
+          </button>
+        </div>
+      `}
+    `;
+  }
+
+  
+  function filterCardList(list) {
+    return list.filter(c => {
+      // Reward filter
+      if (selectedRewardFilter === 'cash' && c.currency_type !== 'cashback') return false;
+      if (selectedRewardFilter === 'points' && (c.currency_type !== 'points' && c.currency_type !== 'miles')) return false;
+
+      // Network filter
+      if (selectedNetworkFilter !== 'all') {
+         if ((c.network || '').toLowerCase() !== selectedNetworkFilter) return false;
+      }
+
+      // Type filter
+      if (selectedTypeFilter === 'personal' && c.card_type !== 'personal') return false;
+      if (selectedTypeFilter === 'business' && c.card_type !== 'business') return false;
+
+      // Search query
+      if (walletSearchQuery) {
+        const q = walletSearchQuery;
+        const matchName = c.name.toLowerCase().includes(q);
+        const matchIssuer = (c.issuer_name || '').toLowerCase().includes(q);
+        const matchNetwork = (c.network || '').toLowerCase().includes(q);
+        const matchCur = (c.currency_name || '').toLowerCase().includes(q);
+        if (!matchName && !matchIssuer && !matchNetwork && !matchCur) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderWalletTab() {
+    const inWalletIds = new Set(userWallet.map(c => c.id));
+    
+    // Calculate issuer counts
+    const issuerCounts = {};
+    allCards.forEach(c => {
+      issuerCounts[c.issuer_id] = (issuerCounts[c.issuer_id] || 0) + 1;
+    });
+
+    // Define all base groups
+    const baseGroups = [
+      { id: 'chase', title: 'JPMorgan Chase', shortTitle: 'Chase' },
+      { id: 'amex', title: 'American Express', shortTitle: 'Amex' },
+      { id: 'capital_one', title: 'Capital One', shortTitle: 'Capital One' },
+      { id: 'citi', title: 'Citigroup', shortTitle: 'Citi' },
+      { id: 'bofa', title: 'Bank of America', shortTitle: 'BofA' },
+      { id: 'wells_fargo', title: 'Wells Fargo', shortTitle: 'Wells Fargo' },
+      { id: 'us_bank', title: 'U.S. Bank', shortTitle: 'U.S. Bank' },
+      { id: 'barclays', title: 'Barclays', shortTitle: 'Barclays' },
+      { id: 'goldman_sachs', title: 'Goldman Sachs', shortTitle: 'Goldman Sachs' },
+      { id: 'synchrony', title: 'Synchrony Financial', shortTitle: 'Synchrony' },
+      { id: 'credit_unions', title: 'Credit Unions & Regionals', shortTitle: 'Credit Unions' }
+    ];
+
+    const majorGroups = [];
+    const otherGroupIds = new Set();
+    const filterPillsHtml = [];
+    
+    const handledIssuerIds = new Set();
+    
+    baseGroups.forEach(bg => {
+      const count = issuerCounts[bg.id] || 0;
+      if (count === 0) return;
+      if (count >= 10 || ['chase', 'amex', 'citi', 'capital_one', 'bofa', 'wells_fargo'].includes(bg.id)) {
+        majorGroups.push({ id: bg.id, title: bg.title, filter: c => c.issuer_id === bg.id });
+        filterPillsHtml.push(`<button class="filter-pill ${selectedIssuerFilter === bg.id ? 'active' : ''}" onclick="selectedIssuerFilter = '${bg.id}'; render();">${bg.shortTitle} (${count})</button>`);
+        handledIssuerIds.add(bg.id);
+      } else {
+        otherGroupIds.add(bg.id);
+        handledIssuerIds.add(bg.id);
+      }
+    });
+
+    // Add any issuer_ids that were completely missing from baseGroups to 'Other'
+    Object.keys(issuerCounts).forEach(issuerId => {
+       if (!handledIssuerIds.has(issuerId)) {
+           otherGroupIds.add(issuerId);
+       }
+    });
+
+    const otherCardsCount = allCards.filter(c => otherGroupIds.has(c.issuer_id)).length;
+    if (otherCardsCount > 0) {
+      majorGroups.push({ id: 'other', title: 'Other Issuers', filter: c => otherGroupIds.has(c.issuer_id) });
+      filterPillsHtml.push(`<button class="filter-pill ${selectedIssuerFilter === 'other' ? 'active' : ''}" onclick="selectedIssuerFilter = 'other'; render();">Other (${otherCardsCount})</button>`);
+    }
+
+    const groups = majorGroups;
+
+    const activeFiltered = filterCardList(userWallet);
+    let totalGroupsRendered = 0;
+
+    return `
+      
+      
+
+      
+      <div class="wallet-search" style="width: 100%; display: flex; align-items: center; margin-bottom: 16px;">
+        <span>🔍</span>
+        <input type="search" id="walletSearchInput" style="flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px; padding: 5px;" placeholder="Search cards (e.g. Sapphire, Gold)..." value="${walletSearchQuery}" oninput="walletSearchQuery = this.value.toLowerCase(); render();">
+        <span style="cursor:pointer; color:#8e8e93; font-size:16px; padding: 0 8px; display: ${walletSearchQuery ? 'block' : 'none'};" onclick="walletSearchQuery=''; render();">✖</span>
+      </div>
+
+
+      <!-- Filter Row 1: Issuers -->
+      <div class="filter-row-label">Bank / Issuer</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedIssuerFilter === 'all' ? 'active' : ''}" onclick="selectedIssuerFilter = 'all'; render();">All (${allCards.length})</button>
+        <button class="filter-pill ${selectedIssuerFilter === 'in_wallet' ? 'active' : ''}" onclick="selectedIssuerFilter = 'in_wallet'; render();">✓ Active (${userWallet.length})</button>
+        ${filterPillsHtml.join('')}
+      </div>
+
+      <!-- Filter Row 2: Reward Program -->
+      <div class="filter-row-label">Reward Program</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedRewardFilter === 'all' ? 'active' : ''}" onclick="selectedRewardFilter = 'all'; render();">All Rewards</button>
+        <button class="filter-pill ${selectedRewardFilter === 'cash' ? 'active' : ''}" onclick="selectedRewardFilter = 'cash'; render();">🪙 Cash Back</button>
+        <button class="filter-pill ${selectedRewardFilter === 'points' ? 'active' : ''}" onclick="selectedRewardFilter = 'points'; render();">✈️ Points & Miles</button>
+      </div>
+
+      <!-- Filter Row 3: Network -->
+      <div class="filter-row-label">Network</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedNetworkFilter === 'all' ? 'active' : ''}" onclick="selectedNetworkFilter = 'all'; render();">All Networks</button>
+        <button class="filter-pill ${selectedNetworkFilter === 'visa' ? 'active' : ''}" onclick="selectedNetworkFilter = 'visa'; render();">Visa</button>
+        <button class="filter-pill ${selectedNetworkFilter === 'mastercard' ? 'active' : ''}" onclick="selectedNetworkFilter = 'mastercard'; render();">Mastercard</button>
+        <button class="filter-pill ${selectedNetworkFilter === 'american express' ? 'active' : ''}" onclick="selectedNetworkFilter = 'american express'; render();">American Express</button>
+        <button class="filter-pill ${selectedNetworkFilter === 'discover' ? 'active' : ''}" onclick="selectedNetworkFilter = 'discover'; render();">Discover</button>
+      </div>
+
+      <!-- Filter Row 4: Card Type -->
+      <div class="filter-row-label">Card Type</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedTypeFilter === 'all' ? 'active' : ''}" onclick="selectedTypeFilter = 'all'; render();">All Types</button>
+        <button class="filter-pill ${selectedTypeFilter === 'personal' ? 'active' : ''}" onclick="selectedTypeFilter = 'personal'; render();">👤 Personal</button>
+        <button class="filter-pill ${selectedTypeFilter === 'business' ? 'active' : ''}" onclick="selectedTypeFilter = 'business'; render();">💼 Business</button>
+      </div>
+
+      ${selectedIssuerFilter === 'in_wallet' ? `
+        <div class="issuer-header"><span>Active in My Wallet (${activeFiltered.length})</span></div>
+        ${activeFiltered.length > 1 ? '<div class="sortable-wallet-hint">Drag to set your card priority</div>' : ''}
+        <div id="sortable-wallet">
+        ${activeFiltered.length > 0 ? activeFiltered.map(c => renderWalletCardRow(c, true)).join('') : '<div style="color: var(--text-secondary); text-align: center; padding: 24px; font-size: 13px;">No cards in your active wallet match the selected filters.</div>'}
+        </div>
+      ` : `
+        ${groups.map(g => {
+          if (selectedIssuerFilter !== 'all' && selectedIssuerFilter !== g.id) {
+            return '';
+          }
+          let cardsInGroup = allCards.filter(g.filter);
+          cardsInGroup = filterCardList(cardsInGroup);
+          if (cardsInGroup.length === 0) return '';
+          totalGroupsRendered++;
+
+          return `
+            <div class="issuer-group">
+              <div class="issuer-header">
+                <span>${g.title} (${cardsInGroup.length})</span>
+              </div>
+              ${cardsInGroup.map(card => renderWalletCardRow(card)).join('')}
+            </div>
+          `;
+        }).join('')}
+        ${totalGroupsRendered === 0 ? '<div style="color: var(--text-secondary); text-align: center; padding: 24px; font-size: 13px;">No cards match the active search and filter criteria.</div>' : ''}
+      `}
+    `;
+  }
+
+
+  function toggleExpand(id) {
+    if (activeExpandedCardId === id) activeExpandedCardId = null;
+    else activeExpandedCardId = id;
+    render();
+  }
+
+  function renderWalletCardRow(card, isActive) {
+    const inWallet = userWallet.some(c => c.id === card.id);
+    const svgPath = '/' + card.local_image_path.replace('.png', '.svg');
+    const isExpanded = activeExpandedCardId === card.id;
+    
+    let detailsHtml = '';
+    if (isExpanded) {
+      let catsHtml = '';
+      if (card.categories && card.categories.length > 0) {
+        catsHtml = '<div style="margin-top: 12px; font-weight: 700; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Reward Categories</div>';
+        
+        let hasBase = false;
+        let processedCats = [];
+
+        card.categories.forEach(cat => {
+           let rawName = cat.category_name || cat.category_key || '';
+           let keyLow = (cat.category_key || '').toLowerCase();
+           let nameLow = rawName.toLowerCase();
+           
+           let finalName = rawName.replace(/_/g, ' ');
+           
+           if (keyLow === 'all_purchases' || keyLow === 'base' || keyLow === 'all' || keyLow === 'general' || keyLow === 'other' || nameLow.includes('all purchase') || nameLow === 'all') {
+               finalName = 'Other';
+               hasBase = true;
+           } else {
+               if (finalName.length > 0) {
+                   finalName = finalName.charAt(0).toUpperCase() + finalName.slice(1).toLowerCase();
+               }
+           }
+           
+           let mult = cat.multiplier + 'x';
+           if (cat.category_key === 'rotating_bonus') mult = '5% (Rotating)';
+           else if (card.currency_type === 'cashback') mult = cat.multiplier + '%';
+           
+           processedCats.push({ name: finalName, mult: mult });
+        });
+        
+        if (!hasBase && card.base_rate > 0) {
+            let mult = card.base_rate + (card.currency_type === 'cashback' ? '%' : 'x');
+            processedCats.push({ name: 'Other', mult: mult });
+        }
+        
+        processedCats.forEach(c => {
+           catsHtml += `<div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+             <span>${c.name}</span>
+             <span style="font-weight: 700; color: #22c55e;">${c.mult}</span>
+           </div>`;
+        
+      
+      }
+      
+      let benHtml = '';
+      if (card.benefits && card.benefits.length > 0) {
+        benHtml = '<div style="margin-top: 16px; font-weight: 700; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Other Benefits</div>';
+        card.benefits.forEach(b => {
+           benHtml += `<div style="font-size: 13px; margin-top: 6px; display: flex; gap: 8px;">
+             <span>✨</span><span>${b}</span>
+           </div>`;
+        });
+      }
+
+      detailsHtml = `
+        <div style="width: 100%; padding-top: 16px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); display: block; animation: slideDown 0.2s ease-out forwards;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px;">
+            <span style="color: var(--text-secondary);">Annual Fee</span>
+            <span style="font-weight: 700;">${card.annual_fee > 0 ? '$'+card.annual_fee : '$0'}</span>
+          </div>
+          ${catsHtml}
+          ${benHtml}
+        </div>
+      `;
+    }
+
+    return `
+      <div class="wallet-item" style="flex-wrap: wrap;" ${isActive ? `data-card-id="${card.id}"` : ''} onclick="toggleExpand('${card.id}')">
+        ${isActive ? '<div class="drag-handle" onclick="event.stopPropagation()"><span></span><span></span><span></span></div>' : ''}
+        <div class="wallet-thumb">
+          <img src="/${card.local_image_path}" alt="${card.name}" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${svgPath}';}else{this.onerror=null;this.style.opacity='0.3';}">
+        </div>
+        <div class="wallet-meta">
+          <div class="wallet-name">${card.name}</div>
+          <div class="wallet-sub">${card.currency_name || 'Cash Back'}${card.annual_fee > 0 ? ' • $' + card.annual_fee + '/yr' : ''}</div>
+        </div>
+        <button class="wallet-toggle-btn ${inWallet ? 'in-wallet' : ''}" onclick="event.stopPropagation(); toggleWalletCard('${card.id}')">
+          ${inWallet ? '✓ In Wallet' : '+ Add'}
+        </button>
+        ${detailsHtml}
+      </div>
+    `;
+  }
+
+  function initWalletDrag() {
+    const container = document.getElementById('sortable-wallet');
+    if (!container) return;
+    const items = Array.from(container.querySelectorAll('.wallet-item[data-card-id]'));
+    if (items.length < 2) return;
+
+    let dragItem = null;
+    let dragCardId = null;
+    let startY = 0;
+    let currentY = 0;
+    let itemRects = [];
+    let origIndex = -1;
+    let shifted = new Map(); // index -> direction (1 = down, -1 = up)
+    const appContent = document.querySelector('.app-content');
+
+    function captureRects() {
+      itemRects = items.map(el => {
+        const r = el.getBoundingClientRect();
+        return { top: r.top, bottom: r.bottom, height: r.height, mid: r.top + r.height / 2 };
+      });
+    }
+
+    function onStart(e) {
+      const handle = e.target.closest('.drag-handle');
+      if (!handle) return;
+      dragItem = handle.closest('.wallet-item');
+      if (!dragItem) return;
+      dragCardId = dragItem.dataset.cardId;
+      origIndex = items.indexOf(dragItem);
+
+      const point = e.touches ? e.touches[0] : e;
+      startY = point.clientY;
+      currentY = startY;
+      captureRects();
+      shifted.clear();
+
+      dragItem.classList.add('dragging');
+      items.forEach((el, i) => { if (i !== origIndex) el.classList.add('drag-shift'); });
+
+      if (appContent) appContent.style.overflowY = 'hidden';
+      e.preventDefault();
+    }
+
+    function onMove(e) {
+      if (!dragItem) return;
+      const point = e.touches ? e.touches[0] : e;
+      currentY = point.clientY;
+      const dy = currentY - startY;
+
+      dragItem.style.transform = `scale(1.03) translateY(${dy}px)`;
+
+      const dragMid = itemRects[origIndex].mid + dy;
+
+      items.forEach((el, i) => {
+        if (i === origIndex) return;
+        const rect = itemRects[i];
+        const h = rect.height + 8; // include margin
+
+        if (i < origIndex && dragMid < rect.mid) {
+          // dragging up past this item -> push it down
+          el.style.transform = `translateY(${h}px)`;
+          shifted.set(i, 1);
+        } else if (i > origIndex && dragMid > rect.mid) {
+          // dragging down past this item -> push it up
+          el.style.transform = `translateY(-${h}px)`;
+          shifted.set(i, -1);
+        } else {
+          el.style.transform = '';
+          shifted.delete(i);
+        }
+      });
+      e.preventDefault();
+    }
+
+    function onEnd(e) {
+      if (!dragItem) return;
+
+      // Calculate new index
+      let newIndex = origIndex;
+      if (shifted.size > 0) {
+        const shiftedIndices = Array.from(shifted.keys());
+        const minShifted = Math.min(...shiftedIndices);
+        const maxShifted = Math.max(...shiftedIndices);
+        if (currentY < startY) {
+          newIndex = minShifted; // moved up
+        } else {
+          newIndex = maxShifted; // moved down
+        }
+      }
+
+      // Reset all transforms
+      dragItem.classList.remove('dragging');
+      dragItem.style.transform = '';
+      items.forEach(el => { el.classList.remove('drag-shift'); el.style.transform = ''; });
+
+      if (appContent) appContent.style.overflowY = '';
+
+      // Reorder userWallet
+      if (newIndex !== origIndex && dragCardId) {
+        // Map visual indices to wallet indices
+        const walletIds = items.map(el => el.dataset.cardId);
+        const walletOrigIdx = userWallet.findIndex(c => c.id === dragCardId);
+        if (walletOrigIdx >= 0) {
+          const [moved] = userWallet.splice(walletOrigIdx, 1);
+          // Find the card at the target visual position
+          const targetCardId = walletIds[newIndex];
+          let targetIdx = userWallet.findIndex(c => c.id === targetCardId);
+          if (targetIdx < 0) targetIdx = newIndex;
+          userWallet.splice(targetIdx, 0, moved);
+          localStorage.setItem('userWallet', JSON.stringify(userWallet));
+          render();
+        }
+      }
+
+      dragItem = null;
+      dragCardId = null;
+      shifted.clear();
+    }
+
+    container.addEventListener('touchstart', onStart, { passive: false });
+    container.addEventListener('touchmove', onMove, { passive: false });
+    container.addEventListener('touchend', onEnd);
+    container.addEventListener('mousedown', onStart);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onEnd);
+  }
+
+  initApp();
