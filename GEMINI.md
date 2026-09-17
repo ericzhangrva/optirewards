@@ -160,7 +160,7 @@ The application strictly contains 4 main tabs navigating the UI:
         - **Card Type:** (All, Personal, Business)
     *   **Card Details Drawer:** Tapping anywhere on a card (except the Add/Remove toggle button) must expand an inline drawer or modal that clearly lists:
         - **Annual Fee**
-        - **Reward Multipliers:** (Iterating through `card.categories` to show 3x Dining, 5x Travel, etc.)
+        - **Reward Multipliers:** Must iterate through `card.categories` to list rates (e.g. 3x Dining). Must strictly enforce category formatting: replace underscores with spaces, capitalize only the first letter (e.g. "Gas stations"), and ensure any base rate or "all purchases" category is uniformly labeled as **"Other"**. If a card lacks an explicit "Other" category in its JSON list, the UI must dynamically inject it using `card.base_rate`.
         - **Other Benefits:** (Iterating through an optional `card.benefits` string array to display perks like "Free Night Award", "Lounge Access", etc.)
 
 *Note on Recommendations:* When displaying the Top 3 cards (per Rule 3.1.7), only the #1 recommended card should render its card art image. The #2 and #3 runner-up cards should be displayed compactly (text-only) to save screen space.
