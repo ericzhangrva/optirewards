@@ -1501,6 +1501,11 @@
           "rotating_quarter": null,
           "notes": ""
         }
+      ],
+      "benefits": [
+        "$300 Annual Travel Credit",
+        "Priority Pass Select Lounge Access",
+        "Global Entry / TSA PreCheck Credit"
       ]
     },
     {
@@ -1575,6 +1580,10 @@
           "rotating_quarter": null,
           "notes": ""
         }
+      ],
+      "benefits": [
+        "$50 Annual Hotel Credit on Chase Travel",
+        "10% Anniversary Point Boost"
       ]
     },
     {
@@ -1639,7 +1648,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_freedom_flex",
@@ -1703,7 +1713,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_ink_business_preferred",
@@ -1767,7 +1778,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_ink_business_cash",
@@ -1831,7 +1843,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_prime_visa",
@@ -1915,7 +1928,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_platinum",
@@ -1969,6 +1983,12 @@
           "rotating_quarter": null,
           "notes": "Other prepaid travel via Amex Travel"
         }
+      ],
+      "benefits": [
+        "$200 Airline Fee Credit",
+        "$200 Hotel Credit",
+        "$200 Uber Cash",
+        "Global Lounge Collection (Centurion, Priority Pass)"
       ]
     },
     {
@@ -2053,7 +2073,8 @@
           "rotating_quarter": null,
           "notes": "3X on flights booked directly or on amextravel.com"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_blue_cash_preferred",
@@ -2127,7 +2148,8 @@
           "rotating_quarter": null,
           "notes": "3% at U.S. gas stations"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_blue_cash_everyday",
@@ -2191,7 +2213,8 @@
           "rotating_quarter": null,
           "notes": "3% at U.S. gas stations up to $6k/yr"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_business_gold",
@@ -2255,7 +2278,8 @@
           "rotating_quarter": null,
           "notes": "4X on restaurants"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_venture_x",
@@ -2329,7 +2353,8 @@
           "rotating_quarter": null,
           "notes": "2X miles on all other eligible purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_venture",
@@ -2373,7 +2398,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 2X miles on every purchase"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_savor_one",
@@ -2437,7 +2463,8 @@
           "rotating_quarter": null,
           "notes": "3% at grocery stores"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_quicksilver",
@@ -2481,7 +2508,8 @@
           "rotating_quarter": null,
           "notes": "5% on hotels & rental cars through Capital One Travel"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_double_cash",
@@ -2515,7 +2543,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_custom_cash",
@@ -2599,7 +2628,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_strata_premier",
@@ -2683,7 +2713,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_costco_anywhere",
@@ -2757,7 +2788,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_customized_cash",
@@ -2841,7 +2873,8 @@
           "rotating_quarter": null,
           "notes": "2% at wholesale clubs"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_unlimited_cash",
@@ -2875,7 +2908,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back on all purchases (up to 2.62% for Preferred Rewards Platinum Honors)"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_premium_rewards",
@@ -2949,7 +2983,8 @@
           "rotating_quarter": null,
           "notes": "1.5X points on all other purchases (up to 2.62X)"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "discover_it_cash_back",
@@ -2993,7 +3028,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "discover_it_miles",
@@ -3027,7 +3063,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "wells_fargo_active_cash",
@@ -3061,7 +3098,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "wells_fargo_autograph",
@@ -3155,7 +3193,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "wells_fargo_autograph_journey",
@@ -3209,7 +3248,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_altitude_reserve",
@@ -3273,7 +3313,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_altitude_go",
@@ -3357,7 +3398,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_cash_plus",
@@ -3441,7 +3483,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "apple_card",
@@ -3545,7 +3588,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bilt_mastercard",
@@ -3609,7 +3653,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "synchrony_paypal_cashback",
@@ -3653,7 +3698,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_ink_business_unlimited",
@@ -3687,7 +3733,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_united_explorer",
@@ -3741,7 +3788,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_southwest_priority",
@@ -3795,7 +3843,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_marriott_boundless",
@@ -3859,6 +3908,10 @@
           "rotating_quarter": null,
           "notes": ""
         }
+      ],
+      "benefits": [
+        "1 Free Night Award (up to 35,000 points) every anniversary",
+        "Silver Elite Status"
       ]
     },
     {
@@ -3923,7 +3976,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_green",
@@ -4007,7 +4061,8 @@
           "rotating_quarter": null,
           "notes": "3X on dining worldwide"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_blue_business_plus",
@@ -4041,7 +4096,8 @@
           "rotating_quarter": null,
           "notes": "2X Membership Rewards on first $50,000 in purchases per calendar year"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_delta_gold",
@@ -4095,7 +4151,8 @@
           "rotating_quarter": null,
           "notes": "2X on Delta purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_hilton_aspire",
@@ -4159,7 +4216,8 @@
           "rotating_quarter": null,
           "notes": "7X on select car rentals"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_savor",
@@ -4223,7 +4281,8 @@
           "rotating_quarter": null,
           "notes": "3% at grocery stores"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_spark_cash_plus",
@@ -4267,7 +4326,8 @@
           "rotating_quarter": null,
           "notes": "5% on hotels & rental cars booked through Capital One Travel"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_aadvantage_platinum",
@@ -4321,7 +4381,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_alaska_airlines",
@@ -4385,7 +4446,8 @@
           "rotating_quarter": null,
           "notes": "2X on transit"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "discover_it_chrome",
@@ -4429,7 +4491,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "wells_fargo_attune",
@@ -4493,7 +4556,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_shopper_cash",
@@ -4547,7 +4611,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "barclays_jetblue_plus",
@@ -4601,7 +4666,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "barclays_wyndham_earner_plus",
@@ -4665,7 +4731,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "fidelity_rewards_visa",
@@ -4699,7 +4766,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "navy_fed_more_rewards",
@@ -4763,7 +4831,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "penfed_power_cash",
@@ -4797,7 +4866,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "target_circle_card",
@@ -4841,7 +4911,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "best_buy_visa",
@@ -4895,7 +4966,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "venmo_credit_card",
@@ -4939,7 +5011,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_slate_edge",
@@ -4973,7 +5046,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_freedom_rise",
@@ -5007,7 +5081,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_ink_premier",
@@ -5051,7 +5126,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_united_gateway",
@@ -5105,7 +5181,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_united_club",
@@ -5159,7 +5236,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_disney_premier",
@@ -5223,7 +5301,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_business_platinum",
@@ -5277,6 +5356,12 @@
           "rotating_quarter": null,
           "notes": "1.5X on key business categories & purchases >$5k"
         }
+      ],
+      "benefits": [
+        "$200 Airline Fee Credit",
+        "$200 Hotel Credit",
+        "$200 Uber Cash",
+        "Global Lounge Collection (Centurion, Priority Pass)"
       ]
     },
     {
@@ -5311,7 +5396,8 @@
           "rotating_quarter": null,
           "notes": "2% cash back on all eligible purchases up to $50,000 per calendar year"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_marriott_brilliant",
@@ -5365,6 +5451,12 @@
           "rotating_quarter": null,
           "notes": "3X on flights booked directly with airlines"
         }
+      ],
+      "benefits": [
+        "1 Free Night Award (up to 85,000 points) every anniversary",
+        "Platinum Elite Status",
+        "$300 Brilliant Dining Credit ($25/mo)",
+        "Priority Pass Select"
       ]
     },
     {
@@ -5409,7 +5501,8 @@
           "rotating_quarter": null,
           "notes": "1.25X miles on all other purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_quicksilver_one",
@@ -5443,7 +5536,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back on every purchase"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_spark_miles",
@@ -5487,7 +5581,8 @@
           "rotating_quarter": null,
           "notes": "5X on hotels & rental cars booked through Capital One Travel"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_rewards_plus",
@@ -5531,7 +5626,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_aadvantage_executive",
@@ -5575,7 +5671,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_travel_rewards",
@@ -5619,7 +5716,8 @@
           "rotating_quarter": null,
           "notes": "1.5X points on all other purchases (up to 2.62X with Preferred Rewards)"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_premium_elite",
@@ -5673,7 +5771,8 @@
           "rotating_quarter": null,
           "notes": "1.5X on all other purchases (up to 2.62X)"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "discover_it_student",
@@ -5707,7 +5806,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "discover_it_secured",
@@ -5751,7 +5851,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "wells_fargo_reflect",
@@ -5785,7 +5886,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "wells_fargo_signify",
@@ -5819,7 +5921,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_altitude_connect",
@@ -5893,7 +5996,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_business_triple_cash",
@@ -5957,7 +6061,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "navy_fed_flagship",
@@ -6011,7 +6116,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "pnc_cash_unlimited",
@@ -6045,7 +6151,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "td_double_up",
@@ -6079,7 +6186,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_southwest_plus",
@@ -6143,7 +6251,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_southwest_premier",
@@ -6187,7 +6296,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_marriott_bountiful",
@@ -6241,6 +6351,10 @@
           "rotating_quarter": null,
           "notes": ""
         }
+      ],
+      "benefits": [
+        "1 Free Night Award (up to 50,000 points) after spending $15,000 in a calendar year",
+        "Gold Elite Status"
       ]
     },
     {
@@ -6305,7 +6419,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_aeroplan",
@@ -6359,7 +6474,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_hilton_business",
@@ -6413,7 +6529,8 @@
           "rotating_quarter": null,
           "notes": "5X on dining"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_marriott_business",
@@ -6477,6 +6594,10 @@
           "rotating_quarter": null,
           "notes": "4X on U.S. shipping"
         }
+      ],
+      "benefits": [
+        "1 Free Night Award (up to 35,000 points) every anniversary",
+        "Silver Elite Status"
       ]
     },
     {
@@ -6531,7 +6652,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 2X miles on all business purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_savor_student",
@@ -6585,7 +6707,8 @@
           "rotating_quarter": null,
           "notes": "3% at grocery stores"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_simplicity",
@@ -6619,7 +6742,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_diamond_preferred",
@@ -6653,7 +6777,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_costco_business",
@@ -6717,7 +6842,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_aadvantage_mileup",
@@ -6761,7 +6887,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_student_cash",
@@ -6805,7 +6932,8 @@
           "rotating_quarter": null,
           "notes": "2% at grocery stores and wholesale clubs"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_alaska_business",
@@ -6859,7 +6987,8 @@
           "rotating_quarter": null,
           "notes": "2X on gas and EV charging"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "wells_fargo_choice_privileges",
@@ -6923,7 +7052,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "truist_enjoy_cash",
@@ -6987,7 +7117,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_sapphire_legacy",
@@ -7031,7 +7162,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_freedom_original",
@@ -7065,7 +7197,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_slate_legacy",
@@ -7099,7 +7232,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_ink_plus_legacy",
@@ -7143,7 +7277,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_amazon_visa",
@@ -7197,7 +7332,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_southwest_perf_biz",
@@ -7251,7 +7387,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_southwest_prem_biz",
@@ -7295,7 +7432,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_united_quest",
@@ -7349,7 +7487,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_united_biz",
@@ -7413,7 +7552,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_united_club_biz",
@@ -7457,7 +7597,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_marriott_bold",
@@ -7511,7 +7652,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_marriott_biz_legacy",
@@ -7565,6 +7707,10 @@
           "rotating_quarter": null,
           "notes": ""
         }
+      ],
+      "benefits": [
+        "1 Free Night Award (up to 35,000 points) every anniversary",
+        "Silver Elite Status"
       ]
     },
     {
@@ -7629,7 +7775,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_hyatt_card",
@@ -7703,7 +7850,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_hyatt_biz",
@@ -7747,7 +7895,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_british_airways",
@@ -7791,7 +7940,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_aer_lingus",
@@ -7835,7 +7985,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_iberia",
@@ -7879,7 +8030,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_disney_rewards",
@@ -7913,7 +8065,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_instacart_mastercard",
@@ -7977,7 +8130,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_doordash_mastercard",
@@ -8031,7 +8185,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_starbucks_legacy",
@@ -8085,7 +8240,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_cash_magnet",
@@ -8119,7 +8275,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back on all purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_everyday",
@@ -8163,7 +8320,8 @@
           "rotating_quarter": null,
           "notes": "2X at U.S. supermarkets"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_everyday_preferred",
@@ -8207,7 +8365,8 @@
           "rotating_quarter": null,
           "notes": "2X at U.S. gas stations (up to 3X with 30 tx)"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_business_green",
@@ -8241,7 +8400,8 @@
           "rotating_quarter": null,
           "notes": "2X on eligible purchases booked through Amex Travel"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_delta_business_gold",
@@ -8305,7 +8465,8 @@
           "rotating_quarter": null,
           "notes": "2X on U.S. shipping"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_delta_business_platinum",
@@ -8359,6 +8520,12 @@
           "rotating_quarter": null,
           "notes": "1.5X on large purchases >$5k"
         }
+      ],
+      "benefits": [
+        "$200 Airline Fee Credit",
+        "$200 Hotel Credit",
+        "$200 Uber Cash",
+        "Global Lounge Collection (Centurion, Priority Pass)"
       ]
     },
     {
@@ -8403,7 +8570,8 @@
           "rotating_quarter": null,
           "notes": "1.5X on all purchases after spending $150k in a year"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_amazon_business",
@@ -8457,7 +8625,8 @@
           "rotating_quarter": null,
           "notes": "2% at U.S. gas stations"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_venture_good",
@@ -8501,7 +8670,8 @@
           "rotating_quarter": null,
           "notes": "2X miles on all purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_venture_one_good",
@@ -8545,7 +8715,8 @@
           "rotating_quarter": null,
           "notes": "1.25X miles on all purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_savor_one_good",
@@ -8599,7 +8770,8 @@
           "rotating_quarter": null,
           "notes": "3% at grocery stores"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_quicksilver_good",
@@ -8633,7 +8805,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_quicksilver_student",
@@ -8667,7 +8840,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_quicksilver_secured",
@@ -8701,7 +8875,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back on a secured credit card"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_platinum",
@@ -8735,7 +8910,8 @@
           "rotating_quarter": null,
           "notes": "Credit line review & credit building"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_platinum_secured",
@@ -8769,7 +8945,8 @@
           "rotating_quarter": null,
           "notes": "No annual fee refundable security deposit"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_venture_business",
@@ -8813,7 +8990,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 2X miles everywhere"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_spark_cash_select",
@@ -8847,7 +9025,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back on all business purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_spark_cash_select_good",
@@ -8881,7 +9060,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_spark_miles_select",
@@ -8925,7 +9105,8 @@
           "rotating_quarter": null,
           "notes": "5X on hotels & cars through portal"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_spark_classic",
@@ -8959,7 +9140,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1% cash back for rebuilding credit"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_bass_pro",
@@ -9003,7 +9185,8 @@
           "rotating_quarter": null,
           "notes": "1.5% back everywhere else"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_cabelas",
@@ -9047,7 +9230,8 @@
           "rotating_quarter": null,
           "notes": "1.5% back everywhere else"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_kohls",
@@ -9111,7 +9295,8 @@
           "rotating_quarter": null,
           "notes": "3% on gas"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_bjs_one",
@@ -9165,7 +9350,8 @@
           "rotating_quarter": null,
           "notes": "1.5% back on dining"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_bjs_one_plus",
@@ -9219,7 +9405,8 @@
           "rotating_quarter": null,
           "notes": "2% back on dining"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_key_rewards",
@@ -9263,7 +9450,8 @@
           "rotating_quarter": null,
           "notes": "4% back on groceries and restaurants"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_pottery_barn",
@@ -9307,7 +9495,8 @@
           "rotating_quarter": null,
           "notes": "4% on groceries and dining"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_west_elm",
@@ -9351,7 +9540,8 @@
           "rotating_quarter": null,
           "notes": "4% on groceries and dining"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_williams_sonoma",
@@ -9395,7 +9585,8 @@
           "rotating_quarter": null,
           "notes": "4% on groceries and dining"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_walmart",
@@ -9439,7 +9630,8 @@
           "rotating_quarter": null,
           "notes": "2% on dining and travel"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "capital_one_menards",
@@ -9483,7 +9675,8 @@
           "rotating_quarter": null,
           "notes": "1% on gas and Speedway"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_bankamericard",
@@ -9517,7 +9710,8 @@
           "rotating_quarter": null,
           "notes": "0% Intro APR for 18 billing cycles on balance transfers and purchases"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_student_unlimited",
@@ -9551,7 +9745,8 @@
           "rotating_quarter": null,
           "notes": "Unlimited 1.5% cash back everywhere for students"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_student_travel",
@@ -9595,7 +9790,8 @@
           "rotating_quarter": null,
           "notes": "1.5X points on all student purchases, no foreign transaction fee"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_student_bankamericard",
@@ -9629,7 +9825,8 @@
           "rotating_quarter": null,
           "notes": "Low intro APR for students building credit"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_secured_cash",
@@ -9673,7 +9870,8 @@
           "rotating_quarter": null,
           "notes": "2% at grocery stores & wholesale clubs"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_secured_unlimited",
@@ -9707,7 +9905,8 @@
           "rotating_quarter": null,
           "notes": "1.5% unlimited cash back while rebuilding credit"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_secured_bankamericard",
@@ -9741,7 +9940,8 @@
           "rotating_quarter": null,
           "notes": "Security deposit card for building credit history"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_susan_komen",
@@ -9785,7 +9985,8 @@
           "rotating_quarter": null,
           "notes": "2% at grocery stores and wholesale clubs"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_air_france_klm",
@@ -9829,7 +10030,8 @@
           "rotating_quarter": null,
           "notes": "1.5X miles on all other purchases + 5,000 anniversary miles"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_free_spirit",
@@ -9883,7 +10085,8 @@
           "rotating_quarter": null,
           "notes": "2X points on groceries"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_customized_cash_business",
@@ -9937,7 +10140,8 @@
           "rotating_quarter": null,
           "notes": "2% on dining"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_unlimited_cash_business",
@@ -9971,7 +10175,8 @@
           "rotating_quarter": null,
           "notes": "1.5% cash back everywhere (up to 2.62% with Preferred Rewards for Business Platinum Honors)"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_travel_rewards_business",
@@ -10015,7 +10220,8 @@
           "rotating_quarter": null,
           "notes": "1.5X points on all other purchases (up to 2.62X with Preferred Rewards)"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "bofa_platinum_plus_business",
@@ -10049,7 +10255,8 @@
           "rotating_quarter": null,
           "notes": "0% Intro APR on purchases for 7 billing cycles"
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_strata_elite",
@@ -10113,7 +10320,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_strata",
@@ -10197,7 +10405,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_aadvantage_globe",
@@ -10241,7 +10450,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_aadvantage_business",
@@ -10315,7 +10525,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_att_pointsplus",
@@ -10379,7 +10590,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_secured",
@@ -10413,7 +10625,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_best_buy",
@@ -10487,7 +10700,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_macys",
@@ -10561,7 +10775,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_bloomingdales",
@@ -10635,7 +10850,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_home_depot_consumer",
@@ -10679,7 +10895,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "home_depot_pro_xtra",
@@ -10723,7 +10940,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_tractor_supply",
@@ -10787,7 +11005,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_llbean",
@@ -10851,7 +11070,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_dillards",
@@ -10915,7 +11135,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_exxonmobil",
@@ -10969,7 +11190,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_wayfair",
@@ -11033,7 +11255,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_goodyear",
@@ -11087,7 +11310,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_visa_platinum",
@@ -11110,7 +11334,8 @@
       "base_rate": 0.0,
       "point_valuation_cents": 1.0,
       "welcome_bonus_desc": "None",
-      "categories": []
+      "categories": [],
+      "benefits": []
     },
     {
       "id": "us_bank_business_leverage",
@@ -11154,7 +11379,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_business_platinum",
@@ -11177,7 +11403,8 @@
       "base_rate": 0.0,
       "point_valuation_cents": 1.0,
       "welcome_bonus_desc": "None",
-      "categories": []
+      "categories": [],
+      "benefits": []
     },
     {
       "id": "us_bank_smartly",
@@ -11211,7 +11438,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "citi_prestige",
@@ -11265,7 +11493,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "chase_ritz_carlton",
@@ -11329,7 +11558,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_simplycash_business",
@@ -11363,7 +11593,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_altitude_go_secured",
@@ -11417,7 +11648,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_cash_plus_secured",
@@ -11451,7 +11683,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_business_altitude_connect",
@@ -11495,7 +11728,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_business_altitude_power",
@@ -11529,7 +11763,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_business_shield",
@@ -11563,7 +11798,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_business_edge_cash",
@@ -11597,7 +11833,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "us_bank_business_edge_select",
@@ -11631,7 +11868,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "choice_privileges_mastercard",
@@ -11665,7 +11903,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     },
     {
       "id": "amex_marriott_legacy",
@@ -11699,7 +11938,8 @@
           "rotating_quarter": null,
           "notes": ""
         }
-      ]
+      ],
+      "benefits": []
     }
   ]
 }

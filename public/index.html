@@ -213,6 +213,7 @@
     }
   }
   input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 <meta name="apple-mobile-web-app-title" content="OptiRewards">
 </head>
@@ -269,6 +270,7 @@
   let selectedIssuerFilter = 'all';
   let selectedRewardFilter = 'all';
   let selectedTypeFilter = 'all';
+  let activeExpandedCardId = null;
   let selectedNetworkFilter = 'all';
 
   function updateTime() {
@@ -1123,12 +1125,59 @@
     `;
   }
 
+
+  function toggleExpand(id) {
+    if (activeExpandedCardId === id) activeExpandedCardId = null;
+    else activeExpandedCardId = id;
+    render();
+  }
+
   function renderWalletCardRow(card, isActive) {
     const inWallet = userWallet.some(c => c.id === card.id);
     const svgPath = '/' + card.local_image_path.replace('.png', '.svg');
+    const isExpanded = activeExpandedCardId === card.id;
+    
+    let detailsHtml = '';
+    if (isExpanded) {
+      let catsHtml = '';
+      if (card.categories && card.categories.length > 0) {
+        catsHtml = '<div style="margin-top: 12px; font-weight: 700; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Reward Categories</div>';
+        card.categories.forEach(cat => {
+           let mult = cat.multiplier + 'x';
+           if (cat.category_key === 'rotating_bonus') mult = '5% (Rotating)';
+           else if (card.currency_type === 'cashback') mult = cat.multiplier + '%';
+           catsHtml += `<div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+             <span>${cat.category_name}</span>
+             <span style="font-weight: 700; color: #22c55e;">${mult}</span>
+           </div>`;
+        });
+      }
+      
+      let benHtml = '';
+      if (card.benefits && card.benefits.length > 0) {
+        benHtml = '<div style="margin-top: 16px; font-weight: 700; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Other Benefits</div>';
+        card.benefits.forEach(b => {
+           benHtml += `<div style="font-size: 13px; margin-top: 6px; display: flex; gap: 8px;">
+             <span>✨</span><span>${b}</span>
+           </div>`;
+        });
+      }
+
+      detailsHtml = `
+        <div style="width: 100%; padding-top: 16px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); display: block; animation: slideDown 0.2s ease-out forwards;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px;">
+            <span style="color: var(--text-secondary);">Annual Fee</span>
+            <span style="font-weight: 700;">${card.annual_fee > 0 ? '$'+card.annual_fee : '$0'}</span>
+          </div>
+          ${catsHtml}
+          ${benHtml}
+        </div>
+      `;
+    }
+
     return `
-      <div class="wallet-item" ${isActive ? `data-card-id="${card.id}"` : ''}>
-        ${isActive ? '<div class="drag-handle"><span></span><span></span><span></span></div>' : ''}
+      <div class="wallet-item" style="flex-wrap: wrap;" ${isActive ? `data-card-id="${card.id}"` : ''} onclick="toggleExpand('${card.id}')">
+        ${isActive ? '<div class="drag-handle" onclick="event.stopPropagation()"><span></span><span></span><span></span></div>' : ''}
         <div class="wallet-thumb">
           <img src="/${card.local_image_path}" alt="${card.name}" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${svgPath}';}else{this.onerror=null;this.style.opacity='0.3';}">
         </div>
@@ -1136,9 +1185,10 @@
           <div class="wallet-name">${card.name}</div>
           <div class="wallet-sub">${card.currency_name || 'Cash Back'}${card.annual_fee > 0 ? ' • $' + card.annual_fee + '/yr' : ''}</div>
         </div>
-        <button class="wallet-toggle-btn ${inWallet ? 'in-wallet' : ''}" onclick="toggleWalletCard('${card.id}')">
+        <button class="wallet-toggle-btn ${inWallet ? 'in-wallet' : ''}" onclick="event.stopPropagation(); toggleWalletCard('${card.id}')">
           ${inWallet ? '✓ In Wallet' : '+ Add'}
         </button>
+        ${detailsHtml}
       </div>
     `;
   }

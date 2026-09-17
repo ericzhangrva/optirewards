@@ -158,6 +158,10 @@ The application strictly contains 4 main tabs navigating the UI:
         - **Reward Type:** (All, Cash Back, Points/Miles)
         - **Network:** (All Networks, Visa, Mastercard, American Express, Discover)
         - **Card Type:** (All, Personal, Business)
+    *   **Card Details Drawer:** Tapping anywhere on a card (except the Add/Remove toggle button) must expand an inline drawer or modal that clearly lists:
+        - **Annual Fee**
+        - **Reward Multipliers:** (Iterating through `card.categories` to show 3x Dining, 5x Travel, etc.)
+        - **Other Benefits:** (Iterating through an optional `card.benefits` string array to display perks like "Free Night Award", "Lounge Access", etc.)
 
 *Note on Recommendations:* When displaying the Top 3 cards (per Rule 3.1.7), only the #1 recommended card should render its card art image. The #2 and #3 runner-up cards should be displayed compactly (text-only) to save screen space.
 
