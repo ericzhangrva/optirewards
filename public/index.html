@@ -551,7 +551,7 @@
         for (let cat of card.categories) {
           // Check for rotating bonus first
           if (cat.is_rotating || cat.category_key === 'rotating_bonus') {
-             const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q3"] : null;
+             const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q" + Math.ceil((new Date().getMonth() + 1) / 3)] : null;
              let rotMatch = false;
              if (validQuarters) {
                 for (let vq of validQuarters) {

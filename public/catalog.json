@@ -80,6 +80,28 @@
         "electronics",
         "gyms"
       ]
+    },
+    "chase_freedom_original": {
+      "Q1": [
+        "groceries",
+        "fitness",
+        "spa"
+      ],
+      "Q2": [
+        "hotels",
+        "restaurants",
+        "amazon"
+      ],
+      "Q3": [
+        "gas_stations",
+        "public_transit",
+        "live_entertainment"
+      ],
+      "Q4": [
+        "paypal",
+        "wholesale_clubs",
+        "charity"
+      ]
     }
   },
   "merchant_mappings": [
