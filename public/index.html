@@ -1140,12 +1140,11 @@
     let detailsHtml = '';
     if (isExpanded) {
       let catsHtml = '';
-      if (card.categories && card.categories.length > 0) {
-        catsHtml = '<div style="margin-top: 12px; font-weight: 700; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Reward Categories</div>';
-        
-        let hasBase = false;
-        let processedCats = [];
+      let processedCats = [];
+      let hasBase = false;
 
+      // 1. Process explicit categories if present
+      if (card.categories && card.categories.length > 0) {
         card.categories.forEach(cat => {
            let rawName = cat.category_name || cat.category_key || '';
            let keyLow = (cat.category_key || '').toLowerCase();
@@ -1153,7 +1152,17 @@
            
            let finalName = rawName.replace(/_/g, ' ');
            
-           if (keyLow === 'all_purchases' || keyLow === 'base' || keyLow === 'all' || keyLow === 'general' || keyLow === 'other' || nameLow.includes('all purchase') || nameLow === 'all') {
+           const isAllPurchases = !(card.id === 'chase_ink_premier' && nameLow.includes('5,000')) && (
+               keyLow === 'all_purchases' || keyLow === 'base' ||
+               (keyLow === 'all' && (nameLow === 'all' || !nameLow)) ||
+               nameLow === 'all' || nameLow === 'other' || nameLow === 'base' ||
+               nameLow.includes('all purchase') || nameLow.includes('all other') || nameLow.includes('other purchase') || nameLow.includes('other spend') ||
+               nameLow.includes('everywhere') || nameLow.includes('everyday spend') || nameLow.includes('everyday purchase') ||
+               nameLow.includes('unlimited') || nameLow.includes('on all purchases') ||
+               (keyLow === 'general' && (nameLow.includes('everywhere') || nameLow.includes('everyday') || nameLow.includes('business purchase') || nameLow.includes('flat') || nameLow.includes('unlimited 2% cash back')))
+           );
+
+           if (isAllPurchases) {
                finalName = 'Other';
                hasBase = true;
            } else {
@@ -1168,12 +1177,17 @@
            
            processedCats.push({ name: finalName, mult: mult });
         });
-        
-        if (!hasBase && card.base_rate > 0) {
-            let mult = card.base_rate + (card.currency_type === 'cashback' ? '%' : 'x');
-            processedCats.push({ name: 'Other', mult: mult });
-        }
-        
+      }
+      
+      // 2. Dynamically inject base rate as 'Other' if absent from explicit categories
+      if (!hasBase && card.base_rate > 0) {
+          let mult = card.base_rate + (card.currency_type === 'cashback' ? '%' : 'x');
+          processedCats.push({ name: 'Other', mult: mult });
+      }
+      
+      // 3. Render Reward Categories section if any categories exist
+      if (processedCats.length > 0) {
+        catsHtml = '<div style="margin-top: 12px; font-weight: 700; font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">Reward Categories</div>';
         processedCats.forEach(c => {
            catsHtml += `<div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.05);">
              <span>${c.name}</span>
