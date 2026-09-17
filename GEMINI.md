@@ -146,7 +146,9 @@ The application strictly contains 4 main tabs navigating the UI:
     *   **Category Taxonomy:** Must feature exactly these 9 physical category chips: Dining, Groceries, Gas Stations, Transit, Wholesale Clubs, Drugstores, Home Improvement, Phone & Internet, Gyms & Fitness.
 2.  **Online (`online`)**:
     *   Features a distinct live search bar.
-    *   **Category Taxonomy:** Must feature these digital category chips: Flights, Hotels, Online Retailers, Streaming, Food Delivery.
+    *   **Category Taxonomy:** Must feature comprehensive digital categories grouped into sections: 
+        - *Travel & Transit:* Flights, Hotels, Bank Travel Portals, Car Rentals, Rideshare.
+        - *Online Shopping:* Online Retailers, Amazon, Food Delivery, Grocery Delivery, Wholesale Clubs, Drugstores, Home Improvement.
 3.  **Point Values (`valuations`)**: 
     *   Features dynamic sliders to adjust cents-per-point valuations. **Crucially:** Sliders are only rendered for currencies that are present in the cards actively enabled in `userWallet`. Includes the 3 hardcoded presets (Cash, Travel, Max).
 4.  **Wallet (`wallet`)**: 
@@ -155,6 +157,8 @@ The application strictly contains 4 main tabs navigating the UI:
         - **Issuer:** (All, Active, Chase, Amex, Capital One, Citi, etc.)
         - **Reward Type:** (All, Cash Back, Points/Miles)
         - **Card Type:** (All, Personal, Business)
+
+*Note on Recommendations:* When displaying the Top 3 cards (per Rule 3.1.7), only the #1 recommended card should render its card art image. The #2 and #3 runner-up cards should be displayed compactly (text-only) to save screen space.
 
 ### 5.2 Asset & Data Preservation (CRITICAL)
 When rebuilding this app, an AI must **never attempt to mock or hallucinate `catalog.json` or the `assets/` directory**. The catalog contains 199 hand-curated cards and exact regex patterns. The UI heavily relies on the real image paths (`local_image_path`) for rendering the wallet and recommendations.
