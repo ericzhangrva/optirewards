@@ -138,10 +138,21 @@ The core function `getLocalRecommendation(query, forcedCatKey)` computes the opt
 
 ### 5.1 Tab Structure
 The application strictly contains 4 main tabs navigating the UI:
-1.  **In-Store (`instore`)**: Features the GPS button, nearby store list, a live search bar, and 9 granular physical category chips (Dining, Groceries, Gas, Transit, Wholesale, etc.).
-2.  **Online (`online`)**: Features a distinct live search bar, digital merchant shortcuts (Amazon, Apple, Airlines), and category chips tailored for digital spend (Online Retailers, Streaming, Food Delivery).
-3.  **Point Values (`valuations`)**: Features dynamic sliders to adjust cents-per-point valuations. **Crucially:** Sliders are only rendered for currencies that are present in the cards actively enabled in `userWallet`. Includes the 3 hardcoded presets (Cash, Travel, Max).
-4.  **Wallet (`wallet`)**: Displays the full catalog of 199 cards. Cards must be filterable by Issuer, Reward Type (Cash vs Points), and Card Type (Personal vs Business). Users toggle "+ Add" / "✓ In Wallet".
+
+1.  **In-Store (`instore`)**: 
+    *   **GPS Tracker:** Must feature a dedicated "Use My GPS" button (or automated trigger) that calls the Overpass API logic.
+    *   **Category Taxonomy:** Must feature exactly these 9 physical category chips: Dining, Groceries, Gas Stations, Transit, Wholesale Clubs, Drugstores, Home Improvement, Phone & Internet, Gyms & Fitness.
+2.  **Online (`online`)**:
+    *   Features a distinct live search bar.
+    *   **Category Taxonomy:** Must feature these digital category chips: Flights, Hotels, Online Retailers, Streaming, Food Delivery.
+3.  **Point Values (`valuations`)**: 
+    *   Features dynamic sliders to adjust cents-per-point valuations. **Crucially:** Sliders are only rendered for currencies that are present in the cards actively enabled in `userWallet`. Includes the 3 hardcoded presets (Cash, Travel, Max).
+4.  **Wallet (`wallet`)**: 
+    *   Displays the full catalog of 199 cards in collapsible bank sections. 
+    *   **Mandatory Filter Ribbons:** Must include multi-toggle filter chips for: 
+        - **Issuer:** (All, Active, Chase, Amex, Capital One, Citi, etc.)
+        - **Reward Type:** (All, Cash Back, Points/Miles)
+        - **Card Type:** (All, Personal, Business)
 
 ### 5.2 Asset & Data Preservation (CRITICAL)
 When rebuilding this app, an AI must **never attempt to mock or hallucinate `catalog.json` or the `assets/` directory**. The catalog contains 199 hand-curated cards and exact regex patterns. The UI heavily relies on the real image paths (`local_image_path`) for rendering the wallet and recommendations.
