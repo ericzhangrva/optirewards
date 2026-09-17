@@ -100,6 +100,8 @@ The core function `getLocalRecommendation(query, forcedCatKey)` computes the opt
 4.  **Yield Math:** `Effective Yield = Multiplier × Valuation Cents`.
 5.  **Edge Cases:** Costco only accepts Visa. If query contains "costco" and card network is not Visa, `yieldPct` is forced to 0.0.
 6.  **Sorting & Tie-Breakers:** Cards are sorted by `Effective Yield` descending. Ties are broken by the card's index position in `userWallet` (lower index = higher priority). Cards **not** in the wallet are forced to the lowest possible priority (`0`).
+7.  **Recommendation Output (Top 3):** The engine must return the Top 3 highest yielding cards, not just the single best card.
+8.  **Toggle Behavior:** Tapping a category chip once displays the Top 3 recommendations. Tapping the exact same category chip a second time must dismiss/close the recommendation box.
 
 ### 3.2 GPS & OpenStreetMap Overpass Integration
 *   Uses Overpass API to query nodes within 5000m:
