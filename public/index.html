@@ -269,6 +269,7 @@
   let selectedIssuerFilter = 'all';
   let selectedRewardFilter = 'all';
   let selectedTypeFilter = 'all';
+  let selectedNetworkFilter = 'all';
 
   function updateTime() {
     const d = new Date();
@@ -963,6 +964,11 @@
       if (selectedRewardFilter === 'cash' && c.currency_type !== 'cashback') return false;
       if (selectedRewardFilter === 'points' && (c.currency_type !== 'points' && c.currency_type !== 'miles')) return false;
 
+      // Network filter
+      if (selectedNetworkFilter !== 'all') {
+         if ((c.network || '').toLowerCase() !== selectedNetworkFilter) return false;
+      }
+
       // Type filter
       if (selectedTypeFilter === 'personal' && c.card_type !== 'personal') return false;
       if (selectedTypeFilter === 'business' && c.card_type !== 'business') return false;
@@ -1069,7 +1075,17 @@
         <button class="filter-pill ${selectedRewardFilter === 'points' ? 'active' : ''}" onclick="selectedRewardFilter = 'points'; render();">✈️ Points & Miles</button>
       </div>
 
-      <!-- Filter Row 3: Card Type -->
+      <!-- Filter Row 3: Network -->
+      <div class="filter-row-label">Network</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedNetworkFilter === 'all' ? 'active' : ''}" onclick="selectedNetworkFilter = 'all'; render();">All Networks</button>
+        <button class="filter-pill ${selectedNetworkFilter === 'visa' ? 'active' : ''}" onclick="selectedNetworkFilter = 'visa'; render();">Visa</button>
+        <button class="filter-pill ${selectedNetworkFilter === 'mastercard' ? 'active' : ''}" onclick="selectedNetworkFilter = 'mastercard'; render();">Mastercard</button>
+        <button class="filter-pill ${selectedNetworkFilter === 'american express' ? 'active' : ''}" onclick="selectedNetworkFilter = 'american express'; render();">American Express</button>
+        <button class="filter-pill ${selectedNetworkFilter === 'discover' ? 'active' : ''}" onclick="selectedNetworkFilter = 'discover'; render();">Discover</button>
+      </div>
+
+      <!-- Filter Row 4: Card Type -->
       <div class="filter-row-label">Card Type</div>
       <div class="filter-scroll">
         <button class="filter-pill ${selectedTypeFilter === 'all' ? 'active' : ''}" onclick="selectedTypeFilter = 'all'; render();">All Types</button>

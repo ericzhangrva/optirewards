@@ -7036,7 +7036,7 @@
     {
       "id": "chase_freedom_original",
       "issuer_id": "chase",
-      "name": "Chase Freedom\u00ae (Visa Legacy)",
+      "name": "Chase Freedom\u00ae (Legacy)",
       "slug": "chase-freedom-original",
       "network": "Visa",
       "card_type": "personal",
@@ -11334,7 +11334,7 @@
     {
       "id": "amex_simplycash_business",
       "issuer_id": "amex",
-      "name": "SimplyCash\u00ae Business Card from American Express",
+      "name": "SimplyCash\u00ae Business Card from American Express (Legacy)",
       "slug": "amex-simplycash-business",
       "network": "American Express",
       "card_type": "business",
@@ -11661,6 +11661,40 @@
           "multiplier": 1.0,
           "spend_cap": null,
           "cap_period": null,
+          "is_rotating": false,
+          "rotating_quarter": null,
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "id": "amex_marriott_legacy",
+      "issuer_id": "amex",
+      "name": "Marriott Bonvoy American Express Card (Legacy)",
+      "slug": "amex-marriott-legacy",
+      "network": "American Express",
+      "card_type": "personal",
+      "annual_fee": 95.0,
+      "foreign_tx_fee": 0.0,
+      "credit_tier": "Good/Excellent",
+      "apply_url": null,
+      "image_url": null,
+      "local_image_path": "assets/cards/amex-marriott-legacy.png",
+      "is_active": true,
+      "created_at": "2026-09-10 00:00:00",
+      "updated_at": "2026-09-10 00:00:00",
+      "currency_type": "points",
+      "currency_name": "Marriott Bonvoy",
+      "base_rate": 2.0,
+      "point_valuation_cents": 0.8,
+      "welcome_bonus_desc": "",
+      "categories": [
+        {
+          "category_key": "hotels",
+          "category_name": "Marriott Properties",
+          "multiplier": 6.0,
+          "spend_cap": 0.0,
+          "cap_period": "none",
           "is_rotating": false,
           "rotating_quarter": null,
           "notes": ""
