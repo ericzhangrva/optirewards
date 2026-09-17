@@ -156,6 +156,7 @@ The application strictly contains 4 main tabs navigating the UI:
     *   **Mandatory Filter Ribbons:** Must include multi-toggle filter chips for: 
         - **Issuer:** (All, Active, Chase, Amex, Capital One, Citi, etc.)
         - **Reward Type:** (All, Cash Back, Points/Miles)
+        - **Network:** (All Networks, Visa, Mastercard, American Express, Discover)
         - **Card Type:** (All, Personal, Business)
 
 *Note on Recommendations:* When displaying the Top 3 cards (per Rule 3.1.7), only the #1 recommended card should render its card art image. The #2 and #3 runner-up cards should be displayed compactly (text-only) to save screen space.
