@@ -19,6 +19,47 @@ If it throws `ReferenceError: Can't find variable: window`, it means the syntax 
 
 OptiRewards operates as a **100% Serverless, Client-Side Application**. It relies purely on static file hosting for 0ms latency and full offline capability.
 
+```mermaid
+graph TD
+    User(("📱 User (Browser / PWA)"))
+    
+    subgraph Hosting ["Serverless Static Hosting"]
+        Index["📄 index.html (Vanilla JS SPA)"]
+        Catalog["🗄️ catalog.json (Static DB)"]
+        Manifest["⚙️ manifest.json"]
+        Assets["🖼️ assets/ (Card Images & Icons)"]
+    end
+    
+    subgraph Browser ["In-Browser Execution"]
+        UI["DOM & CSS Layout"]
+        Engine["Recommendation Engine<br/>(Yield Math & Regex)"]
+        Storage[/"💾 localStorage<br/>(userWallet, userValuations)"/]
+    end
+    
+    subgraph APIs ["External APIs"]
+        Overpass["🗺️ OSM Overpass API<br/>(GPS POI Lookups)"]
+        Nominatim["🗺️ OSM Nominatim API<br/>(Reverse Geocoding)"]
+    end
+    
+    User -->|Visits / Installs| Index
+    Index -->|Fetches on Boot| Catalog
+    Index -->|PWA Config| Manifest
+    UI -->|Renders| Assets
+    
+    Index --> UI
+    Index --> Engine
+    Index <-->|Persists State| Storage
+    
+    Engine -->|Reads Card Rules| Catalog
+    Engine <-->|Reads Valuations| Storage
+    
+    UI -->|Queries POIs| Overpass
+    Overpass -->|Returns POIs| Engine
+    
+    UI -->|Queries GPS| Nominatim
+    Nominatim -->|Returns City/State| UI
+```
+
 *   **`index.html`**: A Vanilla JS Single Page Application (SPA). Contains all CSS, DOM logic, state management, and the recommendation engine.
 *   **`catalog.json`**: The static database containing card metadata, reward rules, merchant regex mappings, and quarterly calendars.
 *   **No Build Step:** There is no Webpack, Babel, or React. Everything runs natively in modern browsers.
