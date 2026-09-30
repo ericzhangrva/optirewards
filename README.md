@@ -4,7 +4,7 @@
 
 [![Zero Build Step](https://img.shields.io/badge/Build-Zero%20Build%20Step-brightgreen)](#local-development--launch-guide)
 [![100% Client-Side](https://img.shields.io/badge/Architecture-100%25%20Client--Side-blue)](#privacy-guarantee--zero-knowledge-architecture)
-[![199 Cards](https://img.shields.io/badge/Card%20Catalog-199%20Curated%20Cards-orange)](#comprehensive-card-coverage-199-cards)
+[![201 Cards](https://img.shields.io/badge/Card%20Catalog-201%20Curated%20Cards-orange)](#comprehensive-card-coverage-202-cards)
 [![PWA Ready](https://img.shields.io/badge/PWA-iOS%20%26%20Android%20Installable-purple)](#progressive-web-app-pwa-installation)
 [![100% Private](https://img.shields.io/badge/Privacy-100%25%20Local%20Storage-success)](#privacy-guarantee--zero-knowledge-architecture)
 
@@ -21,7 +21,7 @@
    - [Tab 2: 💻 Online (Digital Spend & Portals)](#tab-2--online-digital-spend--portals)
    - [Tab 3: 📊 Point Values (Valuation Sliders & Presets)](#tab-3--point-values-valuation-sliders--presets)
    - [Tab 4: 💳 Wallet (Catalog, Filters & Priority Order)](#tab-4--wallet-catalog-filters--priority-order)
-5. [Comprehensive Card Coverage (199 Cards)](#comprehensive-card-coverage-199-cards)
+5. [Comprehensive Card Coverage (202 Cards)](#comprehensive-card-coverage-202-cards)
 6. [Progressive Web App (PWA) Installation](#progressive-web-app-pwa-installation)
 7. [Local Development & Launch Guide](#local-development--launch-guide)
 8. [Technology Stack](#technology-stack)
@@ -131,12 +131,13 @@ Fine-tune how points are evaluated across all calculations:
 ### Tab 4: 💳 Wallet (Catalog, Filters & Priority Order)
 Manage your cards and customize your wallet hierarchy:
 1. **Adding & Removing Cards:**
-   - Browse the 199-card catalog organized by bank.
+   - Browse the 202-card catalog organized by bank.
    - Tap **"+ Add"** to activate a card in your wallet (turns green into **"✓ In Wallet"**).
    - Tap **"✓ In Wallet"** anytime to remove it.
-2. **4-Facet Filtering Ribbon:**
-   - **Bank / Issuer:** All, Active (`in_wallet`), Chase, Amex, Capital One, Citi, BofA, Wells Fargo, Other.
+2. **5-Facet Filtering Ribbon:**
+   - **Bank / Issuer:** All (`All (202)`), Active (`✓ Active (N)`), Chase (`Chase (46)`), Amex (`Amex (24)`), Capital One (`Capital One (40)`), Citi (`Citi (29)`), Bank of America (`BofA (22)`), Wells Fargo (`Wells Fargo (9)`), U.S. Bank (`U.S. Bank (17)`), Other (`Other (14)`).
    - **Reward Program:** All, Cash Back (`cash`), Points & Miles (`points`).
+   - **Annual Fee:** All Fees, No Annual Fee, With Annual Fee.
    - **Network:** All, Visa, Mastercard, American Express, Discover.
    - **Card Type:** All, Personal, Business.
 3. **Reordering Active Cards (Tie-Breaker Hierarchy):**
@@ -149,23 +150,23 @@ Manage your cards and customize your wallet hierarchy:
 
 ---
 
-## Comprehensive Card Coverage (199 Cards)
+## Comprehensive Card Coverage (202 Cards)
 
-OptiRewards features **199 credit cards** spanning consumer, small business, airline, hotel, and credit union portfolios:
+OptiRewards features **202 credit cards** spanning consumer, small business, airline, hotel, and credit union portfolios (dynamically rendered as `All (202)` in the UI; note that `catalog.json` contains a legacy metadata header of 199):
 
-- **JPMorgan Chase (45 Cards):** Sapphire Reserve, Sapphire Preferred, Freedom Unlimited, Freedom Flex, Freedom Rise, Ink Business Preferred/Cash/Unlimited/Premier, Prime Visa, Southwest, United, Marriott, Hyatt, IHG, British Airways, etc.
-- **American Express (22 Cards — 11 Personal & 11 Business):** The Platinum Card, Gold Card, Green Card, Blue Cash Preferred/Everyday, Cash Magnet, Delta SkyMiles, Hilton Aspire, Marriott Brilliant, Business Platinum/Gold, Blue Business Plus, etc.
-- **Capital One (35 Cards):** Venture X, Venture, VentureOne, Savor, SavorOne, Quicksilver, Spark Cash Plus, Spark 2X Miles, co-branded retail cards (BJ's, Bass Pro, Cabela's, Williams Sonoma, etc.).
-- **Citigroup (28 Cards):** Citi Double Cash, Custom Cash, Strata Premier, Strata Elite, Costco Anywhere Visa, Costco Business, AAdvantage Executive/Platinum, etc.
-- **Bank of America (22 Cards — 17 Personal & 5 Business):** Customized Cash Rewards, Unlimited Cash, Travel Rewards, Premium Rewards, Alaska Airlines Visa, etc.
-- **Wells Fargo (14 Cards):** Active Cash, Autograph, Autograph Journey, Attune, Reflect, Choice Privileges, Signify Business Cash, etc.
-- **U.S. Bank (11 Cards):** Altitude Reserve, Altitude Go, Altitude Connect, Cash+, Shopper Cash Rewards, Business Triple Cash, etc.
-- **Discover (5 Cards):** Discover it Cash Back (5% rotating), Discover it Chrome, Discover it Miles, Discover it Student, Discover it Secured.
-- **Apple / Goldman Sachs (1 Card):** Apple Card (3% Apple/partners, 2% Apple Pay everywhere, 1% physical).
-- **Bilt Technologies / Wells Fargo (1 Card):** Bilt Mastercard (1x fee-free rent, 3x dining, 2x travel).
-- **Barclays US (2 Cards):** JetBlue Plus, Wyndham Rewards Earner Plus.
-- **Credit Unions & Regional Banks (17 Cards):** Fidelity 2% Visa, Navy Federal moreRewards, PenFed Power Cash, TD Double Up, PNC Cash Unlimited, etc.
-- **Retail Store Co-Brands (20+ Cards):** PayPal Cashback Mastercard, Target Circle Card, Venmo Credit Card, Amazon Store Card, etc.
+- **JPMorgan Chase (46 Cards):** Sapphire Reserve, Sapphire Preferred, Freedom Unlimited, Freedom Flex, Freedom Rise, Ink Business Preferred/Cash/Unlimited/Premier, Prime Visa, The Ritz-Carlton Credit Card (Legacy), Southwest, United, Marriott Bonvoy, Hyatt, IHG, British Airways, etc.
+- **Capital One (40 Cards):** Venture X, Venture, VentureOne, Savor, SavorOne, Quicksilver, Spark Cash Plus, Spark 2X Miles, co-branded retail cards (BJ's, Bass Pro, Cabela's, Williams Sonoma), plus 5 Discover cards mapped under Capital One (`discover_it_cash_back`, `discover_it_miles`, `discover_it_chrome`, `discover_it_student`, `discover_it_secured`).
+- **Citigroup (29 Cards — 26 Personal & 3 Business):** Citi Double Cash, Custom Cash, Strata Premier, Costco Anywhere Visa, Costco Anywhere Visa Business, AAdvantage Executive/Platinum Select/MileUp/Business, Diamond Preferred, etc.
+- **American Express (24 Cards — 12 Personal & 12 Business):** The Platinum Card, Gold Card, Green Card, Blue Cash Preferred/Everyday, Cash Magnet, Delta SkyMiles (Gold/Platinum/Reserve), Hilton Honors (Standard/Surpass/Aspire), Marriott Bonvoy Brilliant/Business/Legacy, Business Platinum/Gold, Blue Business Plus, Blue Business Cash, etc.
+- **Bank of America (22 Cards — 17 Personal & 5 Business):** Customized Cash Rewards, Unlimited Cash Rewards, Travel Rewards, Premium Rewards, Premium Rewards Elite, Alaska Airlines Visa, Business Advantage series, etc.
+- **U.S. Bank (17 Cards — 9 Personal & 8 Business):** Altitude Reserve, Altitude Go, Altitude Connect, Cash+, Shopper Cash Rewards, Smartly Visa Signature, Business Triple Cash Rewards, Business Leverage, Business Altitude series, etc.
+- **Wells Fargo (9 Cards — 8 Personal & 1 Business):** Active Cash, Autograph, Autograph Journey, Attune, Reflect, Signify Business Cash, Choice Privileges Select, and Bilt Mastercard (mapped under Wells Fargo).
+- **Other Issuers (14 Cards):**
+  - **Credit Unions & Regional Banks (6 Cards):** Navy Federal moreRewards, Navy Federal Flagship Rewards, PenFed Power Cash, PNC Cash Unlimited, TD Double Up, Truist Enjoy Cash.
+  - **Synchrony Financial (4 Cards):** PayPal Cashback Mastercard, Target Circle Card, My Best Buy Visa, Venmo Credit Card.
+  - **Barclays US (2 Cards):** JetBlue Plus, Wyndham Rewards Earner Plus.
+  - **Apple / Goldman Sachs (1 Card):** Apple Card (3% Apple/partners, 2% Apple Pay everywhere, 1% physical).
+  - **Fidelity Investments (1 Card):** Fidelity Rewards 2% Visa Signature.
 
 *Card Art Fidelity:* All card images are authentic, high-resolution PNG/SVG assets sourced directly from official bank Content Delivery Networks (Amex, Capital One, Chase, Citi, Discover, Bank of America, Wells Fargo).
 
@@ -201,11 +202,11 @@ Because OptiRewards has **zero build steps** and no server-side code, running it
 > **Note:** Due to browser security restrictions on `fetch()` and CORS over local files, do not double-click `index.html` to open via `file://`. Always use a local HTTP server.
 
 ### Option 1: Python Built-In Server (Recommended)
-You can use the included lightweight server script:
+From the repository root, launch the included lightweight server script (which automatically serves the `public/` directory on port 8085):
 ```bash
 python3 scripts/serve.py
 ```
-Or launch Python's built-in HTTP server directly:
+Or launch Python's built-in HTTP server directly using the `-d` flag:
 ```bash
 python3 -m http.server 8085 -d public
 ```
@@ -231,10 +232,27 @@ npx wrangler pages dev public
 
 ---
 
+---
+
+## Release Notes
+
+### v0.9.0-beta (Latest)
+- **New Cards:** Added Robinhood Gold card.
+- **Dynamic Rotating Categories:** The Wallet tab now dynamically fetches and displays the precise rotating categories for the current quarter based on your local time.
+- **2026 Calendars:** Fully updated Chase Freedom and Discover it quarterly calendars to reflect the official 2026 schedules.
+- **Bilt Rent Day:** Bilt Mastercard now automatically doubles non-rent multipliers exclusively on the 1st of the month (12am ET to 11:59pm PT).
+- **New Filter:** Added an "Annual Fee" filter to the Wallet tab (All / No Annual Fee / With Annual Fee) for easier catalog browsing.
+
+### v0.8.0-beta
+- **Wallet UI Overhaul:** Added an expandable card details drawer to view specific multipliers, and drag-to-reorder capability in the Active wallet view.
+- **GPS Discovery:** Integrated OpenStreetMap Overpass API to fetch real nearby stores (cafes, restaurants, supermarkets) based on exact GPS coordinates and reverse geocoding.
+- **PWA Support:** Added web manifest and meta tags to allow native-like app installation on iOS and Android.
+- **Card Catalog:** Expanded catalog to over 200 cards with high-fidelity CDN imagery.
+
 ## Technology Stack
 
 - **Client Architecture:** Vanilla HTML5, Modern CSS3, ECMAScript 6+ (No frameworks, 0kb bundle overhead).
-- **Database:** Static JSON DB (`public/catalog.json`) holding 199 cards, merchant regex patterns, and quarterly calendars.
+- **Database:** Static JSON DB (`public/catalog.json`) holding 202 cards, merchant regex patterns, and quarterly calendars.
 - **Hosting & Edge Deployment:** Cloudflare Pages / Workers Static Assets via `wrangler.json`.
 - **Geolocation & Mapping:** OpenStreetMap Overpass API (Nearby POI discovery) & OpenStreetMap Nominatim (Reverse Geocoding).
 - **State Storage:** In-browser `window.localStorage`.

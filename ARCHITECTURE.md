@@ -32,7 +32,7 @@ graph TD
     
     subgraph Hosting ["Static Cloud / Edge Hosting (Cloudflare Pages / Wrangler)"]
         Index["📄 public/index.html (Vanilla JS SPA)"]
-        Catalog["🗄️ public/catalog.json (199-Card Static DB)"]
+        Catalog["🗄️ public/catalog.json (201-Card Static DB)"]
         Manifest["⚙️ public/manifest.json (PWA Manifest)"]
         Icon["🎨 public/icon.svg (App Icon)"]
         Assets["🖼️ public/assets/cards/ (379 Bank CDN PNG/SVG Assets)"]
@@ -78,7 +78,7 @@ OptiRewards/
 ├── .gitignore                       # Git ignore rules for scratch scripts, local zips, python caches
 ├── public/                          # Web root served directly to users
 │   ├── index.html                   # Monolithic SPA (HTML5, CSS3, Vanilla JavaScript, 1,370 lines)
-│   ├── catalog.json                 # Static JSON database (199 cards, calendars, merchant regexes, 356 KB)
+│   ├── catalog.json                 # Static JSON database (201 active cards, calendars, merchant regexes, 356 KB; metadata header states legacy 199)
 │   ├── manifest.json                # PWA configuration manifest
 │   ├── icon.svg                     # High-resolution vector icon for PWA install and favicon
 │   └── assets/
@@ -155,7 +155,7 @@ The catalog is structured into four primary sections: `metadata`, `quarterly_cal
 {
   "metadata": {
     "version": "1.0",
-    "card_count": 199,
+    "card_count": 199, // Note: legacy header value; the cards array contains 201 active cards
     "description": "OptiRewards Card Catalog - Edit this file to update cards or rules."
   },
   "quarterly_calendars": {
@@ -290,7 +290,7 @@ All state persistence is client-side. The app interacts with two persistent keys
 State is held globally within `public/index.html`:
 ```javascript
 let catalog = null;                 // Parsed content of public/catalog.json
-let allCards = [];                  // Reference to catalog.cards (199 objects)
+let allCards = [];                  // Reference to catalog.cards (201 objects; legacy metadata states 199)
 let userWallet = [];                // Loaded from localStorage.getItem('userWallet')
 let userValuations = {};            // Loaded from localStorage.getItem('userValuations')
 let nearbyStores = [];              // Populated by Overpass API (top 5 closest POIs)
@@ -301,6 +301,7 @@ let currentRecommendation = null;   // Active recommendation object or null
 let walletSearchQuery = '';         // Current search string in Wallet tab
 let selectedIssuerFilter = 'all';   // 'all' | 'in_wallet' | 'chase' | 'amex' | ...
 let selectedRewardFilter = 'all';   // 'all' | 'cash' | 'points'
+let selectedFeeFilter = 'all';      // 'all' | 'no_fee' | 'has_fee'
 let selectedNetworkFilter = 'all';  // 'all' | 'visa' | 'mastercard' | 'american express' | 'discover'
 let selectedTypeFilter = 'all';     // 'all' | 'personal' | 'business'
 let activeExpandedCardId = null;    // Card ID whose details drawer is currently expanded
@@ -382,7 +383,7 @@ function isCategoryMatch(c, q) {
 let candidateCards = userWallet;
 let isSimulated = false;
 
-// If user hasn't configured a wallet yet, evaluate across all 199 active catalog cards
+// If user hasn't configured a wallet yet, evaluate across all 201 active catalog cards (legacy metadata states 199)
 if (!candidateCards || candidateCards.length === 0) {
   candidateCards = catalog.cards.filter(c => c.is_active);
   isSimulated = true;
@@ -458,20 +459,35 @@ if (currentRecommendation && currentRecommendation.query === query) {
 ```
 
 ### 3.10 Wholesale Clubs Split View (`wholesale_clubs_split`)
-Tapping the Wholesale Clubs category triggers a special split query:
+Tapping the Wholesale Clubs category triggers a special split query producing a multi-recommendation state container:
 ```javascript
-currentRecommendation = {
-  is_multi: true,
-  query: 'wholesale_clubs_split',
-  title: 'Wholesale Clubs Comparison',
-  results: [
-    { label: 'Costco (Visa Only)', data: getLocalRecommendation('Costco') },
-    { label: "Sam's Club", data: getLocalRecommendation("Sam's Club") },
-    { label: "BJ's Wholesale", data: getLocalRecommendation("BJ's Wholesale") }
-  ]
-};
+// State construction: public/index.html lines 641-650
+if (query === 'wholesale_clubs_split') {
+  currentRecommendation = {
+    query: query,
+    is_multi: true,
+    subs: [
+      { title: 'Costco (Visa Only)', rec: getLocalRecommendation('Costco') },
+      { title: "Sam's Club", rec: getLocalRecommendation("Sam's Club") },
+      { title: "BJ's Wholesale", rec: getLocalRecommendation("BJ's Wholesale") }
+    ]
+  };
+}
 ```
-Renders three stacked recommendation cards concurrently, each respecting issuer rules (Costco enforces Visa; Sam's Club and BJ's allow Mastercard/Amex/Discover).
+
+The recommendation renderer inspects `currentRecommendation.is_multi` and dynamically maps over `subs`, invoking `renderSingleRec(sub.rec, sub.title)`:
+```javascript
+// DOM rendering snippet: public/index.html lines 749-755
+if (currentRecommendation.is_multi) {
+  let html = '<div id="rec-box-anchor" style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">';
+  for (let sub of currentRecommendation.subs) {
+    html += renderSingleRec(sub.rec, sub.title);
+  }
+  html += '</div>';
+  return html;
+}
+```
+This renders three stacked recommendation cards concurrently inside `#rec-box-anchor`, each respecting merchant-specific acceptance constraints (Costco enforces Visa-only acceptance; Sam's Club and BJ's accept Mastercard, Amex, Visa, and Discover).
 
 ---
 
@@ -562,12 +578,12 @@ Formatted to one decimal place: `d.toFixed(1) + ' mi'`.
   .dynamic-island, .status-bar {
     display: none !important;
   }
+  /* Tab Bar Mobile Styling: public/index.html vs Target Specification */
   .tab-bar {
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    padding-bottom: calc(6px + env(safe-area-inset-bottom)) !important;
+    /* Currently active in public/index.html:211-213 media query override: */
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom)) 0 !important;
+    
+    /* Target specifications from ORIGINAL_REQUEST.md (2026-09-14) to protect icons from curved iPhone display corners: */
     align-items: flex-end !important;
     justify-content: center !important;
     gap: 28px !important;
@@ -622,7 +638,15 @@ Tapping anywhere on a card row (except the Add/Remove button or drag handle) tog
   - Any category denoting general spend (`all_purchases`, `base_rate`, `everyday`, `flat_rate`, `general`) is normalized strictly to `"Other"`.
 - **Dynamic Base Rate Injection:** If `card.base_rate > 0` and the card lacks an explicit "Other" category in its JSON categories array, the drawer dynamically generates and displays an `"Other"` category with `card.base_rate` (e.g. "1.5% Other" or "1x Other").
 - **Card Benefits:** Iterates through `card.benefits` and renders each with a `✨` prefix.
-- **Card Art Fallback:** Employs an `onerror="this.onerror=null;this.src='icon.svg'"` fallback handler to guarantee clean image rendering if local card art is missing.
+- **Card Art Two-Stage Fallback:** In `public/index.html` lines 1137 and 1225, card image elements implement a robust two-stage fallback:
+  ```javascript
+  const svgPath = '/' + card.local_image_path.replace('.png', '.svg');
+  ```
+  ```html
+  <img src="/${card.local_image_path}" alt="${card.name}" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='${svgPath}';}else{this.onerror=null;this.style.opacity='0.3';}">
+  ```
+  1. *Stage 1 (SVG Swap):* If the primary PNG fails to load and `dataset.fallback` is unset, `this.dataset.fallback` is set to `'1'` and the source dynamically swaps to the vector SVG equivalent (`${svgPath}`).
+  2. *Stage 2 (Graceful Degradation):* If the SVG asset is also unavailable or missing, `this.onerror` is nulled to halt recursive event firing and `this.style.opacity` is dimmed to `'0.3'`.
 
 ---
 
@@ -646,9 +670,11 @@ Tapping anywhere on a card row (except the Add/Remove button or drag handle) tog
 ### 6.2 Tab 2: Online (`online`)
 - **Search Bar:** Live online merchant search.
 - **Popular Digital Shortcuts (1-Tap Buttons):**
-  - `Amazon.com` (`amazon`)
-  - `Apple Store` (`apple`)
-  - `Airlines (Delta / United / AA)` (`flights`)
+  - `Amazon.com` (passes query `'Amazon'`)
+  - `Apple Store` (passes query `'Apple Store'`)
+  - `Airlines (Delta / United / AA)` (passes query `'Delta Air Lines'`)
+
+  *Merchant Regex Attribution Preservation:* In `public/index.html:849-854`, shortcuts invoke `renderPOI('Amazon', ...)`, `renderPOI('Apple Store', ...)`, and `renderPOI('Delta Air Lines', ...)`. Passing authentic merchant strings rather than raw category keys (`flights`) preserves merchant pattern matching against `catalog.merchant_mappings` (e.g. regex `delta` resolves `rec.merchant_name = "Delta Air Lines"` under category `flights`), ensuring airline-specific co-branded multipliers and authentic merchant labels are preserved.
 - **Digital Spend Taxonomy (3 Categorized Sections):**
   - **✈️ Travel & Transit Apps:**
     - Flights & Airfare (`flights`)
@@ -664,11 +690,10 @@ Tapping anywhere on a card row (except the Add/Remove button or drag handle) tog
     - Online Drugstores (`pharmacies`)
     - Home Improvement Online (`home_improvement`)
   - **📱 Digital Services & Subscriptions:**
-    - Streaming Services (`streaming`)
-    - Phone & Internet Bills (`phone_internet`)
-    - Utilities & Home Bills (`utilities`)
-    - Gyms & Fitness Subscriptions (`gyms`)
-    - General Online Purchases (`online_shopping`)
+    - Streaming Services (`streaming_video`)
+    - Phone & Internet (`cell_phone`) — *Note: matches 5 bonus multiplier cards in `catalog.json` (`chase_ink_cash`, `us_bank_business_triple_cash`, `wells_fargo_business_platinum`, `us_bank_cash_plus`, `capital_one_spark_cash_select`); legacy key `phone_internet` has 0 matches*
+    - Live Concerts & Events (`live_events`)
+    - Digital Wallets (Apple Pay) (`digital_wallet`)
 
 ### 6.3 Tab 3: Point Values (`valuations`)
 - **Valuation Presets:**
@@ -687,11 +712,22 @@ Tapping anywhere on a card row (except the Add/Remove button or drag handle) tog
 
 ### 6.4 Tab 4: Wallet (`wallet`)
 - **Search Input:** Filters cards by name, issuer, network, or currency.
-- **4 Multi-Facet Filter Ribbons:**
-  1. **Bank / Issuer:** All, Active (`in_wallet`), Chase, Amex, Capital One, Citi, BofA, Wells Fargo, Other.
+- **5 Multi-Facet Filter Ribbons:**
+  1. **Bank / Issuer:** 10 dynamic filter pills rendered based on issuer card count threshold (`count >= 10 || ['chase', 'amex', 'citi', 'capital_one', 'bofa', 'wells_fargo'].includes(id)`):
+     - `All (202)` (`all`): All active cards in catalog
+     - `✓ Active (N)` (`in_wallet`): Dynamic count of cards currently enabled in user wallet
+     - `Chase (46)` (`chase`): JPMorgan Chase portfolio
+     - `Amex (24)` (`amex`): American Express consumer & business portfolio
+     - `Capital One (40)` (`capital_one`): Capital One branded cards (35) plus mapped Discover cards (5)
+     - `Citi (29)` (`citi`): Citigroup portfolio
+     - `BofA (22)` (`bofa`): Bank of America portfolio (short title `BofA`)
+     - `Wells Fargo (9)` (`wells_fargo`): Wells Fargo branded cards (8) plus Bilt Mastercard (1)
+     - `U.S. Bank (17)` (`us_bank`): U.S. Bank consumer & business portfolio (qualifies via count >= 10)
+     - `Other (14)` (`other`): Aggregates Credit Unions (6), Synchrony Financial (4), Barclays US (2), Apple/Goldman Sachs (1), and Fidelity (1)
   2. **Reward Program:** All, Cash Back (`cash`), Points & Miles (`points`).
-  3. **Network:** All, Visa, Mastercard, American Express, Discover.
-  4. **Card Type:** All, Personal, Business.
+  3. **Annual Fee:** All Fees (`all`), No Annual Fee (`no_fee`), With Annual Fee (`has_fee`).
+  4. **Network:** All, Visa, Mastercard, American Express, Discover.
+  5. **Card Type:** All, Personal, Business.
 - **Bank-Grouped View:** Cards rendered in collapsible issuer sections with card counts and quick Add/Remove buttons.
 - **Active Wallet Reordering:** When filtered to `in_wallet`, enables drag handles for priority sorting.
 - **Inline Card Drawer:** Slide-down drawer revealing Annual Fee, formatted reward multipliers (with unified "Other" base rate), and perks list with `✨`.
@@ -713,7 +749,7 @@ To maintain authentic UI fidelity, card images must not be hallucinated or repla
 ### 7.2 Catalog Maintenance Rules
 1. **Issuer Standardization:** All cards must use standardized `issuer_id` values: `chase`, `amex`, `capital_one`, `citi`, `bofa`, `discover`, `wells_fargo`, `us_bank`, `barclays`, `goldman_sachs`, `synchrony`, `credit_unions`.
 2. **Rotating Calendars:** 5% rotating quarterly schedules are maintained under `catalog.quarterly_calendars` keyed by card ID (`discover_it_cash_back`, `chase_freedom_flex`, `us_bank_cash_plus`, `chase_freedom_original`) and quarter (`Q1`, `Q2`, `Q3`, `Q4`).
-3. **Category Keys:** Category strings must strictly match internal taxonomy keys: `dining`, `groceries`, `gas_stations`, `ev_charging`, `travel`, `flights`, `hotels`, `travel_portal`, `rental_cars`, `public_transit`, `rideshare`, `wholesale_clubs`, `pharmacies`, `home_improvement`, `phone_internet`, `utilities`, `streaming`, `gyms`, `online_shopping`, `all_purchases`, `rotating_bonus`.
+3. **Category Keys:** Category strings must strictly match internal taxonomy keys: `dining`, `groceries`, `gas_stations`, `ev_charging`, `travel`, `flights`, `hotels`, `travel_portal`, `rental_cars`, `public_transit`, `rideshare`, `wholesale_clubs`, `pharmacies`, `home_improvement`, `streaming_video`, `cell_phone`, `live_events`, `digital_wallet`, `utilities`, `gyms`, `online_shopping`, `all_purchases`, `rotating_bonus`.
 
 ---
 

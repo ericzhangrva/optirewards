@@ -1,49 +1,53 @@
 {
   "metadata": {
     "version": "1.0",
-    "card_count": 199,
+    "card_count": 202,
     "description": "OptiRewards Card Catalog - Edit this file to update cards or rules."
   },
   "quarterly_calendars": {
     "discover_it_cash_back": {
       "Q1": [
-        "restaurants",
-        "drugstores"
+        "groceries",
+        "wholesale_clubs",
+        "streaming"
       ],
       "Q2": [
-        "gas_stations",
-        "home_improvement",
-        "public_transit"
+        "restaurants",
+        "home_improvement"
       ],
       "Q3": [
         "gas_stations",
-        "public_transit",
+        "transit",
         "pharmacies"
       ],
       "Q4": [
-        "amazon",
-        "target"
+        "restaurants",
+        "entertainment",
+        "home_utilities"
       ]
     },
     "chase_freedom_flex": {
       "Q1": [
-        "groceries",
-        "fitness",
-        "spa"
+        "dining",
+        "charity",
+        "cruise"
       ],
       "Q2": [
-        "hotels",
-        "restaurants",
-        "amazon"
+        "amazon",
+        "supermarket",
+        "travel_portal",
+        "charity"
       ],
       "Q3": [
         "gas_stations",
+        "ev_charging",
         "public_transit",
-        "live_entertainment"
+        "live_events",
+        "charity"
       ],
       "Q4": [
-        "paypal",
-        "wholesale_clubs",
+        "groceries",
+        "dining",
         "charity"
       ]
     },
@@ -83,23 +87,26 @@
     },
     "chase_freedom_original": {
       "Q1": [
-        "groceries",
-        "fitness",
-        "spa"
+        "dining",
+        "charity",
+        "cruise"
       ],
       "Q2": [
-        "hotels",
-        "restaurants",
-        "amazon"
+        "amazon",
+        "supermarket",
+        "travel_portal",
+        "charity"
       ],
       "Q3": [
         "gas_stations",
+        "ev_charging",
         "public_transit",
-        "live_entertainment"
+        "live_events",
+        "charity"
       ],
       "Q4": [
-        "paypal",
-        "wholesale_clubs",
+        "groceries",
+        "dining",
         "charity"
       ]
     }
@@ -1152,14 +1159,14 @@
       "id": "m_149",
       "merchant_name": "PetSmart",
       "merchant_pattern": "petsmart",
-      "category_key": "shopping",
+      "category_key": "pet_care",
       "brand_icon": "store"
     },
     {
       "id": "m_150",
       "merchant_name": "Petco",
       "merchant_pattern": "petco",
-      "category_key": "shopping",
+      "category_key": "pet_care",
       "brand_icon": "store"
     },
     {
@@ -1416,6 +1423,14 @@
       "website": "https://www.fidelity.com",
       "market_share_tier": "Co-brand (~2%)",
       "created_at": "2026-09-10 04:41:32"
+    },
+    {
+      "id": "robinhood",
+      "name": "Robinhood",
+      "short_name": "Robinhood",
+      "website": "https://robinhood.com",
+      "market_share_tier": "Specialty (~1%)",
+      "created_at": "2026-09-30 00:00:00"
     }
   ],
   "cards": [
@@ -3654,7 +3669,10 @@
           "notes": ""
         }
       ],
-      "benefits": []
+      "benefits": [
+        "Rent Day: Multipliers doubled (except rent) on the 1st of every month",
+        "No transaction fees on rent payments"
+      ]
     },
     {
       "id": "synchrony_paypal_cashback",
@@ -11940,6 +11958,43 @@
         }
       ],
       "benefits": []
+    },
+    {
+      "id": "robinhood_gold",
+      "issuer_id": "robinhood",
+      "name": "Robinhood Gold Card",
+      "slug": "robinhood-gold",
+      "network": "Visa Signature",
+      "card_type": "personal",
+      "annual_fee": 50.0,
+      "foreign_tx_fee": 0.0,
+      "credit_tier": "Excellent",
+      "apply_url": null,
+      "image_url": null,
+      "local_image_path": "assets/cards/robinhood-gold.png",
+      "is_active": true,
+      "created_at": "2026-09-30 00:00:00",
+      "updated_at": "2026-09-30 00:00:00",
+      "currency_type": "cashback",
+      "currency_name": "Cash Back",
+      "base_rate": 3.0,
+      "point_valuation_cents": 1.0,
+      "welcome_bonus_desc": "",
+      "categories": [
+        {
+          "category_key": "travel_portal",
+          "category_name": "Robinhood Travel Portal",
+          "multiplier": 5.0,
+          "spend_cap": null,
+          "cap_period": null,
+          "is_rotating": false,
+          "rotating_quarter": null,
+          "notes": ""
+        }
+      ],
+      "benefits": [
+        "Requires $50/year Robinhood Gold membership"
+      ]
     }
   ]
 }

@@ -261,6 +261,26 @@
   let userValuations = {};
   let nearbyStores = [];
   let quarterlyData = null;
+
+  function getCurrentQuarter() {
+    const etDateString = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+    const etDate = new Date(etDateString);
+    return "Q" + Math.ceil((etDate.getMonth() + 1) / 3);
+  }
+
+  function getEffectiveMultiplier(card, cat) {
+    let mult = cat.multiplier;
+    if (card.id === 'bilt_mastercard' && cat.category_key !== 'rent_payments') {
+        const etDateStr = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+        const etDate = new Date(etDateStr);
+        // Bilt Rent Day: 12am ET on the 1st to 11:59pm PT on the 1st (2:59am ET on the 2nd)
+        if (etDate.getDate() === 1 || (etDate.getDate() === 2 && etDate.getHours() < 3)) {
+            mult *= 2;
+        }
+    }
+    return mult;
+  }
+
   
   let currentTab = 'instore';
   let locationName = "Locating...";
@@ -269,6 +289,7 @@
   let walletSearchQuery = '';
   let selectedIssuerFilter = 'all';
   let selectedRewardFilter = 'all';
+  let selectedFeeFilter = 'all';
   let selectedTypeFilter = 'all';
   let activeExpandedCardId = null;
   let selectedNetworkFilter = 'all';
@@ -476,16 +497,21 @@
     if (c === 'all' || c === 'general') return true;
     
     const equivalents = [
-        ['restaurants', 'dining', 'food_delivery', 'food'],
+        ['restaurants', 'dining', 'food_delivery', 'food', 'fast_food'],
         ['groceries', 'supermarket', 'grocery_delivery'],
-        ['gas_stations', 'gas'],
+        ['gas_stations', 'gas', 'ev_charging'],
+        ['charity', 'donations'],
         ['flights', 'airfare', 'travel'],
         ['hotels', 'travel'],
         ['travel_portal', 'travel'],
         ['rental_cars', 'travel'],
         ['public_transit', 'transit', 'travel'],
         ['rideshare', 'transit', 'travel'],
-        ['online_shopping', 'shopping']
+        ['cruise', 'travel'],
+        ['online_shopping', 'shopping'],
+        ['streaming', 'streaming_video', 'cable_streaming'],
+        ['entertainment', 'live_events', 'live_entertainment'],
+        ['utilities', 'home_utilities', 'cell_phone']
     ];
     
     for (let group of equivalents) {
@@ -554,7 +580,7 @@
         for (let cat of card.categories) {
           // Check for rotating bonus first
           if (cat.is_rotating || cat.category_key === 'rotating_bonus') {
-             const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id]["Q" + Math.ceil((new Date().getMonth() + 1) / 3)] : null;
+             const validQuarters = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id][getCurrentQuarter()] : null;
              let rotMatch = false;
              if (validQuarters) {
                 for (let vq of validQuarters) {
@@ -562,15 +588,17 @@
                 }
              }
              if (rotMatch) {
-                if (cat.multiplier > matchMultiplier) {
-                   matchMultiplier = cat.multiplier;
+                let catMult = getEffectiveMultiplier(card, cat);
+                if (catMult > matchMultiplier) {
+                   matchMultiplier = catMult;
                    ruleDesc = cat.category_name;
                    isRotating = true;
                 }
              }
           } else if (isCategoryMatch(cat.category_key, categoryKey)) {
-             if (cat.multiplier > matchMultiplier) {
-                matchMultiplier = cat.multiplier;
+             let catMult = getEffectiveMultiplier(card, cat);
+             if (catMult > matchMultiplier) {
+                matchMultiplier = catMult;
                 ruleDesc = cat.category_name;
              }
           }
@@ -785,7 +813,7 @@
   }
 
   function renderInStoreTab() {
-    const q = quarterlyData ? quarterlyData.current_quarter : 'Q3';
+    const q = quarterlyData ? quarterlyData.current_quarter : getCurrentQuarter();
     let searchRec = (window.activeSearchQuery === 'instore_search' && currentRecommendation) ? renderRecommendationBox() : '';
     
     return `
@@ -966,6 +994,10 @@
       if (selectedRewardFilter === 'cash' && c.currency_type !== 'cashback') return false;
       if (selectedRewardFilter === 'points' && (c.currency_type !== 'points' && c.currency_type !== 'miles')) return false;
 
+      // Fee filter
+      if (selectedFeeFilter === 'no_fee' && c.annual_fee > 0) return false;
+      if (selectedFeeFilter === 'has_fee' && (c.annual_fee === undefined || c.annual_fee === 0)) return false;
+
       // Network filter
       if (selectedNetworkFilter !== 'all') {
          if ((c.network || '').toLowerCase() !== selectedNetworkFilter) return false;
@@ -1077,7 +1109,15 @@
         <button class="filter-pill ${selectedRewardFilter === 'points' ? 'active' : ''}" onclick="selectedRewardFilter = 'points'; render();">✈️ Points & Miles</button>
       </div>
 
-      <!-- Filter Row 3: Network -->
+      <!-- Filter Row 3: Annual Fee -->
+      <div class="filter-row-label">Annual Fee</div>
+      <div class="filter-scroll">
+        <button class="filter-pill ${selectedFeeFilter === 'all' ? 'active' : ''}" onclick="selectedFeeFilter = 'all'; render();">All Fees</button>
+        <button class="filter-pill ${selectedFeeFilter === 'no_fee' ? 'active' : ''}" onclick="selectedFeeFilter = 'no_fee'; render();">No Annual Fee</button>
+        <button class="filter-pill ${selectedFeeFilter === 'has_fee' ? 'active' : ''}" onclick="selectedFeeFilter = 'has_fee'; render();">With Annual Fee</button>
+      </div>
+
+      <!-- Filter Row 4: Network -->
       <div class="filter-row-label">Network</div>
       <div class="filter-scroll">
         <button class="filter-pill ${selectedNetworkFilter === 'all' ? 'active' : ''}" onclick="selectedNetworkFilter = 'all'; render();">All Networks</button>
@@ -1087,7 +1127,7 @@
         <button class="filter-pill ${selectedNetworkFilter === 'discover' ? 'active' : ''}" onclick="selectedNetworkFilter = 'discover'; render();">Discover</button>
       </div>
 
-      <!-- Filter Row 4: Card Type -->
+      <!-- Filter Row 5: Card Type -->
       <div class="filter-row-label">Card Type</div>
       <div class="filter-scroll">
         <button class="filter-pill ${selectedTypeFilter === 'all' ? 'active' : ''}" onclick="selectedTypeFilter = 'all'; render();">All Types</button>
@@ -1170,10 +1210,19 @@
                    finalName = finalName.charAt(0).toUpperCase() + finalName.slice(1).toLowerCase();
                }
            }
+
+           if (cat.category_key === 'rotating_bonus' || cat.is_rotating) {
+               const qKey = getCurrentQuarter();
+               const qCats = catalog.quarterly_calendars[card.id] ? catalog.quarterly_calendars[card.id][qKey] : null;
+               if (qCats && qCats.length > 0) {
+                   const formattedCats = qCats.map(c => c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ');
+                   finalName = qKey + ' (' + formattedCats + ')';
+               }
+           }
            
-           let mult = cat.multiplier + 'x';
-           if (cat.category_key === 'rotating_bonus') mult = '5% (Rotating)';
-           else if (card.currency_type === 'cashback') mult = cat.multiplier + '%';
+           let mult = getEffectiveMultiplier(card, cat) + 'x';
+           if (cat.category_key === 'rotating_bonus') mult = '5%';
+           else if (card.currency_type === 'cashback') mult = getEffectiveMultiplier(card, cat) + '%';
            
            processedCats.push({ name: finalName, mult: mult });
         });
